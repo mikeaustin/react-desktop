@@ -59,6 +59,7 @@ const applicationsMenu = [
   { title: 'Calendar', width: 360, height: 320, src: 'clients/calendar' },
   { title: 'S3 Explorer', width: 800, height: 400, src: 'clients/explorer' },
   { title: 'UI Builder', width: 1200, height: 800, src: 'clients/builder' },
+  { title: 'Kopi IDE', width: 1200, height: 800, src: 'clients/kopi-ide' },
   {},
   { title: 'Grid Draw', width: 1200, height: 800, src: 'https://mike-austin.com/draw-2' },
   { title: 'Bestest Movies Ever', width: 1200, height: 800, src: 'https://bestestmoviesever.com' },
