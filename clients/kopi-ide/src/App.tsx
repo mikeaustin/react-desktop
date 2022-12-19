@@ -9,24 +9,27 @@ import { interpret } from 'kopi-language';
 import './App.css';
 
 const myTheme = EditorView.theme({
-  "&": {
-    fontSize: "14px",
-    // background: 'white',
+  '&': {
+    // fontSize: '14px',
+    // font: 'source-code-pro, Menlo, Monaco, Consolas, monospace',
   },
-  "&.cm-editor.cm-focused": {
-    outline: "none",
+  '&.cm-editor.cm-focused': {
+    outline: 'none',
   },
-  "&.cm-editor .cm-activeLine": {
-    background: "none",
+  '&.cm-editor .cm-activeLine': {
+    background: 'none',
   },
-  "&.cm-editor .cm-gutters": {
-    display: "none",
+  '&.cm-editor .cm-gutters': {
+    display: 'none',
   },
-  "&.cm-editor .cm-content": {
+  '&.cm-editor .cm-content': {
     padding: 0,
   },
-  "&.cm-editor .cm-line": {
+  '&.cm-editor .cm-line': {
     padding: 0,
+  },
+  '&.cm-editor .cm-scroller': {
+    font: '14px source-code-pro, Menlo, Monaco, Consolas, monospace',
   },
 });
 
