@@ -32,18 +32,18 @@ const myTheme = EditorView.theme({
 
 const markdownComponents = {
   h1: ({ children }: { children: React.ReactNode; }) => (
-    <View style={{ marginBottom: 16 }}>
-      <Text fontSize="medium" fontWeight="extra-bold">{children as string}</Text>
-    </View>
-  ),
-  h2: ({ children }: { children: React.ReactNode; }) => (
     <View style={{ marginBottom: 24 }}>
       <Text fontSize="large" fontWeight="semi-bold" >{children as string}</Text>
     </View>
   ),
+  h2: ({ children }: { children: React.ReactNode; }) => (
+    <View style={{ marginBottom: 24 }}>
+      <Text fontSize="medium" fontWeight="bold">{children as string}</Text>
+    </View>
+  ),
   p: ({ children }: { children: React.ReactNode; }) => (
-    <View style={{ marginTop: 24 }}>
-      <Text fontSize="medium">{children as string}</Text>
+    <View style={{ marginTop: 15 }}>
+      <Text>{children as string}</Text>
     </View>
   ),
   strong: ({ children }: { children: React.ReactNode; }) => (
@@ -58,7 +58,7 @@ interface NotebookCellProps {
 
 const iterableCell = {
   markdown: `
-# Iterable Example
+## Iterable Example
 
 An simple iterator example
 `,
@@ -69,7 +69,7 @@ An simple iterator example
 
 const factorialCell = {
   markdown: `
-# Factorial Example
+## Factorial Example
 
 A basic factorial example
 `,
@@ -107,8 +107,16 @@ function NotebookCell({ markdown, source }: NotebookCellProps) {
   };
 
   const handleEditDoneClick = () => {
+    setInternalMarkdown(internalMarkdown => internalMarkdown.trim() + '\n');
+
     setIsEditing(false);
   };
+
+  useEffect(() => {
+    if (inputRef.current) {
+      inputRef.current.style.height = inputRef.current.value.split('\n').length * 20 + 'px';
+    }
+  }, [internalMarkdown]);
 
   useEffect(() => {
     (async () => {
@@ -119,21 +127,18 @@ function NotebookCell({ markdown, source }: NotebookCellProps) {
   }, [internalSource]);
 
   return (
-    <View padding="medium" fillColor="white">
+    <View padding="medium">
       <View>
-        {isEditing ? (
-          <View>
-            <textarea ref={inputRef} rows={5} value={internalMarkdown} onChange={(event: any) => setInternalMarkdown(event.target.value.trim() + '\n')} />
-            <Spacer size="small" />
-            <View horizontal>
-              <Button solid primary title="Save" onClick={handleEditDoneClick} />
-            </View>
+        <View style={{ display: isEditing ? '' : 'none' }}>
+          <textarea ref={inputRef} value={internalMarkdown} style={{ lineHeight: '20px', fontSize: 14, fontFamily: "-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Consolas', 'Droid Sans', 'Helvetica Neue', sans-serif" }} onChange={(event: any) => setInternalMarkdown(event.target.value)} />
+          <Spacer size="small" />
+          <View horizontal>
+            <Button solid primary title="Save" onClick={handleEditDoneClick} />
           </View>
-        ) : (
-          <View style={{ display: 'block' }} onClick={handleEditMarkdownClick}>
-            <ReactMarkdown components={markdownComponents} children={internalMarkdown} />
-          </View>
-        )}
+        </View>
+        <View style={{ display: isEditing ? 'none' : 'block' }} onClick={handleEditMarkdownClick}>
+          <ReactMarkdown components={markdownComponents} children={internalMarkdown} />
+        </View>
       </View>
       <Spacer size="large" />
       <View style={{ border: '1px solid #dee2e6', borderRadius: 4, overflow: 'hidden' }}>
@@ -151,7 +156,7 @@ function NotebookCell({ markdown, source }: NotebookCellProps) {
 
 function App() {
   return (
-    <View flex className="App">
+    <View flex fillColor="white" className="App">
       <NotebookCell markdown={iterableCell.markdown} source={iterableCell.source} />
       <NotebookCell markdown={factorialCell.markdown} source={factorialCell.source} />
     </View>
