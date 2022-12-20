@@ -52,7 +52,7 @@ const myTheme = EditorView.theme({
     padding: 0,
   },
   '&.cm-editor .cm-scroller': {
-    font: '14px source-code-pro, Menlo, Monaco, Consolas, monospace',
+    font: '14px/20px source-code-pro, Menlo, Monaco, Consolas, monospace',
   },
 });
 
@@ -144,8 +144,9 @@ function MarkdownCell({ markdown }: MarkdownCellProps) {
           <textarea
             ref={inputRef}
             value={internalMarkdown}
-            style={{ lineHeight: '20px', fontSize: 14, fontFamily: "-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Consolas', 'Droid Sans', 'Helvetica Neue', sans-serif" }}
-            onChange={(event: any) => setInternalMarkdown(event.target.value)} />
+            style={{ font: "14px/20px -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Consolas', 'Droid Sans', 'Helvetica Neue', sans-serif" }}
+            onChange={(event: any) => setInternalMarkdown(event.target.value)}
+          />
           <Spacer size="small" />
           <View horizontal>
             <Button solid primary title="Save" onClick={handleEditDoneClick} />
@@ -173,30 +174,50 @@ function CodeCell({ source }: CodeCellProps) {
 
   useEffect(() => {
     (async () => {
-      const value = await interpret(internalSource);
+      try {
+        const value = await interpret(internalSource);
 
-      setOutput(await value.inspect());
+        setOutput(await value.inspect());
+      } catch (error) {
+        setOutput((error as Error).message);
+      }
+
     })();
   }, [internalSource]);
 
   return (
     <View style={{ border: '1px solid #dee2e6', borderRadius: 4, overflow: 'hidden' }}>
       <View padding="medium" fillColor="gray-1">
-        <CodeMirror /*height="100%"*/ theme={myTheme} value={internalSource} /*style={{ height: '100%' }}*/ onChange={handleChange} />
+        <CodeMirror theme={myTheme} value={internalSource} onChange={handleChange} />
       </View>
-      {/* <Spacer size="small" /> */}
       <View flex padding="medium" fillColor="white">
-        <Text style={{ fontFamily: 'source-code-pro, Menlo, Monaco, Consolas, monospace', fontSize: 14, lineHeight: '20px' }}>{output}</Text>
+        <Text style={{ font: '14px/20px source-code-pro, Menlo, Monaco, Consolas, monospace' }}>{output}</Text>
       </View>
     </View>
   );
 }
 
+const getComponent = (type: string): React.ComponentType<any> => {
+  switch (type) {
+    case 'markdown': return MarkdownCell;
+    case 'code': return CodeCell;
+  }
+
+  throw new Error();
+};
+
 const initialCells = [
-  <MarkdownCell markdown={factorialCell.markdown} />,
-  <CodeCell source={factorialCell.source} />,
-  <MarkdownCell markdown={iterableCell.markdown} />,
-  <CodeCell source={iterableCell.source} />,
+  { type: 'markdown', markdown: factorialCell.markdown },
+  { type: 'code', source: factorialCell.source },
+  { type: 'markdown', markdown: iterableCell.markdown },
+  { type: 'code', source: iterableCell.source },
+  { type: 'markdown', markdown: `Another iterable example` },
+  {
+    type: 'code', source: `
+"abcaba" | split "" | reduce (count = {:}, c) => {
+  count | update c (n = 0) => n + 1
+}
+` },
 ];
 
 function App() {
@@ -208,15 +229,17 @@ function App() {
         <View fillColor="gray-1" style={{ width: 256, padding: 8 }}>
           <Text fontSize="large" fontWeight="light" style={{ padding: 8 }}>Kopi Notebook</Text>
           <Spacer size="small" />
-          {file.children.filter(item => item.type === 'heading').map(item => (
-            <Text /*fontSize="medium"*/ fontWeight="bold" style={{ padding: 8 }}>{(item as any).children[0].value}</Text>
+          {file.children.filter(item => item.type === 'heading').map((item, index) => (
+            <Text key={index} /*fontSize="medium"*/ fontWeight="bold" style={{ padding: 8 }}>{(item as any).children[0].value}</Text>
           ))}
         </View>
         <Stack flex padding="large" spacing="xlarge">
           <View>
             <Text fontSize="xlarge" fontWeight="light">Kopi Notebook</Text>
           </View>
-          {cells}
+          {cells.map((cell, index) => (
+            React.createElement(getComponent(cell.type), { ...cell, key: index })
+          ))}
         </Stack>
       </Stack>
     </View>
