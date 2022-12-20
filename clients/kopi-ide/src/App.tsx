@@ -1,12 +1,35 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { EditorView } from 'codemirror';
 import ReactMarkdown from 'react-markdown';
+import { unified } from 'unified';
+import remarkParse from 'remark-parse';
 import CodeMirror from '@uiw/react-codemirror';
+import { EditorView } from 'codemirror';
 
 import { View, Stack, Text, Divider, Spacer, Button, Input } from 'core';
 import { interpret } from 'kopi-language';
 
 import './App.css';
+
+const file = unified().use(remarkParse).parse(`
+## Iterable Example
+
+An simple iterator example
+
+    (1..5, "a".."z") | map (n, c) => (c, n * n) | filter (c, n) => 'even n
+
+## Factorial Example
+
+A basic factorial example
+
+    factorial (n) = match n (
+      0 => 1
+      n => n * factorial (n - 1)
+    )
+
+    factorial 5
+`);
+
+console.log(file);
 
 const myTheme = EditorView.theme({
   '&': {
@@ -54,11 +77,6 @@ const markdownComponents = {
   ),
 };
 
-interface NotebookCellProps {
-  markdown: string;
-  source: string;
-}
-
 const iterableCell = {
   markdown: `
 ## Iterable Example
@@ -86,17 +104,15 @@ factorial 5
 `
 };
 
-function NotebookCell({ markdown, source }: NotebookCellProps) {
+interface MarkdownCellProps {
+  markdown: string;
+}
+
+function MarkdownCell({ markdown }: MarkdownCellProps) {
   const [internalMarkdown, setInternalMarkdown] = useState(markdown.trim() + '\n');
-  const [internalSource, setInternalSource] = useState(source.trim());
   const [isEditing, setIsEditing] = useState(false);
-  const [output, setOutput] = useState<string>('');
 
   const inputRef = useRef<HTMLTextAreaElement>(null);
-
-  const handleChange = async (source: string, viewUpdate: any) => {
-    setInternalSource(source);
-  };
 
   const handleEditMarkdownClick = () => {
     setTimeout(() => {
@@ -121,19 +137,15 @@ function NotebookCell({ markdown, source }: NotebookCellProps) {
     }
   }, [internalMarkdown]);
 
-  useEffect(() => {
-    (async () => {
-      const value = await interpret(internalSource);
-
-      setOutput(await value.inspect());
-    })();
-  }, [internalSource]);
-
   return (
-    <View padding="medium">
+    <View>
       <View>
         <View style={{ display: isEditing ? '' : 'none' }}>
-          <textarea ref={inputRef} value={internalMarkdown} style={{ lineHeight: '20px', fontSize: 14, fontFamily: "-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Consolas', 'Droid Sans', 'Helvetica Neue', sans-serif" }} onChange={(event: any) => setInternalMarkdown(event.target.value)} />
+          <textarea
+            ref={inputRef}
+            value={internalMarkdown}
+            style={{ lineHeight: '20px', fontSize: 14, fontFamily: "-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Consolas', 'Droid Sans', 'Helvetica Neue', sans-serif" }}
+            onChange={(event: any) => setInternalMarkdown(event.target.value)} />
           <Spacer size="small" />
           <View horizontal>
             <Button solid primary title="Save" onClick={handleEditDoneClick} />
@@ -143,25 +155,70 @@ function NotebookCell({ markdown, source }: NotebookCellProps) {
           <ReactMarkdown components={markdownComponents} children={internalMarkdown} />
         </View>
       </View>
-      <Spacer size="large" />
-      <View style={{ border: '1px solid #dee2e6', borderRadius: 4, overflow: 'hidden' }}>
-        <View padding="medium" fillColor="gray-1">
-          <CodeMirror /*height="100%"*/ theme={myTheme} value={internalSource} /*style={{ height: '100%' }}*/ onChange={handleChange} />
-        </View>
-        {/* <Spacer size="small" /> */}
-        <View flex padding="medium" fillColor="white">
-          <Text style={{ fontFamily: 'source-code-pro, Menlo, Monaco, Consolas, monospace', fontSize: 14, lineHeight: '20px' }}>{output}</Text>
-        </View>
+    </View>
+  );
+}
+
+interface CodeCellProps {
+  source: string;
+}
+
+function CodeCell({ source }: CodeCellProps) {
+  const [internalSource, setInternalSource] = useState(source.trim());
+  const [output, setOutput] = useState<string>('');
+
+  const handleChange = async (source: string, viewUpdate: any) => {
+    setInternalSource(source);
+  };
+
+  useEffect(() => {
+    (async () => {
+      const value = await interpret(internalSource);
+
+      setOutput(await value.inspect());
+    })();
+  }, [internalSource]);
+
+  return (
+    <View style={{ border: '1px solid #dee2e6', borderRadius: 4, overflow: 'hidden' }}>
+      <View padding="medium" fillColor="gray-1">
+        <CodeMirror /*height="100%"*/ theme={myTheme} value={internalSource} /*style={{ height: '100%' }}*/ onChange={handleChange} />
+      </View>
+      {/* <Spacer size="small" /> */}
+      <View flex padding="medium" fillColor="white">
+        <Text style={{ fontFamily: 'source-code-pro, Menlo, Monaco, Consolas, monospace', fontSize: 14, lineHeight: '20px' }}>{output}</Text>
       </View>
     </View>
   );
 }
 
+const initialCells = [
+  <MarkdownCell markdown={factorialCell.markdown} />,
+  <CodeCell source={factorialCell.source} />,
+  <MarkdownCell markdown={iterableCell.markdown} />,
+  <CodeCell source={iterableCell.source} />,
+];
+
 function App() {
+  const [cells, setCells] = useState(initialCells);
+
   return (
-    <View flex fillColor="white" className="App">
-      <NotebookCell markdown={iterableCell.markdown} source={iterableCell.source} />
-      <NotebookCell markdown={factorialCell.markdown} source={factorialCell.source} />
+    <View className="App">
+      <Stack flex horizontal divider fillColor="white">
+        <View fillColor="gray-1" style={{ width: 256, padding: 8 }}>
+          <Text fontSize="large" fontWeight="light" style={{ padding: 8 }}>Kopi Notebook</Text>
+          <Spacer size="small" />
+          {file.children.filter(item => item.type === 'heading').map(item => (
+            <Text /*fontSize="medium"*/ fontWeight="bold" style={{ padding: 8 }}>{(item as any).children[0].value}</Text>
+          ))}
+        </View>
+        <Stack flex padding="large" spacing="xlarge">
+          <View>
+            <Text fontSize="xlarge" fontWeight="light">Kopi Notebook</Text>
+          </View>
+          {cells}
+        </Stack>
+      </Stack>
     </View>
   );
 }
