@@ -77,33 +77,6 @@ const markdownComponents = {
   ),
 };
 
-const iterableCell = {
-  markdown: `
-## Iterable Example
-
-An simple iterator example
-`,
-  source: `
-(1..5, "a".."z") | map (n, c) => (c, n * n) | filter (c, n) => 'even n
-`
-};
-
-const factorialCell = {
-  markdown: `
-## Factorial Example
-
-A basic factorial example
-`,
-  source: `
-factorial (n) = match n (
-  0 => 1
-  n => n * factorial (n - 1)
-)
-
-factorial 5
-`
-};
-
 interface MarkdownCellData {
   type: string;
   markdown: string;
@@ -218,44 +191,133 @@ const getComponent = (type: string): React.ComponentType<any> => {
 
 interface NotebookData {
   title: string;
-  cells: (MarkdownCellData | CodeCellData)[];
+  sections: { title: string, cells: (MarkdownCellData | CodeCellData)[]; }[],
 }
 
 interface NotebookProps {
   title: string;
-  cells: (MarkdownCellData | CodeCellData)[];
+  sections: { title: string, cells: (MarkdownCellData | CodeCellData)[]; }[],
 }
 
-function Notebook({ title, cells }: NotebookProps) {
+function Notebook({ title, sections }: NotebookProps) {
   return (
     <Stack flex padding="large" spacing="xlarge">
       <View>
         <Text fontSize="xlarge" fontWeight="light">{title}</Text>
       </View>
-      {cells.map((cell, index) => (
-        React.createElement(getComponent(cell.type), { ...cell, key: index })
+      {sections.map((section, index) => (
+        <React.Fragment key={index}>
+          <Text fontSize="medium" fontWeight="bold">{section.title}</Text>
+          <Stack spacing="medium">
+            {section.cells.map((cell, index) => (
+              React.createElement(getComponent(cell.type), { ...cell, key: Math.random() })
+            ))}
+          </Stack>
+        </React.Fragment>
       ))}
     </Stack>
   );
 }
 
-const initialCells: (MarkdownCellData | CodeCellData)[] = [
-  { type: 'markdown', markdown: factorialCell.markdown },
-  { type: 'code', source: factorialCell.source },
-  { type: 'markdown', markdown: iterableCell.markdown },
-  { type: 'code', source: iterableCell.source },
-  { type: 'markdown', markdown: `Another iterable example` },
+const initialNotebooks: NotebookData[] = [
   {
-    type: 'code', source: `
+    title: 'Basic Kopi Examples', sections: [
+      {
+        title: 'Factorial Example', cells: [
+          {
+            type: 'markdown', markdown: `
+A basic factorial example
+` },
+          {
+            type: 'code', source: `
+factorial (n) = match n (
+  0 => 1
+  n => n * factorial (n - 1)
+)
+
+factorial 5          
+` },
+        ]
+      },
+      {
+        title: 'Iterator Example', cells: [
+          {
+            type: 'markdown', markdown: `
+A simple iterator example
+` },
+          {
+            type: 'code', source: `
+(1..5, "a".."z") | map (n, c) => (c, n * n) | filter (c, n) => 'even n
+` },
+          {
+            type: 'markdown', markdown: `
+Another iterable example
+` },
+          {
+            type: 'code', source: `
 "abcaba" | split "" | reduce (count = {:}, c) => {
   count | update c (n = 0) => n + 1
 }
 ` },
-];
 
-const initialNotebooks: NotebookData[] = [
-  { title: 'Basic Kopi Examples', cells: initialCells },
-  { title: '', cells: [] },
+        ]
+      },
+    ]
+  },
+  {
+    title: 'Interpreter Example', sections: [{
+      title: 'Core', cells: [
+        { type: 'markdown', markdown: `here` },
+        {
+          type: 'code', source: `
+incrementIndex = index => index + 1
+setIndex = index => () => index
+
+get (value) = match (value 0) (
+  "'" => value 1..('size value - 1)
+  _   => value
+)
+
+evaluateAst (statement, indexes) = match statement (
+  (lineNo, "PRINT", value) => {
+    print (get value)
+    incrementIndex
+  }
+  (lineNo, "GOTO", value) => {
+    setIndex (indexes | get value)
+  }
+)
+
+interpret (source) = {
+  program = source | trim | split (String.newlineRegExp) | map (line) => {
+    let ([lineNo, command, value] = line | trim | splitOnLimit " " 2 | toArray) =>
+      (lineNo: lineNo, command, value)
+  } | toArray
+
+  indexes = (0..99, program) | reduce (dict = {:}, index, statement) => {
+    dict | set (statement.lineNo) index
+  }
+
+  let (index = 0) => {
+    match (index == 'size program) (
+      true => "Done"
+      _    => loop (evaluateAst (program index, indexes) index)
+    )
+  }
+}
+
+source = "
+  10 PRINT 'Hello, world.'
+  20 GOTO 40
+  30 PRINT 'How are you?'
+  40 PRINT 'Goodbye.'
+"
+
+interpret source
+`}
+      ]
+    }]
+  },
 ];
 
 function App() {
@@ -266,14 +328,18 @@ function App() {
     <View className="App">
       <Stack flex horizontal divider fillColor="white">
         <View fillColor="gray-1" style={{ width: 300, padding: 8 }}>
-          {notebooks.map((notebook, index) => (
-            <React.Fragment key={index}>
-              <Text fontSize="large" fontWeight="light" style={{ padding: 8 }}>{notebook.title}</Text>
-              {/* {notebook.sections.map(cell => (
-                <Text>xxx</Text>
-              ))} */}
-            </React.Fragment>
-          ))}
+          <Stack spacing="small">
+            {notebooks.map((notebook, index) => (
+              <React.Fragment key={index}>
+                <View style={{ cursor: 'pointer' }} onClick={() => setCurrentNotebookIndex(index)}>
+                  <Text fontSize="large" fontWeight="light" style={{ padding: 8 }}>{notebook.title}</Text>
+                </View>
+                {notebook.sections.map(section => (
+                  <Text fontWeight="bold" style={{ padding: '8px 16px' }}>{section.title}</Text>
+                ))}
+              </React.Fragment>
+            ))}
+          </Stack>
         </View>
         <Notebook {...notebooks[currentNotebookIndex]} />
       </Stack>
