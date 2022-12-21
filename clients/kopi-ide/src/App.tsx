@@ -104,6 +104,16 @@ factorial 5
 `
 };
 
+interface MarkdownCellData {
+  type: string;
+  markdown: string;
+}
+
+interface CodeCellData {
+  type: string;
+  source: string;
+}
+
 interface MarkdownCellProps {
   markdown: string;
 }
@@ -206,7 +216,30 @@ const getComponent = (type: string): React.ComponentType<any> => {
   throw new Error();
 };
 
-const initialCells = [
+interface NotebookData {
+  title: string;
+  cells: (MarkdownCellData | CodeCellData)[];
+}
+
+interface NotebookProps {
+  title: string;
+  cells: (MarkdownCellData | CodeCellData)[];
+}
+
+function Notebook({ title, cells }: NotebookProps) {
+  return (
+    <Stack flex padding="large" spacing="xlarge">
+      <View>
+        <Text fontSize="xlarge" fontWeight="light">{title}</Text>
+      </View>
+      {cells.map((cell, index) => (
+        React.createElement(getComponent(cell.type), { ...cell, key: index })
+      ))}
+    </Stack>
+  );
+}
+
+const initialCells: (MarkdownCellData | CodeCellData)[] = [
   { type: 'markdown', markdown: factorialCell.markdown },
   { type: 'code', source: factorialCell.source },
   { type: 'markdown', markdown: iterableCell.markdown },
@@ -220,27 +253,29 @@ const initialCells = [
 ` },
 ];
 
+const initialNotebooks: NotebookData[] = [
+  { title: 'Basic Kopi Examples', cells: initialCells },
+  { title: '', cells: [] },
+];
+
 function App() {
-  const [cells, setCells] = useState(initialCells);
+  const [notebooks, setNotebooks] = useState<NotebookData[]>(initialNotebooks);
+  const [currentNotebookIndex, setCurrentNotebookIndex] = useState<number>(0);
 
   return (
     <View className="App">
       <Stack flex horizontal divider fillColor="white">
-        <View fillColor="gray-1" style={{ width: 256, padding: 8 }}>
-          <Text fontSize="large" fontWeight="light" style={{ padding: 8 }}>Kopi Notebook</Text>
-          <Spacer size="small" />
-          {file.children.filter(item => item.type === 'heading').map((item, index) => (
-            <Text key={index} /*fontSize="medium"*/ fontWeight="bold" style={{ padding: 8 }}>{(item as any).children[0].value}</Text>
+        <View fillColor="gray-1" style={{ width: 300, padding: 8 }}>
+          {notebooks.map((notebook, index) => (
+            <React.Fragment key={index}>
+              <Text fontSize="large" fontWeight="light" style={{ padding: 8 }}>{notebook.title}</Text>
+              {/* {notebook.sections.map(cell => (
+                <Text>xxx</Text>
+              ))} */}
+            </React.Fragment>
           ))}
         </View>
-        <Stack flex padding="large" spacing="xlarge">
-          <View>
-            <Text fontSize="xlarge" fontWeight="light">Kopi Notebook</Text>
-          </View>
-          {cells.map((cell, index) => (
-            React.createElement(getComponent(cell.type), { ...cell, key: index })
-          ))}
-        </Stack>
+        <Notebook {...notebooks[currentNotebookIndex]} />
       </Stack>
     </View>
   );
