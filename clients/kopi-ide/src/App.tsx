@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import ReactMarkdown from 'react-markdown';
 import { unified } from 'unified';
 import remarkParse from 'remark-parse';
@@ -6,7 +6,7 @@ import CodeMirror from '@uiw/react-codemirror';
 import { EditorView } from 'codemirror';
 
 import { View, Stack, Text, Divider, Spacer, Button, Input } from 'core';
-import { interpret } from 'kopi-language';
+import { interpret, KopiValue, KopiTuple } from 'kopi-language';
 
 import './App.css';
 
@@ -149,22 +149,28 @@ interface CodeCellProps {
 
 function CodeCell({ source }: CodeCellProps) {
   const [internalSource, setInternalSource] = useState(source.trim());
-  const [output, setOutput] = useState<string>('');
+  const [output, setOutput] = useState<string[]>([]);
 
   const handleChange = async (source: string, viewUpdate: any) => {
     setInternalSource(source);
   };
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     (async () => {
+      setOutput([]);
+
       try {
-        const value = await interpret(internalSource);
+        const value = await (await interpret(internalSource, async (arg: KopiValue) => {
+          const foo = await arg.toString();
+          setOutput(output => [...output, foo]);
 
-        setOutput(await value.inspect());
+          return Promise.resolve(KopiTuple.empty);
+        })).inspect();
+
+        setOutput(output => [...output, value]);
       } catch (error) {
-        setOutput((error as Error).message);
+        setOutput(output => [...output, (error as Error).message]);
       }
-
     })();
   }, [internalSource]);
 
@@ -174,7 +180,13 @@ function CodeCell({ source }: CodeCellProps) {
         <CodeMirror theme={myTheme} value={internalSource} onChange={handleChange} />
       </View>
       <View flex padding="medium" fillColor="white">
-        <Text style={{ font: '14px/20px source-code-pro, Menlo, Monaco, Consolas, monospace' }}>{output}</Text>
+        {output.map((line, index) => (
+          <View key={index} style={{ padding: '4px 0' }}>
+            <Text style={{ font: '14px/20px source-code-pro, Menlo, Monaco, Consolas, monospace' }}>
+              {line}
+            </Text>
+          </View>
+        ))}
       </View>
     </View>
   );
@@ -266,8 +278,11 @@ Another iterable example
   },
   {
     title: 'Interpreter Example', sections: [{
-      title: 'Core', cells: [
-        { type: 'markdown', markdown: `here` },
+      title: 'Core Functionality', cells: [
+        {
+          type: 'markdown', markdown: `
+This implements a very simple BASIC interpreter.
+` },
         {
           type: 'code', source: `
 incrementIndex = index => index + 1
@@ -334,8 +349,8 @@ function App() {
                 <View style={{ cursor: 'pointer' }} onClick={() => setCurrentNotebookIndex(index)}>
                   <Text fontSize="large" fontWeight="light" style={{ padding: 8 }}>{notebook.title}</Text>
                 </View>
-                {notebook.sections.map(section => (
-                  <Text fontWeight="bold" style={{ padding: '8px 16px' }}>{section.title}</Text>
+                {notebook.sections.map((section, index) => (
+                  <Text key={index} fontWeight="bold" style={{ padding: '8px 16px' }}>{section.title}</Text>
                 ))}
               </React.Fragment>
             ))}
