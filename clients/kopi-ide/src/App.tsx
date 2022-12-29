@@ -381,6 +381,23 @@ factorial 5<br /></code><br />`;
 
     const selection = window.getSelection();
 
+    if (event.key === '#' && selection?.isCollapsed) {
+      event.preventDefault();
+
+      if (selection) {
+        const range = selection?.getRangeAt(0);
+
+        const node = document.createElement('h3');
+        node.appendChild(document.createElement('br'));
+
+        range.insertNode(node);
+        range.setStart(node, 0);
+        range.setEnd(node, 0);
+      }
+
+      return;
+    }
+
     if (event.key === '`' && selection?.isCollapsed) {
       event.preventDefault();
 
