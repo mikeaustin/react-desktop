@@ -29,7 +29,7 @@ A basic factorial example
     factorial 5
 `);
 
-console.log(file);
+// console.log(file);
 
 const myTheme = EditorView.theme({
   '&': {
@@ -335,12 +335,109 @@ interpret source
   },
 ];
 
+function Editor() {
+  const handleChange = async (mutations: MutationRecord[]) => {
+    console.log(mutations);
+
+    for (const mutation of mutations) {
+      console.log(mutation.target);
+
+      if (mutation.target.parentNode?.nodeName === 'CODE' && mutation.target.parentNode.textContent !== null) {
+        console.log('>>>', mutation.target.parentNode.textContent);
+        const value = await interpret(mutation.target.parentNode.textContent);
+
+        console.log(await value.toString());
+      }
+    }
+  };
+
+  const rootElementRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const mutationObserver = new MutationObserver(handleChange);
+
+    if (rootElementRef.current) {
+      mutationObserver.observe(rootElementRef.current, {
+        // childList: true,
+        subtree: true,
+        characterData: true,
+      });
+
+      rootElementRef.current.innerHTML = `<h3>Factorial Example<br /></h3>A basic factorial example<br /><code>factorial (n) = match n (
+  0 => 1
+  n => n * factorial (n - 1)
+)
+
+factorial 5<br /></code><br />`;
+    }
+
+    return () => {
+      mutationObserver.disconnect();
+    };
+  }, []);
+
+  const handleKeyDown = (event: React.KeyboardEvent) => {
+    console.log(event.key);
+
+    const selection = window.getSelection();
+
+    if (event.key === '`' && selection?.isCollapsed) {
+      event.preventDefault();
+
+      if (selection) {
+        const range = selection?.getRangeAt(0);
+
+        const node = document.createElement('code');
+        node.appendChild(document.createElement('br'));
+
+        range.insertNode(node);
+        range.setStart(node, 0);
+        range.setEnd(node, 0);
+      }
+
+      return;
+    }
+
+    if (event.key.length === 1 || event.key === 'Enter') {
+      event.preventDefault();
+
+      if (selection && selection.focusNode) {
+        const range = selection?.getRangeAt(0);
+
+        // console.log(selection);
+
+        range.deleteContents();
+        range.insertNode(event.key === 'Enter' ? document.createElement('br') : document.createTextNode(event.key));
+        // range.insertNode(event.key === 'Enter' ? document.createTextNode('\n') : document.createTextNode(event.key));
+
+        const newRange = range.cloneRange();
+
+        newRange.collapse(true);
+        newRange.setStart(selection.focusNode, selection.focusOffset);
+
+        selection?.removeRange(range);
+        selection?.addRange(newRange);
+      }
+
+      // console.log(event, range);
+    }
+
+    selection?.focusNode?.normalize();
+    selection?.focusNode?.parentNode?.normalize();
+  };
+
+  return (
+    <View ref={rootElementRef} contentEditable padding="large" className="editor" onKeyDown={handleKeyDown} />
+  );
+}
+
 function App() {
   const [notebooks, setNotebooks] = useState<NotebookData[]>(initialNotebooks);
   const [currentNotebookIndex, setCurrentNotebookIndex] = useState<number>(0);
 
   return (
     <View className="App">
+      <Editor />
       <Stack flex horizontal divider fillColor="white">
         <View fillColor="gray-1" style={{ width: 300, padding: 8 }}>
           <Stack spacing="small">
