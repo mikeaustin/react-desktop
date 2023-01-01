@@ -52,16 +52,23 @@
   border-radius: 4px;
 }
 
-.editor pre:not(:first-child) {
+.editor code:not(:first-child) {
   margin-top: 24px;
 }
 
-.editor pre {
-  /* display: block; */
+.editor code:not(.inline) {
+  display: block;
   margin-bottom: 24px;
   background: #f1f3f5;
   border: 1px solid #dee2e6;
   border-radius: 4px;
   padding: 16px;
   white-space: pre;
+}
+
+.editor hr {
+  margin: 24px 0;
+  height: 1px;
+  background: #dee2e6;
+  border: none;
 }
