@@ -357,11 +357,10 @@ function Editor() {
     const mutationObserver = new MutationObserver(handleChange);
 
     if (rootElementRef.current) {
-      mutationObserver.observe(rootElementRef.current, {
-        // childList: true,
-        subtree: true,
-        characterData: true,
-      });
+      // mutationObserver.observe(rootElementRef.current, {
+      //   subtree: true,
+      //   characterData: true,
+      // });
 
       rootElementRef.current.innerHTML = `<h3>Factorial Example<br /></h3>A basic factorial example<br /><code>factorial (n) = match n (
   0 => 1
@@ -369,6 +368,13 @@ function Editor() {
 )
 
 factorial 5<br /></code><br />`;
+
+      rootElementRef.current.innerHTML = `<h3>Factorial Example<br /></h3><p>A basic factorial example</p><code>factorial (n) = match n (
+  0 => 1
+  n => n * factorial (n - 1)
+)
+
+factorial 5<br /></code><p><br /></p>`;
     }
 
     return () => {
@@ -380,6 +386,23 @@ factorial 5<br /></code><br />`;
     console.log(event.key);
 
     const selection = window.getSelection();
+
+    if (event.key === '=' && selection?.isCollapsed) {
+      event.preventDefault();
+
+      if (selection) {
+        const range = selection?.getRangeAt(0);
+
+        const node = document.createElement('hr');
+        // node.appendChild(document.createElement('br'));
+
+        range.insertNode(node);
+        range.setStartAfter(node);
+        range.setEndAfter(node);
+      }
+
+      return;
+    }
 
     if (event.key === '#' && selection?.isCollapsed) {
       event.preventDefault();
@@ -401,39 +424,84 @@ factorial 5<br /></code><br />`;
     if (event.key === '`' && selection?.isCollapsed) {
       event.preventDefault();
 
-      if (selection) {
+      if (selection && selection.focusNode) {
         const range = selection?.getRangeAt(0);
 
-        const node = document.createElement('code');
-        node.appendChild(document.createElement('br'));
+        const code = document.createElement('code');
+        // code.appendChild(document.createElement('br'));
+        const p = document.createElement('p');
 
-        range.insertNode(node);
-        range.setStart(node, 0);
-        range.setEnd(node, 0);
+        range.setStartAfter(selection.focusNode);
+        range.setEndAfter(selection.focusNode);
+
+        range.insertNode(code);
+
+        const newRange = new Range();
+
+        newRange.setStart(code, 0);
+        newRange.setEnd(code, 0);
+
+        selection.removeAllRanges();
+        selection.addRange(newRange);
       }
 
       return;
     }
 
-    if (event.key.length === 1 || event.key === 'Enter') {
+    if ((selection?.focusNode?.parentNode?.nodeName === 'p' || selection?.focusNode?.parentNode?.nodeName === '#text') && (event.key.length === 1 || event.key === 'Enter')) {
+      console.log('here', selection.focusNode.nodeName);
       event.preventDefault();
 
       if (selection && selection.focusNode) {
         const range = selection?.getRangeAt(0);
 
-        // console.log(selection);
-
         range.deleteContents();
-        range.insertNode(event.key === 'Enter' ? document.createElement('br') : document.createTextNode(event.key));
-        // range.insertNode(event.key === 'Enter' ? document.createTextNode('\n') : document.createTextNode(event.key));
 
-        const newRange = range.cloneRange();
+        if (event.key === 'Enter') {
+          // console.log(selection);
 
-        newRange.collapse(true);
-        newRange.setStart(selection.focusNode, selection.focusOffset);
+          const p = document.createElement('p');
+          // p.appendChild(document.createElement('br'));
 
-        selection?.removeRange(range);
-        selection?.addRange(newRange);
+          const newRange = new Range();
+
+          if (selection.focusNode.parentNode) {
+            const node = selection.focusNode.nodeName === '#text' ? selection.focusNode.parentNode : selection.focusNode;
+
+            newRange.setStartAfter(node);
+            newRange.setEndAfter(node);
+
+            newRange.insertNode(p);
+
+            const newNewRange = new Range();
+
+            newNewRange.collapse();
+            newNewRange.setStart(p, 0);
+
+            selection.removeAllRanges();
+            selection.addRange(newNewRange);
+
+            console.log('after', selection.focusNode);
+          }
+        } else {
+          range.insertNode(document.createTextNode(event.key));
+          selection.focusNode.parentNode?.normalize();
+
+          const newRange = new Range();
+
+          const selection2 = window.getSelection();
+
+          if (selection2) {
+            newRange.setStart(selection.focusNode, selection2.focusOffset);
+            newRange.setEnd(selection.focusNode, selection2.focusOffset);
+
+            selection2.removeAllRanges();
+            selection2.addRange(newRange);
+
+          }
+
+          // console.log(selection.getRangeAt(0));
+        }
       }
 
       // console.log(event, range);
