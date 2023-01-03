@@ -15,6 +15,46 @@ function App() {
     console.log(selection?.focusNode?.parentNode?.nodeName);
 
     if ((selection && selection.focusNode)) {
+      if (event.key === '-' && selection.focusNode.nodeName === 'P' && selection.focusOffset === 0) {
+        event.preventDefault();
+
+        let range = selection?.getRangeAt(0);
+
+        range.selectNode(range.commonAncestorContainer);
+        range.deleteContents();
+        const ul = document.createElement('ul');
+        const li = document.createElement('li');
+        ul.appendChild(li);
+        range.insertNode(ul);
+
+        range = new Range();
+
+        range.collapse();
+        range.setStart(ul, 0);
+
+        selection.removeAllRanges();
+        selection.addRange(range);
+
+        return;
+      }
+
+      if (event.key === '=' && selection.focusNode.nodeName === 'P' && selection.focusOffset === 0) {
+        event.preventDefault();
+
+        let range = selection?.getRangeAt(0);
+
+        range.selectNode(range.commonAncestorContainer);
+        range.deleteContents();
+        const node = document.createElement('hr');
+        range.insertNode(node);
+
+        if (node.nextSibling) {
+          range.setStart(node.nextSibling, 0);
+        }
+
+        return;
+      }
+
       if (event.key === 'Enter') {
         if (selection.focusNode?.nodeName === 'CODE' || selection.focusNode?.parentNode?.nodeName === 'CODE') {
           event.preventDefault();
@@ -38,49 +78,45 @@ function App() {
         return;
       }
     }
-
-    // if (selection && selection.focusNode && event.key.length === 1) {
-    //   event.preventDefault();
-
-    //   let range = selection?.getRangeAt(0);
-
-    //   range.deleteContents();
-    //   const node = document.createTextNode(event.key);
-    //   range.insertNode(node);
-    //   node.parentNode?.normalize();
-
-    //   range = document.createRange();
-
-    //   range.collapse();
-    //   range.setStart(selection.focusNode, selection.focusOffset);
-
-    //   selection.removeAllRanges();
-    //   selection.addRange(range);
-    // }
   };
 
   useEffect(() => {
     if (rootElementRef.current) {
       rootElementRef.current.innerHTML =
-        '<h3>Heading</h3>' +
+        '<h3>Heading 1</h3>' +
         '<p>Lorem ipsum dolor sit amet, <code class="inline">consectetur</code> adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>' +
         '<p>Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>' +
         '<code>factorial (n) = match n (\n  0 => 1\n  n => n * factorial (n - 1)\n)<br /></code>' +
-        '<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit<br /></p>' +
+        '<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit</p>' +
         '<ul>' +
         '<li>Lorem ipsum dolor sit amet, consectetur adipiscing elit</li>' +
         '<li>Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua</li>' +
         '</ul>' +
         '<hr />' +
+        '<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit</p>' +
+        '<h3>Heading 2</h3>' +
         '<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit<br /></p>' +
-        '<h3>Heading</h3>' +
-        '<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit<br /></p>';
+        '<p><br /></p>';
     }
   }, []);
 
   return (
-    <View className="App">
-      <div autoCorrect="false" spellCheck="false" ref={rootElementRef} contentEditable className="editor" onKeyDown={handleKeyDown} />
+    <View horizontal className="App">
+      <View padding="medium" fillColor="gray-1" style={{ minWidth: 256 }}>
+        <Text fontSize="medium" fontWeight="light">Basic Kopi Examples</Text>
+        <Spacer size="medium" />
+        <Text fontWeight="bold" style={{ marginLeft: 16 }}>Heading 1</Text>
+        <Spacer size="medium" />
+        <Text fontWeight="bold" style={{ marginLeft: 16 }}>Heading 2</Text>
+        <Spacer size="medium" />
+        <Text fontWeight="bold" style={{ marginLeft: 16 }}>Heading 3</Text>
+      </View>
+      <Divider />
+      <View flex padding="large" style={{ padding: 32 }}>
+        <Text fontSize="large" fontWeight="light">Basic Kopi Examples</Text>
+        <Spacer size="xlarge" />
+        <div autoCorrect="false" spellCheck="false" ref={rootElementRef} contentEditable className="editor" onKeyDown={handleKeyDown} />
+      </View>
     </View>
   );
 }
