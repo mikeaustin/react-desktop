@@ -147,9 +147,9 @@ function App() {
         '</ul>' +
         '<hr />' +
         '<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit</p>' +
-        '<h3>Heading 2</h3>' +
+        '<h3>Iterables</h3>' +
         '<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit<br /></p>' +
-        `<code>1..5 | map '(toFixed 2)<br /></code>` +
+        `<code>(1..3, "a".."z") | map (n, c) => (c, n * n)<br /></code>` +
         '<p><br /></p>';
     }
 
