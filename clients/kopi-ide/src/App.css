@@ -93,6 +93,10 @@
   border-radius: 4px;
 }
 
+.editor li {
+  margin: 8px 0;
+}
+
 /* .editor p:has(br) {
   margin: -12px 0 !important;
 } */

@@ -13,9 +13,17 @@ function App() {
     console.log(mutations);
 
     for (const mutation of mutations) {
-      if (mutation.target.parentNode?.nodeName === 'CODE') {
-        console.log('here', mutation.target.textContent);
+      if (mutation.addedNodes.length > 0) {
+        for (const node of mutation.addedNodes) {
+          if (node.nodeName === 'CODE') {
+            if (node?.firstChild?.textContent && node?.lastChild) {
+              const value = await interpret(node.firstChild.textContent);
 
+              node.lastChild.textContent = await value.inspect();
+            }
+          }
+        }
+      } else if (mutation.target.parentNode?.nodeName === 'CODE') {
         if (mutation.target.textContent && mutation.target.parentNode.lastChild) {
           try {
             const value = await interpret(mutation.target.textContent);
@@ -120,6 +128,7 @@ function App() {
 
     if (rootElementRef.current) {
       mutationObserver.observe(rootElementRef.current, {
+        childList: true,
         subtree: true,
         characterData: true,
       });
@@ -130,7 +139,7 @@ function App() {
         '<h3>Factorial</h3>' +
         '<p>Lorem ipsum dolor sit amet, <code class="inline">consectetur</code> adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>' +
         '<p>Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>' +
-        '<code>factorial (n) = match n (\n  0 => 1\n  n => n * factorial (n - 1)\n)\n\nfactorial 5<br /><div contenteditable="false">result</div><pre contenteditable="false">120</pre></code>' +
+        '<code>factorial (n) = match n (\n  0 => 1\n  n => n * factorial (n - 1)\n)\n\nfactorial 5<br /><div contenteditable="false">result</div><pre contenteditable="false"></pre></code>' +
         '<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit</p>' +
         '<ul>' +
         '<li>Lorem ipsum dolor sit amet, consectetur adipiscing elit</li>' +
@@ -140,7 +149,7 @@ function App() {
         '<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit</p>' +
         '<h3>Heading 2</h3>' +
         '<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit<br /></p>' +
-        `<code>1..10 | map '(toFixed 2)<br /><pre></pre></code>` +
+        `<code>1..5 | map '(toFixed 2)<br /><pre contenteditable="false"></pre></code>` +
         '<p><br /></p>';
     }
 
