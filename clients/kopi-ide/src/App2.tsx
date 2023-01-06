@@ -24,13 +24,13 @@ function App() {
           }
         }
       } else if (mutation.target.parentNode?.nodeName === 'CODE') {
-        if (mutation.target.textContent && mutation.target.parentNode.lastChild) {
+        if (mutation.target.textContent) {
           try {
             const value = await (await interpret(mutation.target.textContent)).inspect();
 
             (mutation.target.parentNode as Element).setAttribute('value', value);
           } catch (error) {
-            mutation.target.parentNode.lastChild.textContent = (error as Error).message;
+            (mutation.target.parentNode as Element).setAttribute('value', (error as Error).message);
           }
         }
       }
@@ -81,6 +81,28 @@ function App() {
         return;
       }
 
+      if (event.key === '`' && selection.focusNode.nodeName === 'P' && selection.focusOffset === 0) {
+        event.preventDefault();
+
+        let range = selection?.getRangeAt(0);
+
+        range.selectNode(range.commonAncestorContainer);
+        range.deleteContents();
+        const code = document.createElement('code');
+        const br = document.createElement('br');
+        code.appendChild(br);
+        range.insertNode(code);
+
+        range = new Range();
+
+        range.setStart(code, 0);
+
+        selection.removeAllRanges();
+        selection.addRange(range);
+
+        return;
+      }
+
       if (event.key === '=' && selection.focusNode.nodeName === 'P' && selection.focusOffset === 0) {
         event.preventDefault();
 
@@ -88,11 +110,11 @@ function App() {
 
         range.selectNode(range.commonAncestorContainer);
         range.deleteContents();
-        const node = document.createElement('hr');
-        range.insertNode(node);
+        const hr = document.createElement('hr');
+        range.insertNode(hr);
 
-        if (node.nextSibling) {
-          range.setStart(node.nextSibling, 0);
+        if (hr.nextSibling) {
+          range.setStart(hr.nextSibling, 0);
         }
 
         return;
@@ -105,9 +127,9 @@ function App() {
           let range = selection?.getRangeAt(0);
 
           range.deleteContents();
-          const node = document.createTextNode('\n');
-          range.insertNode(node);
-          node.parentNode?.normalize();
+          const newline = document.createTextNode('\n');
+          range.insertNode(newline);
+          newline.parentNode?.normalize();
 
           range = document.createRange();
 
@@ -150,6 +172,10 @@ function App() {
         '<h3>Iterables</h3>' +
         '<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit<br /></p>' +
         `<code>(1..3, "a".."z") | map (n, c) => (c, n * n)<br /></code>` +
+        '<table>' +
+        '<tr><td>td</td><td>td</td></tr>' +
+        '<tr><td>td</td><td>td</td></tr>' +
+        '</table>' +
         '<p><br /></p>';
     }
 
@@ -160,20 +186,27 @@ function App() {
 
   return (
     <View horizontal className="App">
-      <View padding="medium" fillColor="gray-1" style={{ minWidth: 256 }}>
-        <Text fontSize="medium" fontWeight="light">Basic Kopi Examples</Text>
+      <View padding="small" fillColor="gray-1" style={{ minWidth: 256 }}>
+        <Spacer size="small" />
+        <Text fontSize="medium" fontWeight="semi-bold" style={{ marginLeft: 8 }}>Basic Kopi Examples</Text>
         <Spacer size="medium" />
-        <Text fontWeight="bold" style={{ marginLeft: 16 }}>Heading 1</Text>
-        <Spacer size="medium" />
-        <Text fontWeight="bold" style={{ marginLeft: 16 }}>Heading 2</Text>
-        <Spacer size="medium" />
-        <Text fontWeight="bold" style={{ marginLeft: 16 }}>Heading 3</Text>
+        <View padding="small" fillColor="gray-3" style={{ padding: '8px 16px', borderRadius: 4 }}>
+          <Text fontWeight="semi-bold">Heading 1</Text>
+        </View>
+        <View padding="small" style={{ padding: '8px 16px', borderRadius: 4 }}>
+          <Text fontWeight="semi-bold">Heading 2</Text>
+        </View>
+        <View padding="small" style={{ padding: '8px 16px', borderRadius: 4 }}>
+          <Text fontWeight="semi-bold">Heading 3</Text>
+        </View>
       </View>
       <Divider />
-      <View flex padding="large" style={{ padding: 32, overflow: 'auto' }}>
-        <Text fontSize="large" fontWeight="light">Basic Kopi Examples</Text>
-        <Spacer size="xlarge" />
-        <div autoCorrect="false" spellCheck="false" ref={rootElementRef} contentEditable className="editor" onKeyDown={handleKeyDown} />
+      <View flex padding="large" fillColor="white" style={{ padding: 32, overflow: 'auto' }}>
+        <View style={{ maxWidth: 768 }}>
+          <Text fontSize="xlarge" fontWeight="light">Basic Kopi Examples</Text>
+          <Spacer size="xlarge" />
+          <div autoCorrect="false" spellCheck="false" ref={rootElementRef} contentEditable className="editor" onKeyDown={handleKeyDown} />
+        </View>
       </View>
     </View>
   );

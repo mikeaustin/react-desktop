@@ -77,7 +77,7 @@
   display: block;
   content: attr(value);
   background: white;
-  margin: 8px -16px -16px -16px;
+  margin: 16px -16px -16px -16px;
   padding: 16px;
   border-radius: 0 0 4px 4px;
   white-space: pre-wrap;
@@ -110,3 +110,22 @@
 /* .editor p:has(br) {
   margin: -12px 0 !important;
 } */
+
+
+.editor table {
+  border: 1px solid #dee2e6;
+  border-radius: 4px;
+  border-spacing: 0;
+}
+
+.editor tr:not(:first-child) td {
+  border-top: 1px solid #dee2e6;
+}
+
+.editor tr td:not(:first-child) {
+  border-left: 1px solid #dee2e6;
+}
+
+.editor td {
+  padding: 16px;
+}
