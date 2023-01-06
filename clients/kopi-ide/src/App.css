@@ -83,6 +83,19 @@
   white-space: pre-wrap;
 }
 
+.editor code:not(.inline)::before {
+  display: block;
+  position: absolute;
+  top: 0;
+  right: 0;
+  content: attr(id);
+  background: #dee2e6;
+  /* margin: 16px -16px -16px -16px; */
+  padding: 4px 8px;
+  /* border-radius: 0 0 4px 4px; */
+  /* white-space: pre-wrap; */
+}
+
 
 .editor hr {
   margin: 24px 0;

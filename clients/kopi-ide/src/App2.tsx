@@ -6,7 +6,7 @@ import { interpret, KopiValue, KopiTuple } from 'kopi-language';
 import './App.css';
 
 
-function App() {
+function Editor({ html }: { html: string; }) {
   const rootElementRef = useRef<HTMLDivElement>(null);
 
   const handleChange = async (mutations: MutationRecord[]) => {
@@ -17,7 +17,11 @@ function App() {
         for (const node of mutation.addedNodes) {
           if (node.nodeName === 'CODE') {
             if (node?.firstChild?.textContent && node?.lastChild) {
-              const value = await (await interpret(node.firstChild.textContent)).inspect();
+              const value = await (await interpret(node.firstChild.textContent, async (arg: KopiValue) => {
+                console.log(await arg.toString());
+
+                return Promise.resolve(KopiTuple.empty);
+              })).inspect();
 
               (node as Element).setAttribute('value', value);
             }
@@ -26,7 +30,11 @@ function App() {
       } else if (mutation.target.parentNode?.nodeName === 'CODE') {
         if (mutation.target.textContent) {
           try {
-            const value = await (await interpret(mutation.target.textContent)).inspect();
+            const value = await (await interpret(mutation.target.textContent, async (arg: KopiValue) => {
+              console.log(await arg.toString());
+
+              return Promise.resolve(KopiTuple.empty);
+            })).inspect();
 
             (mutation.target.parentNode as Element).setAttribute('value', value);
           } catch (error) {
@@ -36,21 +44,6 @@ function App() {
       }
     }
   };
-
-  useLayoutEffect(() => {
-    const mutationObserver = new MutationObserver(handleChange);
-
-    if (rootElementRef.current) {
-      mutationObserver.observe(rootElementRef.current, {
-        subtree: true,
-        characterData: true,
-      });
-    }
-
-    return () => {
-      mutationObserver.disconnect();
-    };
-  }, []);
 
   const handleKeyDown = (event: React.KeyboardEvent) => {
     const selection = window.getSelection();
@@ -157,33 +150,95 @@ function App() {
     }
 
     if (rootElementRef.current) {
-      rootElementRef.current.innerHTML =
-        '<h3>Factorial</h3>' +
-        '<p>Lorem ipsum dolor sit amet, <code class="inline">consectetur</code> adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>' +
-        '<p>Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>' +
-        '<code>factorial (n) = match n (\n  0 => 1\n  n => n * factorial (n - 1)\n)\n\nfactorial 5<br /><div contenteditable="false">result</div></code>' +
-        '<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit</p>' +
-        '<ul>' +
-        '<li>Lorem ipsum dolor sit amet, consectetur adipiscing elit</li>' +
-        '<li>Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua</li>' +
-        '</ul>' +
-        '<hr />' +
-        '<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit</p>' +
-        '<h3>Iterables</h3>' +
-        '<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit<br /></p>' +
-        `<code>(1..3, "a".."z") | map (n, c) => (c, n * n)<br /></code>` +
-        '<table>' +
-        '<tr><td>td</td><td>td</td></tr>' +
-        '<tr><td>td</td><td>td</td></tr>' +
-        '</table>' +
-        '<p><br /></p>';
+      rootElementRef.current.innerHTML = html;
     }
 
     return () => {
       mutationObserver.disconnect();
     };
-  }, []);
+  }, [html]);
 
+  return (
+    <View flex fillColor="white" style={{ scrollSnapAlign: 'start', minWidth: 768, overflowY: 'auto', padding: 32 }}>
+      <Text fontSize="xlarge" fontWeight="light">Basic Kopi Examples</Text>
+      <Spacer size="xlarge" />
+      <div autoCorrect="false" spellCheck="false" ref={rootElementRef} contentEditable className="editor" onKeyDown={handleKeyDown} />
+    </View>
+  );
+}
+
+const basicKopiExamples =
+  '<h3>Factorial</h3>' +
+  '<p>Lorem ipsum dolor sit amet, <code class="inline">consectetur</code> adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>' +
+  '<p>Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>' +
+  '<code id="A1">factorial (n) = match n (\n  0 => 1\n  n => n * factorial (n - 1)\n)\n\nfactorial 5<br /></code>' +
+  '<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit</p>' +
+  '<ul>' +
+  '<li>Lorem ipsum dolor sit amet, consectetur adipiscing elit</li>' +
+  '<li>Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua</li>' +
+  '</ul>' +
+  '<hr />' +
+  '<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit</p>' +
+  '<h3>Iterables</h3>' +
+  '<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit<br /></p>' +
+  `<code id="A2">(1..3, "a".."z") | map (n, c) => (c, n * n)<br /></code>` +
+  '<table>' +
+  '<tr><td>td</td><td>td</td></tr>' +
+  '<tr><td>td</td><td>td</td></tr>' +
+  '</table>' +
+  '<p><br /></p>';
+
+const interpreterExamples =
+  '<h3>Interpreter</h3>' +
+  '<p>Lorem ipsum dolor sit amet, <code class="inline">consectetur</code> adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>' +
+  '<p>Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>' +
+  `<code id="A1">incrementIndex = index => index + 1
+  setIndex = index => () => index
+
+  get (value) = match (value 0) (
+    "'" => value 1..('size value - 1)
+    _   => value
+  )
+
+  evaluateAst (statement, indexes) = match statement (
+    (lineNo, "PRINT", value) => {
+      print (get value)
+      incrementIndex
+    }
+    (lineNo, "GOTO", value) => {
+      setIndex (indexes | get value)
+    }
+  )
+
+  interpret (source) = {
+    program = source | trim | split (String.newlineRegExp) | map (line) => {
+      let ([lineNo, command, value] = line | trim | splitOnLimit " " 2 | toArray) =>
+        (lineNo: lineNo, command, value)
+    } | toArray
+
+    indexes = (0..99, program) | reduce (dict = {:}, index, statement) => {
+      dict | set (statement.lineNo) index
+    }
+
+    let (index = 0) => {
+      match (index == 'size program) (
+        true => "Done"
+        _    => loop (evaluateAst (program index, indexes) index)
+      )
+    }
+  }
+
+  source = "
+    10 PRINT 'Hello, world.'
+    20 GOTO 40
+    30 PRINT 'How are you?'
+    40 PRINT 'Goodbye.'
+  "
+
+  interpret source<br /></code>` +
+  '<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit</p>';
+
+function App() {
   return (
     <View horizontal className="App">
       <View padding="small" fillColor="gray-1" style={{ minWidth: 256 }}>
@@ -201,13 +256,10 @@ function App() {
         </View>
       </View>
       <Divider />
-      <View flex padding="large" fillColor="white" style={{ padding: 32, overflow: 'auto' }}>
-        <View style={{ maxWidth: 768 }}>
-          <Text fontSize="xlarge" fontWeight="light">Basic Kopi Examples</Text>
-          <Spacer size="xlarge" />
-          <div autoCorrect="false" spellCheck="false" ref={rootElementRef} contentEditable className="editor" onKeyDown={handleKeyDown} />
-        </View>
-      </View>
+      <Stack horizontal divider style={{ overflowX: 'auto', scrollSnapType: 'x mandatory' }}>
+        <Editor html={basicKopiExamples} />
+        <Editor html={interpreterExamples} />
+      </Stack>
     </View>
   );
 }
