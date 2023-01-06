@@ -160,16 +160,17 @@ function Editor({ html }: { html: string; }) {
 
   return (
     <View flex fillColor="white" style={{ scrollSnapAlign: 'start', minWidth: 768, overflowY: 'auto', padding: 32 }}>
-      <Text fontSize="xlarge" fontWeight="light">Basic Kopi Examples</Text>
-      <Spacer size="xlarge" />
+      {/* <Text fontSize="xlarge" fontWeight="light">Basic Kopi Examples</Text>
+      <Spacer size="xlarge" /> */}
       <div autoCorrect="false" spellCheck="false" ref={rootElementRef} contentEditable className="editor" onKeyDown={handleKeyDown} />
     </View>
   );
 }
 
 const basicKopiExamples =
+  '<h1>Basic Kopi Examples' +
   '<h3>Factorial</h3>' +
-  '<p>Lorem ipsum dolor sit amet, <code class="inline">consectetur</code> adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>' +
+  '<p>Lorem ipsum dolor sit amet, <code class="inline">consectetur</code> adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud <mark>exercitation</mark> ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>' +
   '<p>Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>' +
   '<code id="A1">factorial (n) = match n (\n  0 => 1\n  n => n * factorial (n - 1)\n)\n\nfactorial 5<br /></code>' +
   '<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit</p>' +
@@ -189,10 +190,11 @@ const basicKopiExamples =
   '<p><br /></p>';
 
 const interpreterExamples =
+  '<h1>Interpreter Example' +
   '<h3>Interpreter</h3>' +
   '<p>Lorem ipsum dolor sit amet, <code class="inline">consectetur</code> adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>' +
   '<p>Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>' +
-  `<code id="A1">incrementIndex = index => index + 1
+  `<code id="B1">incrementIndex = index => index + 1
   setIndex = index => () => index
 
   get (value) = match (value 0) (
@@ -236,7 +238,7 @@ const interpreterExamples =
   "
 
   interpret source<br /></code>` +
-  '<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit</p>';
+  '<p><br /></p>';
 
 function App() {
   return (
