@@ -48,10 +48,12 @@ function Editor({ html }: { html: string; }) {
   const handleKeyDown = (event: React.KeyboardEvent) => {
     const selection = window.getSelection();
 
-    console.log(selection?.focusNode?.parentNode?.nodeName);
+    // console.log(selection?.focusNode?.parentNode?.nodeName);
 
     if ((selection && selection.focusNode)) {
-      if (event.key === '-' && selection.focusNode.nodeName === 'P' && selection.focusOffset === 0) {
+      console.log(selection.focusNode.nodeName);
+
+      if (event.key === '-' && selection.focusNode.nodeName === 'P') {
         event.preventDefault();
 
         let range = selection?.getRangeAt(0);
@@ -72,6 +74,23 @@ function Editor({ html }: { html: string; }) {
         selection.addRange(range);
 
         return;
+      }
+
+      if (event.key === '-' && selection.focusNode?.parentNode?.nodeName === 'P') {
+        event.preventDefault();
+
+        console.log('hereeee');
+        let range = selection?.getRangeAt(0);
+
+        range.insertNode(document.createTextNode('–'));
+
+        const range2 = new Range();
+
+        range2.collapse();
+        range2.setStart(selection.focusNode, selection.focusOffset);
+
+        selection.removeAllRanges();
+        selection.addRange(range2);
       }
 
       if (event.key === '`' && selection.focusNode.nodeName === 'P' && selection.focusOffset === 0) {
@@ -119,6 +138,26 @@ function Editor({ html }: { html: string; }) {
 
           let range = selection?.getRangeAt(0);
 
+          if (event.shiftKey) {
+            console.log(selection.focusOffset, range.commonAncestorContainer?.textContent?.length);
+
+            if (selection.focusOffset === 0) {
+              const p = document.createElement('p');
+              p.appendChild(document.createElement('br'));
+              range.commonAncestorContainer?.parentNode?.parentNode?.insertBefore(p, range.commonAncestorContainer.parentNode);
+
+              const range2 = new Range();
+
+              range2.collapse();
+              range2.setStart(p, 0);
+
+              selection.removeAllRanges();
+              selection.addRange(range2);
+            }
+
+            return;
+          }
+
           range.deleteContents();
           const newline = document.createTextNode('\n');
           range.insertNode(newline);
@@ -159,7 +198,7 @@ function Editor({ html }: { html: string; }) {
   }, [html]);
 
   return (
-    <View flex fillColor="white" style={{ scrollSnapAlign: 'start', minWidth: 768, overflowY: 'auto', padding: 32 }}>
+    <View flex fillColor="white" style={{ scrollSnapAlign: 'start', minWidth: 768, maxWidth: 1024, overflowY: 'auto', padding: 32 }}>
       {/* <Text fontSize="xlarge" fontWeight="light">Basic Kopi Examples</Text>
       <Spacer size="xlarge" /> */}
       <div autoCorrect="false" spellCheck="false" ref={rootElementRef} contentEditable className="editor" onKeyDown={handleKeyDown} />
@@ -195,49 +234,49 @@ const interpreterExamples =
   '<p>Lorem ipsum dolor sit amet, <code class="inline">consectetur</code> adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>' +
   '<p>Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>' +
   `<code id="B1">incrementIndex = index => index + 1
-  setIndex = index => () => index
+setIndex = index => () => index
 
-  get (value) = match (value 0) (
-    "'" => value 1..('size value - 1)
-    _   => value
-  )
+get (value) = match (value 0) (
+  "'" => value 1..('size value - 1)
+  _   => value
+)
 
-  evaluateAst (statement, indexes) = match statement (
-    (lineNo, "PRINT", value) => {
-      print (get value)
-      incrementIndex
-    }
-    (lineNo, "GOTO", value) => {
-      setIndex (indexes | get value)
-    }
-  )
+evaluateAst (statement, indexes) = match statement (
+  (lineNo, "PRINT", value) => {
+    print (get value)
+    incrementIndex
+  }
+  (lineNo, "GOTO", value) => {
+    setIndex (indexes | get value)
+  }
+)
 
-  interpret (source) = {
-    program = source | trim | split (String.newlineRegExp) | map (line) => {
-      let ([lineNo, command, value] = line | trim | splitOnLimit " " 2 | toArray) =>
-        (lineNo: lineNo, command, value)
-    } | toArray
+interpret (source) = {
+  program = source | trim | split (String.newlineRegExp) | map (line) => {
+    let ([lineNo, command, value] = line | trim | splitOnLimit " " 2 | toArray) =>
+      (lineNo: lineNo, command, value)
+  } | toArray
 
-    indexes = (0..99, program) | reduce (dict = {:}, index, statement) => {
-      dict | set (statement.lineNo) index
-    }
-
-    let (index = 0) => {
-      match (index == 'size program) (
-        true => "Done"
-        _    => loop (evaluateAst (program index, indexes) index)
-      )
-    }
+  indexes = (0..99, program) | reduce (dict = {:}, index, statement) => {
+    dict | set (statement.lineNo) index
   }
 
-  source = "
-    10 PRINT 'Hello, world.'
-    20 GOTO 40
-    30 PRINT 'How are you?'
-    40 PRINT 'Goodbye.'
-  "
+  let (index = 0) => {
+    match (index == 'size program) (
+      true => "Done"
+      _    => loop (evaluateAst (program index, indexes) index)
+    )
+  }
+}
 
-  interpret source<br /></code>` +
+source = "
+  10 PRINT 'Hello, world.'
+  20 GOTO 40
+  30 PRINT 'How are you?'
+  40 PRINT 'Goodbye.'
+"
+
+interpret source<br /></code>` +
   '<p><br /></p>';
 
 function App() {
@@ -261,6 +300,7 @@ function App() {
       <Stack horizontal divider style={{ overflowX: 'auto', scrollSnapType: 'x mandatory' }}>
         <Editor html={basicKopiExamples} />
         <Editor html={interpreterExamples} />
+        <Divider />
       </Stack>
     </View>
   );

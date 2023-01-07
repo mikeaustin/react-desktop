@@ -98,6 +98,7 @@
   content: attr(id);
   background: #dee2e6;
   padding: 4px 8px;
+  border-radius: 0 4px 0 4px;
 }
 
 
