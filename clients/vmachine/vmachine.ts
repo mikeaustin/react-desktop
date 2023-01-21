@@ -1,3 +1,6 @@
+/*
+  clear && tsc --lib esnext,dom test.ts && node test.js
+*/
 
 class Register {
   static A = new Register(0);
