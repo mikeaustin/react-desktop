@@ -19,6 +19,7 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
+    "build:vm": "tsc src/vmachine.ts && node src/vmachine.js",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },

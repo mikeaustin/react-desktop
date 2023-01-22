@@ -13,42 +13,6 @@ class Address {
   constructor(public index: number) { }
 }
 
-abstract class Instruction {
-  abstract execute(registers: number[], memory: number[]);
-}
-
-class Mov extends Instruction {
-  constructor(
-    public dstReg1: Register,
-    public srcMem1: Address,
-  ) {
-    super();
-  }
-
-  execute(registers: number[], memory: number[]) {
-    registers[this.dstReg1.index] = memory[this.srcMem1.index];
-  }
-}
-
-class Add extends Instruction {
-  constructor(
-    public srcReg1: Register,
-    public srcReg2: Register,
-  ) {
-    super();
-  }
-
-  execute(registers: number[], memory: number[]) {
-    return registers[this.srcReg1.index] + registers[this.srcReg2.index];
-  }
-}
-
-const instructions = [
-  new Mov(Register.A, new Address(0)),
-  new Add(Register.A, Register.B),
-];
-
-
 enum Opcode {
   mov,
   mova,
@@ -63,38 +27,41 @@ enum SysCall {
   write = 1,
 }
 
-// lod, sto
-function mov(dst: Register, src: Address);
-function mov(dst: Address, src: Register);
-function mov(dst: Register, src: number);
+function mov(dst: Register, src: Address): number[];
+function mov(dst: Address, src: Register): number[];
+function mov(dst: Register, src: number): number[];
 
-function mov(dst: unknown, src: Address | number) {
+function mov(dst: unknown, src: Address | number): number[] {
   if (dst instanceof Register && src instanceof Address) {
-    return [Opcode.mov << 4 | dst.index, src.index];
+    return [(Opcode.mov << 4) | dst.index, src.index];
   } else if (dst instanceof Address && src instanceof Register) {
-    return [Opcode.mova << 4 | dst.index, src.index];
+    return [(Opcode.mova << 4) | dst.index, src.index];
   } else if (dst instanceof Register && typeof src === 'number') {
-    return [Opcode.movi << 4 | dst.index, src];
+    return [(Opcode.movi << 4) | dst.index, src];
   }
+
+  return [];
 }
 
 function add(srcReg1: Register, srcReg2: Register) {
-  return [Opcode.add << 4 | srcReg1.index << 2 | srcReg2.index];
+  return [(Opcode.add << 4) | (srcReg1.index << 2) | srcReg2.index];
 }
 
-function sys(sysCall: number) {
-  return [Opcode.sys << 4 | sysCall];
+function sys(op: number) {
+  return [(Opcode.sys << 4) | op];
 }
 
 function hlt() {
   return [Opcode.hlt << 4];
 }
 
-function string(string: string) {
+function string(string: string): number[] {
   return string.split('').map(char => char.charCodeAt(0));
 }
 
-const instructions2 = [
+type Program = number[][];
+
+const instructions2: Program = [
   mov(Register.A, new Address(11)),
   mov(Register.B, 13),
   sys(SysCall.write),
@@ -104,8 +71,6 @@ const instructions2 = [
   hlt(),
   string('Hello, world.'),
 ];
-
-type Program = number[][];
 
 class Machine {
   registers: Uint8Array;
@@ -132,7 +97,7 @@ class Machine {
 
         this.registers[dstReg] = srcMem;
 
-        console.log(Opcode[opCode], '\tdstReg1', dstReg, '\tsrcMem1', srcMem, '\t\t\t', this.pc, '\t', this.registers);
+        console.log(Opcode[opCode], '\tdstReg1 ' + dstReg, '\tsrcMem1 ' + srcMem, '\t\t\t' + this.pc.index, '\t' + this.registers.join(', '));
 
         return this.pc.index += 2;
       }
@@ -142,17 +107,17 @@ class Machine {
 
         this.registers[dstReg] = srcVal;
 
-        console.log(Opcode[opCode], '\tdstReg1', dstReg, '\tsrcVal1', srcVal, '\t\t\t', this.pc, '\t', this.registers);
+        console.log(Opcode[opCode], '\tdstReg1 ' + dstReg, '\tsrcVal1 ' + srcVal, '\t\t\t' + this.pc.index, '\t' + this.registers.join(', '));
 
         return this.pc.index += 2;
       }
       case Opcode.add: {
-        const dstReg = this.memory[this.pc.index] >> 2 & 0x3;
+        const dstReg = (this.memory[this.pc.index] >> 2) & 0x3;
         const srcReg = this.memory[this.pc.index] & 0x3;
 
         this.registers[dstReg] += this.registers[srcReg];
 
-        console.log(Opcode[opCode], '\tdstReg1', dstReg, '\tsrcReg2', srcReg, '\t\t\t', this.pc, '\t', this.registers);
+        console.log(Opcode[opCode], '\tdstReg1 ' + dstReg, '\tsrcReg2 ' + srcReg, '\t\t\t' + this.pc.index, '\t' + this.registers.join(', '));
 
         return this.pc.index += 1;
       }
@@ -168,7 +133,7 @@ class Machine {
             .reduce<string[]>((array, charCode) => [...array, String.fromCharCode(charCode)], [])
             .join('');
 
-          console.log(Opcode[opCode], '\top', SysCall[op], '\taddrres', address, '\tlength', length, '\t', this.pc, '\t', this.registers);
+          console.log(Opcode[opCode], '\top', SysCall[op], '\taddrres ' + address, '\tlength ' + length, '\t' + this.pc.index, '\t' + this.registers.join(', '));
 
           console.log(string);
         } else {
@@ -191,6 +156,9 @@ class Machine {
   start() {
     console.log(this.memory);
 
+    console.log('OP\tOPERANDS\t\t\t\t\tPC\tREGISTERS');
+    console.log('======= =============== =============== =============== ======= ============');
+
     let jump = this.decode();
 
     while (jump > 0) {
@@ -202,3 +170,5 @@ class Machine {
 const machine = new Machine(instructions2);
 
 machine.start();
+
+export { };
