@@ -84,6 +84,14 @@ var Machine = /** @class */ (function () {
             _this.memory[index] = byte;
         });
     }
+    Machine.prototype.debug = function (operands) {
+        var opCode = this.memory[this.pc.index] >> 4;
+        var foo = Object.entries(operands).map(function (_a) {
+            var name = _a[0], value = _a[1];
+            return "".concat(name, ": ").concat(value);
+        }).join('\t');
+        console.log(Opcode[opCode] + '\t' + foo + '\r\t\t\t\t\t\t\t' + this.pc.index + '\t' + this.registers.join(', '));
+    };
     Machine.prototype.decode = function () {
         var opCode = this.memory[this.pc.index] >> 4;
         switch (opCode) {
@@ -91,21 +99,21 @@ var Machine = /** @class */ (function () {
                 var dstReg = this.memory[this.pc.index] & 0xF;
                 var srcMem = this.memory[this.pc.index + 1];
                 this.registers[dstReg] = srcMem;
-                console.log(Opcode[opCode], '\tdstReg1 ' + dstReg, '\tsrcMem1 ' + srcMem, '\t\t\t' + this.pc.index, '\t' + this.registers.join(', '));
+                this.debug({ dstReg: dstReg, srcMem: srcMem });
                 return this.pc.index += 2;
             }
             case Opcode.movi: {
                 var dstReg = this.memory[this.pc.index] & 0xF;
                 var srcVal = this.memory[this.pc.index + 1];
                 this.registers[dstReg] = srcVal;
-                console.log(Opcode[opCode], '\tdstReg1 ' + dstReg, '\tsrcVal1 ' + srcVal, '\t\t\t' + this.pc.index, '\t' + this.registers.join(', '));
+                this.debug({ dstReg: dstReg, srcVal: srcVal });
                 return this.pc.index += 2;
             }
             case Opcode.add: {
                 var dstReg = (this.memory[this.pc.index] >> 2) & 0x3;
                 var srcReg = this.memory[this.pc.index] & 0x3;
                 this.registers[dstReg] += this.registers[srcReg];
-                console.log(Opcode[opCode], '\tdstReg1 ' + dstReg, '\tsrcReg2 ' + srcReg, '\t\t\t' + this.pc.index, '\t' + this.registers.join(', '));
+                this.debug({ dstReg: dstReg, srcReg: srcReg });
                 return this.pc.index += 1;
             }
             case Opcode.sys: {
@@ -117,7 +125,8 @@ var Machine = /** @class */ (function () {
                         .slice(address, address + length_1)
                         .reduce(function (array, charCode) { return __spreadArray(__spreadArray([], array, true), [String.fromCharCode(charCode)], false); }, [])
                         .join('');
-                    console.log(Opcode[opCode], '\top', SysCall[op], '\taddrres ' + address, '\tlength ' + length_1, '\t' + this.pc.index, '\t' + this.registers.join(', '));
+                    this.registers[Register.A.index] = 0;
+                    this.debug({ op: Opcode[op], address: address, length: length_1 });
                     console.log(string_1);
                 }
                 else {

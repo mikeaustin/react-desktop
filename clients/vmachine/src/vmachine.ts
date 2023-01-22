@@ -87,6 +87,13 @@ class Machine {
     });
   }
 
+  debug(operands: { [key: string]: string | number; }): void {
+    const opCode = this.memory[this.pc.index] >> 4;
+    const foo = Object.entries(operands).map(([name, value]) => `${name}: ${value}`).join('\t');
+
+    console.log(Opcode[opCode] + '\t' + foo + '\r\t\t\t\t\t\t\t' + this.pc.index + '\t' + this.registers.join(', '));
+  }
+
   decode() {
     const opCode = this.memory[this.pc.index] >> 4;
 
@@ -97,7 +104,7 @@ class Machine {
 
         this.registers[dstReg] = srcMem;
 
-        console.log(Opcode[opCode], '\tdstReg1 ' + dstReg, '\tsrcMem1 ' + srcMem, '\t\t\t' + this.pc.index, '\t' + this.registers.join(', '));
+        this.debug({ dstReg, srcMem });
 
         return this.pc.index += 2;
       }
@@ -107,7 +114,7 @@ class Machine {
 
         this.registers[dstReg] = srcVal;
 
-        console.log(Opcode[opCode], '\tdstReg1 ' + dstReg, '\tsrcVal1 ' + srcVal, '\t\t\t' + this.pc.index, '\t' + this.registers.join(', '));
+        this.debug({ dstReg, srcVal });
 
         return this.pc.index += 2;
       }
@@ -117,7 +124,7 @@ class Machine {
 
         this.registers[dstReg] += this.registers[srcReg];
 
-        console.log(Opcode[opCode], '\tdstReg1 ' + dstReg, '\tsrcReg2 ' + srcReg, '\t\t\t' + this.pc.index, '\t' + this.registers.join(', '));
+        this.debug({ dstReg, srcReg });
 
         return this.pc.index += 1;
       }
@@ -133,7 +140,9 @@ class Machine {
             .reduce<string[]>((array, charCode) => [...array, String.fromCharCode(charCode)], [])
             .join('');
 
-          console.log(Opcode[opCode], '\top', SysCall[op], '\taddrres ' + address, '\tlength ' + length, '\t' + this.pc.index, '\t' + this.registers.join(', '));
+          this.registers[Register.A.index] = 0;
+
+          this.debug({ op: Opcode[op], address, length });
 
           console.log(string);
         } else {
