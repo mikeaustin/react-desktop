@@ -16,10 +16,16 @@ var Register = /** @class */ (function () {
     function Register(value) {
         this.value = value;
     }
-    Register.A = new Register(0);
-    Register.B = new Register(1);
-    Register.C = new Register(2);
-    Register.D = new Register(3);
+    Register.Names = {
+        A: 0,
+        B: 1,
+        C: 2,
+        D: 3
+    };
+    Register.A = new Register(Register.Names.A);
+    Register.B = new Register(Register.Names.B);
+    Register.C = new Register(Register.Names.C);
+    Register.D = new Register(Register.Names.D);
     return Register;
 }());
 var Address = /** @class */ (function () {
@@ -27,6 +33,34 @@ var Address = /** @class */ (function () {
         this.value = value;
     }
     return Address;
+}());
+var Opcode2 = /** @class */ (function () {
+    function Opcode2(value) {
+        this.value = value;
+    }
+    Opcode2.Names = {
+        load: 0,
+        stor: 1,
+        mov: 0,
+        mova: 1,
+        movi: 2,
+        add: 3,
+        jmp: 4,
+        cmp: 5,
+        sys: 6,
+        hlt: 7,
+        nop: 8
+    };
+    Opcode2.mov = new Opcode2(Opcode2.Names.mov);
+    Opcode2.mova = new Opcode2(Opcode2.Names.mova);
+    Opcode2.movi = new Opcode2(Opcode2.Names.movi);
+    Opcode2.add = new Opcode2(Opcode2.Names.add);
+    Opcode2.jmp = new Opcode2(Opcode2.Names.jmp);
+    Opcode2.cmp = new Opcode2(Opcode2.Names.cmp);
+    Opcode2.sys = new Opcode2(Opcode2.Names.sys);
+    Opcode2.hlt = new Opcode2(Opcode2.Names.hlt);
+    Opcode2.nop = new Opcode2(Opcode2.Names.nop);
+    return Opcode2;
 }());
 var Opcode;
 (function (Opcode) {
@@ -87,6 +121,10 @@ var instructions2 = [
     mov(Register.A, 5),
     mov(Register.B, 5),
     cmp(Register.A, Register.B),
+    mov(Register.B, 48),
+    add(Register.A, Register.B),
+    mov(Register.B, 2),
+    sys(SysCall.write),
     sys(SysCall.dump),
     hlt(),
 ];
@@ -114,9 +152,9 @@ var Machine = /** @class */ (function () {
         switch (opCode) {
             case Opcode.mov: {
                 var dstReg = this.memory[this.pc.value] & 0xF;
-                var srcMem = this.memory[this.pc.value + 1];
-                this.registers[dstReg] = srcMem;
-                this.debug({ dstReg: dstReg, srcMem: srcMem });
+                var srcAddr = this.memory[this.pc.value + 1];
+                this.registers[dstReg] = srcAddr;
+                this.debug({ dstReg: dstReg, srcAddr: srcAddr });
                 return this.pc.value += 2;
             }
             case Opcode.movi: {

@@ -3,16 +3,52 @@
 */
 
 class Register {
-  static A = new Register(0);
-  static B = new Register(1);
-  static C = new Register(2);
-  static D = new Register(3);
+  static Names = {
+    A: 0,
+    B: 1,
+    C: 2,
+    D: 3,
+  } as const;
 
-  constructor(public value: number) { }
+  static A = new Register(Register.Names.A);
+  static B = new Register(Register.Names.B);
+  static C = new Register(Register.Names.C);
+  static D = new Register(Register.Names.D);
+
+  constructor(public value: typeof Register.Names[keyof typeof Register.Names]) { }
 }
 
 class Address {
   constructor(public value: number) { }
+}
+
+class Opcode2 {
+  static Names = {
+    load: 0,
+    stor: 1,
+
+    mov: 0,
+    mova: 1,
+    movi: 2,
+    add: 3,
+    jmp: 4,
+    cmp: 5,
+    sys: 6,
+    hlt: 7,
+    nop: 8,
+  } as const;
+
+  static mov = new Opcode2(Opcode2.Names.mov);
+  static mova = new Opcode2(Opcode2.Names.mova);
+  static movi = new Opcode2(Opcode2.Names.movi);
+  static add = new Opcode2(Opcode2.Names.add);
+  static jmp = new Opcode2(Opcode2.Names.jmp);
+  static cmp = new Opcode2(Opcode2.Names.cmp);
+  static sys = new Opcode2(Opcode2.Names.sys);
+  static hlt = new Opcode2(Opcode2.Names.hlt);
+  static nop = new Opcode2(Opcode2.Names.nop);
+
+  constructor(public value: typeof Opcode2.Names[keyof typeof Opcode2.Names]) { }
 }
 
 enum Opcode {
@@ -90,6 +126,11 @@ const instructions2: Program = [
   mov(Register.B, 5),
   cmp(Register.A, Register.B),
 
+  mov(Register.B, 48),
+  add(Register.A, Register.B),
+  mov(Register.B, 2),
+  sys(SysCall.write),
+
   sys(SysCall.dump),
 
   hlt(),
@@ -125,11 +166,11 @@ class Machine {
     switch (opCode) {
       case Opcode.mov: {
         const dstReg = this.memory[this.pc.value] & 0xF;
-        const srcMem = this.memory[this.pc.value + 1];
+        const srcAddr = this.memory[this.pc.value + 1];
 
-        this.registers[dstReg] = srcMem;
+        this.registers[dstReg] = srcAddr;
 
-        this.debug({ dstReg, srcMem });
+        this.debug({ dstReg, srcAddr });
 
         return this.pc.value += 2;
       }
