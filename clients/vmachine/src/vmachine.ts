@@ -28,7 +28,7 @@ class Opcode2 {
     stor: 1,
 
     mov: 0,
-    mova: 1,
+    movm: 1,
     movi: 2,
     add: 3,
     jmp: 4,
@@ -39,7 +39,7 @@ class Opcode2 {
   } as const;
 
   static mov = new Opcode2(Opcode2.Names.mov);
-  static mova = new Opcode2(Opcode2.Names.mova);
+  static movm = new Opcode2(Opcode2.Names.movm);
   static movi = new Opcode2(Opcode2.Names.movi);
   static add = new Opcode2(Opcode2.Names.add);
   static jmp = new Opcode2(Opcode2.Names.jmp);
@@ -52,8 +52,8 @@ class Opcode2 {
 }
 
 enum Opcode {
-  mov,
-  mova,
+  movr,
+  movm,
   movi,
   add,
   jmp,
@@ -74,9 +74,9 @@ function mov(dst: Register, src: number): number[];
 
 function mov(dst: unknown, src: Address | number): number[] {
   if (dst instanceof Register && src instanceof Address) {
-    return [(Opcode.mov << 4) | dst.value, src.value];
+    return [(Opcode.movr << 4) | dst.value, src.value];
   } else if (dst instanceof Address && src instanceof Register) {
-    return [(Opcode.mova << 4) | dst.value, src.value];
+    return [(Opcode.movm << 4) | dst.value, src.value];
   } else if (dst instanceof Register && typeof src === 'number') {
     return [(Opcode.movi << 4) | dst.value, src];
   }
@@ -113,24 +113,29 @@ type Program = number[][];
 const instructions2: Program = [
   string('Hello, world.'),
 
-  mov(Register.A, new Address(0)),
+  // Write string at address 0 to stdout
+  mov(Register.A, 0),
   mov(Register.B, 13),
   sys(SysCall.write),
 
+  // Add 2 + 3 and store at address 0
   mov(Register.A, 2),
   mov(Register.B, 3),
   add(Register.A, Register.B),
   mov(new Address(0), Register.A),
 
-  mov(Register.A, 5),
-  mov(Register.B, 5),
+  // Compare registers A and B
   cmp(Register.A, Register.B),
 
+  // Convert number to ASCII and write to stdout
   mov(Register.B, 48),
   add(Register.A, Register.B),
-  mov(Register.B, 2),
+  mov(new Address(0), Register.A),
+  mov(Register.A, 0),
+  mov(Register.B, 1),
   sys(SysCall.write),
 
+  // Dump memory to stdout
   sys(SysCall.dump),
 
   hlt(),
@@ -140,13 +145,13 @@ class Machine {
   registers: Uint8Array;
   memory: Uint8Array;
   flags: Uint8Array;
-  pc: Address;
+  pc: number;
 
   constructor(instructions: Program) {
     this.registers = new Uint8Array(new ArrayBuffer(4));
     this.memory = new Uint8Array(new ArrayBuffer(256));
     this.flags = new Uint8Array(new ArrayBuffer(1));
-    this.pc = new Address(0);
+    this.pc = 0;
 
     instructions.flat().forEach((byte, index) => {
       this.memory[index] = byte;
@@ -154,49 +159,49 @@ class Machine {
   }
 
   debug(operands: { [key: string]: string | number; }): void {
-    const opCode = this.memory[this.pc.value] >> 4;
+    const opCode = this.memory[this.pc] >> 4;
     const ops = Object.entries(operands).map(([name, value]) => `${name}: ${value}`).join('\t');
 
-    console.log(Opcode[opCode] + '\t' + ops + '\r\t\t\t\t\t\t\t' + this.pc.value + '\t' + this.registers.join(', ') + '\t' + this.flags.join(' '));
+    console.log(Opcode[opCode] + '\t' + ops + '\r\t\t\t\t\t\t\t' + this.pc + '\t' + this.registers.join(', ') + '\t' + this.flags.join(' '));
   }
 
   decode() {
-    const opCode = this.memory[this.pc.value] >> 4;
+    const opCode = this.memory[this.pc] >> 4;
 
     switch (opCode) {
-      case Opcode.mov: {
-        const dstReg = this.memory[this.pc.value] & 0xF;
-        const srcAddr = this.memory[this.pc.value + 1];
+      case Opcode.movr: {
+        const dstReg = this.memory[this.pc] & 0xF;
+        const srcAddr = this.memory[this.pc + 1];
 
-        this.registers[dstReg] = srcAddr;
+        this.registers[dstReg] = this.memory[srcAddr];
 
         this.debug({ dstReg, srcAddr });
 
-        return this.pc.value += 2;
+        return this.pc += 2;
       }
       case Opcode.movi: {
-        const dstReg = this.memory[this.pc.value] & 0xF;
-        const srcValue = this.memory[this.pc.value + 1];
+        const dstReg = this.memory[this.pc] & 0xF;
+        const srcValue = this.memory[this.pc + 1];
 
         this.registers[dstReg] = srcValue;
 
         this.debug({ dstReg, srcValue });
 
-        return this.pc.value += 2;
+        return this.pc += 2;
       }
-      case Opcode.mova: {
-        const srcReg = this.memory[this.pc.value] & 0xF;
-        const dstAddr = this.memory[this.pc.value + 1];
+      case Opcode.movm: {
+        const srcReg = this.memory[this.pc] & 0xF;
+        const dstAddr = this.memory[this.pc + 1];
 
         this.memory[dstAddr] = this.registers[srcReg];
 
-        this.pc.value += 2;
+        this.pc += 2;
 
         return 2;
       }
       case Opcode.add: {
-        const dstReg = (this.memory[this.pc.value] >> 2) & 0x3;
-        const srcReg = this.memory[this.pc.value] & 0x3;
+        const dstReg = (this.memory[this.pc] >> 2) & 0x3;
+        const srcReg = this.memory[this.pc] & 0x3;
 
         this.registers[dstReg] += this.registers[srcReg];
 
@@ -204,18 +209,18 @@ class Machine {
 
         this.debug({ dstReg, srcReg });
 
-        return this.pc.value += 1;
+        return this.pc += 1;
       }
       case Opcode.jmp: {
-        const srcAddr = this.memory[this.pc.value + 1];
+        const srcAddr = this.memory[this.pc + 1];
 
-        this.pc.value = srcAddr;
+        this.pc = srcAddr;
 
         return 2;
       }
       case Opcode.cmp: {
-        const dstReg = (this.memory[this.pc.value] >> 2) & 0x3;
-        const srcReg = (this.memory[this.pc.value] >> 0) & 0x3;
+        const dstReg = (this.memory[this.pc] >> 2) & 0x3;
+        const srcReg = (this.memory[this.pc] >> 0) & 0x3;
 
         const value = this.registers[dstReg] - this.registers[srcReg];
 
@@ -223,12 +228,12 @@ class Machine {
 
         this.debug({ dstReg, srcReg });
 
-        this.pc.value += 1;
+        this.pc += 1;
 
         return 1;
       }
       case Opcode.sys: {
-        const op = this.memory[this.pc.value] & 0xF;
+        const op = this.memory[this.pc] & 0xF;
 
         if (op === SysCall.write) {
           const address = this.registers[Register.A.value];
@@ -252,7 +257,7 @@ class Machine {
           console.log('Invalid syscall');
         }
 
-        return this.pc.value += 1;
+        return this.pc += 1;
       }
       case Opcode.hlt: {
         return 0;
@@ -265,7 +270,7 @@ class Machine {
     }
   }
 
-  start(pc: Address) {
+  start(pc: number) {
     console.log('OP\tOPERANDS\t\t\t\t\tPC\tREGISTERS\tZ');
     console.log('======= =============== =============== =============== ======= =============== =====');
 
@@ -281,6 +286,6 @@ class Machine {
 
 const machine = new Machine(instructions2);
 
-machine.start(new Address(15));
+machine.start(15);
 
 export { };
