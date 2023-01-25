@@ -125,6 +125,8 @@ const instructions2: Program = [
   mov(new Address(0), Register.A),
 
   // Compare registers A and B
+  mov(Register.A, 5),
+  mov(Register.B, 5),
   cmp(Register.A, Register.B),
 
   // Convert number to ASCII and write to stdout
@@ -205,7 +207,9 @@ class Machine {
 
         this.registers[dstReg] += this.registers[srcReg];
 
-        this.flags[0] = this.registers[dstReg] === 0 ? this.flags[0] | 0b01 : this.flags[0] & ~0b01;
+        const isZero = this.registers[dstReg] === 0;
+
+        this.flags[0] = (this.flags[0] & ~0b01) | (+isZero << 1);
 
         this.debug({ dstReg, srcReg });
 

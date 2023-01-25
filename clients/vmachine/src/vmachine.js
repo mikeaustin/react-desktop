@@ -121,6 +121,8 @@ var instructions2 = [
     add(Register.A, Register.B),
     mov(new Address(0), Register.A),
     // Compare registers A and B
+    mov(Register.A, 5),
+    mov(Register.B, 5),
     cmp(Register.A, Register.B),
     // Convert number to ASCII and write to stdout
     mov(Register.B, 48),
@@ -180,7 +182,9 @@ var Machine = /** @class */ (function () {
                 var dstReg = (this.memory[this.pc] >> 2) & 0x3;
                 var srcReg = this.memory[this.pc] & 0x3;
                 this.registers[dstReg] += this.registers[srcReg];
-                this.flags[0] = this.registers[dstReg] === 0 ? this.flags[0] | 1 : this.flags[0] & ~1;
+                var isZero = this.registers[dstReg] === 0;
+                this.flags[0] = (this.flags[0] & ~1) | (+isZero << 1);
+                // this.flags[0] = this.registers[dstReg] === 0 ? this.flags[0] | 0b01 : this.flags[0] & ~0b01;
                 this.debug({ dstReg: dstReg, srcReg: srcReg });
                 return this.pc += 1;
             }
