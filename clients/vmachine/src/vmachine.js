@@ -152,7 +152,11 @@ var Machine = /** @class */ (function () {
             var name = _a[0], value = _a[1];
             return "".concat(name, ": ").concat(value);
         }).join('\t');
-        console.log(Opcode[opCode] + '\t' + ops + '\r\t\t\t\t\t\t\t' + this.pc + '\t' + this.registers.join(', ') + '\t' + this.flags.join(' '));
+        console.log(Opcode[opCode] + '\t' + ops +
+            '\r\t\t\t\t\t\t\t' + this.pc +
+            '\t' + this.registers.join(', ') +
+            '\t' + ((this.flags[0] >> 0) & 0x01) +
+            '  ' + ((this.flags[0] >> 1) & 0x01));
     };
     Machine.prototype.decode = function () {
         var opCode = this.memory[this.pc] >> 4;
@@ -175,16 +179,16 @@ var Machine = /** @class */ (function () {
                 var srcReg = this.memory[this.pc] & 0xF;
                 var dstAddr = this.memory[this.pc + 1];
                 this.memory[dstAddr] = this.registers[srcReg];
+                this.debug({ dstAddr: dstAddr, srcReg: srcReg });
                 this.pc += 2;
                 return 2;
             }
             case Opcode.add: {
                 var dstReg = (this.memory[this.pc] >> 2) & 0x3;
                 var srcReg = this.memory[this.pc] & 0x3;
-                this.registers[dstReg] += this.registers[srcReg];
-                var isZero = this.registers[dstReg] === 0;
-                this.flags[0] = (this.flags[0] & ~1) | (+isZero << 1);
-                // this.flags[0] = this.registers[dstReg] === 0 ? this.flags[0] | 0b01 : this.flags[0] & ~0b01;
+                var value = this.registers[dstReg] + this.registers[srcReg];
+                this.registers[dstReg] = value;
+                this.flags[0] = (this.flags[0] & ~2) | (+(value === 0) << 1);
                 this.debug({ dstReg: dstReg, srcReg: srcReg });
                 return this.pc += 1;
             }
@@ -197,7 +201,7 @@ var Machine = /** @class */ (function () {
                 var dstReg = (this.memory[this.pc] >> 2) & 0x3;
                 var srcReg = (this.memory[this.pc] >> 0) & 0x3;
                 var value = this.registers[dstReg] - this.registers[srcReg];
-                this.flags[0] = value === 0 ? this.flags[0] | 1 : this.flags[0] & ~1;
+                this.flags[0] = (this.flags[0] & ~2) | (+(value === 0) << 1);
                 this.debug({ dstReg: dstReg, srcReg: srcReg });
                 this.pc += 1;
                 return 1;
@@ -234,7 +238,7 @@ var Machine = /** @class */ (function () {
         }
     };
     Machine.prototype.start = function (pc) {
-        console.log('OP\tOPERANDS\t\t\t\t\tPC\tREGISTERS\tZ');
+        console.log('OP\tOPERANDS\t\t\t\t\tPC\tREGISTERS\tC  Z');
         console.log('======= =============== =============== =============== ======= =============== =====');
         this.pc = pc;
         var jump = this.decode();
@@ -245,4 +249,4 @@ var Machine = /** @class */ (function () {
     return Machine;
 }());
 var machine = new Machine(instructions2);
-machine.start(15);
+machine.start(13);

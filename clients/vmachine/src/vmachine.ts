@@ -164,7 +164,13 @@ class Machine {
     const opCode = this.memory[this.pc] >> 4;
     const ops = Object.entries(operands).map(([name, value]) => `${name}: ${value}`).join('\t');
 
-    console.log(Opcode[opCode] + '\t' + ops + '\r\t\t\t\t\t\t\t' + this.pc + '\t' + this.registers.join(', ') + '\t' + this.flags.join(' '));
+    console.log(
+      Opcode[opCode] + '\t' + ops +
+      '\r\t\t\t\t\t\t\t' + this.pc +
+      '\t' + this.registers.join(', ') +
+      '\t' + ((this.flags[0] >> 0) & 0x01) +
+      '  ' + ((this.flags[0] >> 1) & 0x01)
+    );
   }
 
   decode() {
@@ -197,6 +203,8 @@ class Machine {
 
         this.memory[dstAddr] = this.registers[srcReg];
 
+        this.debug({ dstAddr, srcReg });
+
         this.pc += 2;
 
         return 2;
@@ -205,11 +213,10 @@ class Machine {
         const dstReg = (this.memory[this.pc] >> 2) & 0x3;
         const srcReg = this.memory[this.pc] & 0x3;
 
-        this.registers[dstReg] += this.registers[srcReg];
+        const value = this.registers[dstReg] + this.registers[srcReg];
 
-        const isZero = this.registers[dstReg] === 0;
-
-        this.flags[0] = (this.flags[0] & ~0b01) | (+isZero << 1);
+        this.registers[dstReg] = value;
+        this.flags[0] = (this.flags[0] & ~0b10) | (+(value === 0) << 1);
 
         this.debug({ dstReg, srcReg });
 
@@ -228,7 +235,7 @@ class Machine {
 
         const value = this.registers[dstReg] - this.registers[srcReg];
 
-        this.flags[0] = value === 0 ? this.flags[0] | 0b01 : this.flags[0] & ~0b01;
+        this.flags[0] = (this.flags[0] & ~0b10) | (+(value === 0) << 1);
 
         this.debug({ dstReg, srcReg });
 
@@ -275,7 +282,7 @@ class Machine {
   }
 
   start(pc: number) {
-    console.log('OP\tOPERANDS\t\t\t\t\tPC\tREGISTERS\tZ');
+    console.log('OP\tOPERANDS\t\t\t\t\tPC\tREGISTERS\tC  Z');
     console.log('======= =============== =============== =============== ======= =============== =====');
 
     this.pc = pc;
@@ -290,6 +297,6 @@ class Machine {
 
 const machine = new Machine(instructions2);
 
-machine.start(15);
+machine.start(13);
 
 export { };
