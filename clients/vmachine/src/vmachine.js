@@ -22,6 +22,12 @@ var Register = /** @class */ (function () {
         C: 2,
         D: 3
     };
+    Register.Values = {
+        0: 'A',
+        1: 'B',
+        2: 'C',
+        3: 'D'
+    };
     Register.A = new Register(Register.Names.A);
     Register.B = new Register(Register.Names.B);
     Register.C = new Register(Register.Names.C);
@@ -172,14 +178,14 @@ var Machine = /** @class */ (function () {
                 var dstReg = this.memory[this.pc] & 0xF;
                 var srcValue = this.memory[this.pc + 1];
                 this.registers[dstReg] = srcValue;
-                this.debug({ dstReg: dstReg, srcValue: srcValue });
+                this.debug({ dstReg: Register.Values[dstReg], srcValue: srcValue });
                 return this.pc += 2;
             }
             case Opcode.movm: {
                 var srcReg = this.memory[this.pc] & 0xF;
                 var dstAddr = this.memory[this.pc + 1];
                 this.memory[dstAddr] = this.registers[srcReg];
-                this.debug({ dstAddr: dstAddr, srcReg: srcReg });
+                this.debug({ dstAddr: dstAddr, srcReg: Register.Values[srcReg] });
                 this.pc += 2;
                 return 2;
             }
@@ -190,7 +196,7 @@ var Machine = /** @class */ (function () {
                 this.registers[dstReg] = value;
                 this.flags[0] = (this.flags[0] & ~2) | (+(value === 0) << 1);
                 this.flags[0] = (this.flags[0] & ~1);
-                this.debug({ dstReg: dstReg, srcReg: srcReg });
+                this.debug({ dstReg: Register.Values[dstReg], srcReg: Register.Values[srcReg] });
                 return this.pc += 1;
             }
             case Opcode.jmp: {
@@ -204,7 +210,7 @@ var Machine = /** @class */ (function () {
                 var value = this.registers[dstReg] - this.registers[srcReg];
                 this.flags[0] = (this.flags[0] & ~2) | (+(value === 0) << 1);
                 this.flags[0] = (this.flags[0] & ~1) | +(value > 0);
-                this.debug({ dstReg: dstReg, srcReg: srcReg });
+                this.debug({ dstReg: Register.Values[dstReg], srcReg: Register.Values[srcReg] });
                 this.pc += 1;
                 return 1;
             }

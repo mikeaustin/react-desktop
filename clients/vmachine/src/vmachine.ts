@@ -10,6 +10,13 @@ class Register {
     D: 3,
   } as const;
 
+  static Values = {
+    0: 'A',
+    1: 'B',
+    2: 'C',
+    3: 'D',
+  } as const;
+
   static A = new Register(Register.Names.A);
   static B = new Register(Register.Names.B);
   static C = new Register(Register.Names.C);
@@ -193,7 +200,7 @@ class Machine {
 
         this.registers[dstReg] = srcValue;
 
-        this.debug({ dstReg, srcValue });
+        this.debug({ dstReg: (Register.Values as any)[dstReg], srcValue });
 
         return this.pc += 2;
       }
@@ -203,7 +210,7 @@ class Machine {
 
         this.memory[dstAddr] = this.registers[srcReg];
 
-        this.debug({ dstAddr, srcReg });
+        this.debug({ dstAddr, srcReg: (Register.Values as any)[srcReg] });
 
         this.pc += 2;
 
@@ -220,7 +227,7 @@ class Machine {
         this.flags[0] = (this.flags[0] & ~0b10) | (+(value === 0) << 1);
         this.flags[0] = (this.flags[0] & ~0b01);
 
-        this.debug({ dstReg, srcReg });
+        this.debug({ dstReg: (Register.Values as any)[dstReg], srcReg: (Register.Values as any)[srcReg] });
 
         return this.pc += 1;
       }
@@ -240,7 +247,7 @@ class Machine {
         this.flags[0] = (this.flags[0] & ~0b10) | (+(value === 0) << 1);
         this.flags[0] = (this.flags[0] & ~0b01) | +(value > 0);
 
-        this.debug({ dstReg, srcReg });
+        this.debug({ dstReg: (Register.Values as any)[dstReg], srcReg: (Register.Values as any)[srcReg] });
 
         this.pc += 1;
 
