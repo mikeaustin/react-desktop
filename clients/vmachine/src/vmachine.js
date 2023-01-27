@@ -16,22 +16,22 @@ var Register = /** @class */ (function () {
     function Register(value) {
         this.value = value;
     }
-    Register.Names = {
+    Register.Values = {
         A: 0,
         B: 1,
         C: 2,
         D: 3
     };
-    Register.Values = {
+    Register.Names = {
         0: 'A',
         1: 'B',
         2: 'C',
         3: 'D'
     };
-    Register.A = new Register(Register.Names.A);
-    Register.B = new Register(Register.Names.B);
-    Register.C = new Register(Register.Names.C);
-    Register.D = new Register(Register.Names.D);
+    Register.A = new Register(Register.Values.A);
+    Register.B = new Register(Register.Values.B);
+    Register.C = new Register(Register.Values.C);
+    Register.D = new Register(Register.Values.D);
     return Register;
 }());
 var Address = /** @class */ (function () {
@@ -44,41 +44,38 @@ var Opcode2 = /** @class */ (function () {
     function Opcode2(value) {
         this.value = value;
     }
-    Opcode2.Names = {
-        load: 0,
-        stor: 1,
+    Opcode2.Values = {
+        hlt: 7,
         mov: 0,
         movm: 1,
         movi: 2,
         add: 3,
         jmp: 4,
         cmp: 5,
-        sys: 6,
-        hlt: 7,
-        nop: 8
+        sys: 6
     };
-    Opcode2.mov = new Opcode2(Opcode2.Names.mov);
-    Opcode2.movm = new Opcode2(Opcode2.Names.movm);
-    Opcode2.movi = new Opcode2(Opcode2.Names.movi);
-    Opcode2.add = new Opcode2(Opcode2.Names.add);
-    Opcode2.jmp = new Opcode2(Opcode2.Names.jmp);
-    Opcode2.cmp = new Opcode2(Opcode2.Names.cmp);
-    Opcode2.sys = new Opcode2(Opcode2.Names.sys);
-    Opcode2.hlt = new Opcode2(Opcode2.Names.hlt);
-    Opcode2.nop = new Opcode2(Opcode2.Names.nop);
+    Opcode2.Names = {};
+    Opcode2.hlt = new Opcode2(Opcode2.Values.hlt);
+    Opcode2.mov = new Opcode2(Opcode2.Values.mov);
+    Opcode2.movm = new Opcode2(Opcode2.Values.movm);
+    Opcode2.movi = new Opcode2(Opcode2.Values.movi);
+    Opcode2.add = new Opcode2(Opcode2.Values.add);
+    Opcode2.jmp = new Opcode2(Opcode2.Values.jmp);
+    Opcode2.cmp = new Opcode2(Opcode2.Values.cmp);
+    Opcode2.sys = new Opcode2(Opcode2.Values.sys);
     return Opcode2;
 }());
 var Opcode;
 (function (Opcode) {
-    Opcode[Opcode["movr"] = 0] = "movr";
-    Opcode[Opcode["movm"] = 1] = "movm";
-    Opcode[Opcode["movi"] = 2] = "movi";
-    Opcode[Opcode["add"] = 3] = "add";
-    Opcode[Opcode["jmp"] = 4] = "jmp";
+    Opcode[Opcode["hlt"] = 0] = "hlt";
+    Opcode[Opcode["movi"] = 1] = "movi";
+    Opcode[Opcode["movr"] = 2] = "movr";
+    Opcode[Opcode["movm"] = 3] = "movm";
+    Opcode[Opcode["add"] = 4] = "add";
     Opcode[Opcode["cmp"] = 5] = "cmp";
-    Opcode[Opcode["sys"] = 6] = "sys";
-    Opcode[Opcode["hlt"] = 7] = "hlt";
-    Opcode[Opcode["nop"] = 8] = "nop";
+    Opcode[Opcode["jmp"] = 6] = "jmp";
+    Opcode[Opcode["jeq"] = 7] = "jeq";
+    Opcode[Opcode["sys"] = 8] = "sys";
 })(Opcode || (Opcode = {}));
 var SysCall;
 (function (SysCall) {
@@ -97,20 +94,23 @@ function mov(dst, src) {
     }
     return [];
 }
+function hlt() {
+    return [Opcode.hlt << 4];
+}
 function add(dstReg, srcReg) {
     return [(Opcode.add << 4) | (dstReg.value << 2) | srcReg.value];
 }
 function jmp(srcAddr) {
     return [(Opcode.jmp << 4), srcAddr.value];
 }
+function jeq(srcAddr) {
+    return [(Opcode.jeq << 4), srcAddr];
+}
 function cmp(srcReg1, srcReg2) {
     return [(Opcode.cmp << 4) | (srcReg1.value << 2) | srcReg2.value];
 }
 function sys(op) {
     return [(Opcode.sys << 4) | op];
-}
-function hlt() {
-    return [Opcode.hlt << 4];
 }
 function string(string) {
     return string.split('').map(function (char) { return char.charCodeAt(0); });
@@ -130,6 +130,7 @@ var instructions2 = [
     mov(Register.A, 5),
     mov(Register.B, 0),
     cmp(Register.A, Register.B),
+    jeq(255),
     // Convert number to ASCII and write to stdout
     mov(Register.B, 48),
     add(Register.A, Register.B),
@@ -165,8 +166,17 @@ var Machine = /** @class */ (function () {
             '  ' + ((this.flags[0] >> 1) & 0x01));
     };
     Machine.prototype.decode = function () {
-        var opCode = this.memory[this.pc] >> 4;
+        return this.memory[this.pc] >> 4;
+    };
+    Machine.prototype.execute = function (opCode) {
         switch (opCode) {
+            case Opcode.movi: {
+                var dstReg = this.memory[this.pc] & 0xF;
+                var srcValue = this.memory[this.pc + 1];
+                this.registers[dstReg] = srcValue;
+                this.debug({ dstReg: Register.Names[dstReg], srcValue: srcValue });
+                return this.pc += 2;
+            }
             case Opcode.movr: {
                 var dstReg = this.memory[this.pc] & 0xF;
                 var srcAddr = this.memory[this.pc + 1];
@@ -174,20 +184,12 @@ var Machine = /** @class */ (function () {
                 this.debug({ dstReg: dstReg, srcAddr: srcAddr });
                 return this.pc += 2;
             }
-            case Opcode.movi: {
-                var dstReg = this.memory[this.pc] & 0xF;
-                var srcValue = this.memory[this.pc + 1];
-                this.registers[dstReg] = srcValue;
-                this.debug({ dstReg: Register.Values[dstReg], srcValue: srcValue });
-                return this.pc += 2;
-            }
             case Opcode.movm: {
                 var srcReg = this.memory[this.pc] & 0xF;
                 var dstAddr = this.memory[this.pc + 1];
                 this.memory[dstAddr] = this.registers[srcReg];
-                this.debug({ dstAddr: dstAddr, srcReg: Register.Values[srcReg] });
-                this.pc += 2;
-                return 2;
+                this.debug({ dstAddr: dstAddr, srcReg: Register.Names[srcReg] });
+                return this.pc += 2;
             }
             case Opcode.add: {
                 var dstReg = (this.memory[this.pc] >> 2) & 0x3;
@@ -196,13 +198,21 @@ var Machine = /** @class */ (function () {
                 this.registers[dstReg] = value;
                 this.flags[0] = (this.flags[0] & ~2) | (+(value === 0) << 1);
                 this.flags[0] = (this.flags[0] & ~1);
-                this.debug({ dstReg: Register.Values[dstReg], srcReg: Register.Values[srcReg] });
+                this.debug({ dstReg: Register.Names[dstReg], srcReg: Register.Names[srcReg] });
                 return this.pc += 1;
             }
             case Opcode.jmp: {
                 var srcAddr = this.memory[this.pc + 1];
-                this.pc = srcAddr;
-                return 2;
+                return this.pc = srcAddr;
+            }
+            case Opcode.jeq: {
+                var srcAddr = this.memory[this.pc + 1];
+                if ((this.flags[0] >> 0) & 0x10) {
+                    return this.pc = srcAddr;
+                }
+                else {
+                    return this.pc += 2;
+                }
             }
             case Opcode.cmp: {
                 var dstReg = (this.memory[this.pc] >> 2) & 0x3;
@@ -210,9 +220,8 @@ var Machine = /** @class */ (function () {
                 var value = this.registers[dstReg] - this.registers[srcReg];
                 this.flags[0] = (this.flags[0] & ~2) | (+(value === 0) << 1);
                 this.flags[0] = (this.flags[0] & ~1) | +(value > 0);
-                this.debug({ dstReg: Register.Values[dstReg], srcReg: Register.Values[srcReg] });
-                this.pc += 1;
-                return 1;
+                this.debug({ dstReg: Register.Names[dstReg], srcReg: Register.Names[srcReg] });
+                return this.pc += 1;
             }
             case Opcode.sys: {
                 var op = this.memory[this.pc] & 0xF;
@@ -237,6 +246,7 @@ var Machine = /** @class */ (function () {
                 return this.pc += 1;
             }
             case Opcode.hlt: {
+                this.debug({});
                 return 0;
             }
             default: {
@@ -246,13 +256,14 @@ var Machine = /** @class */ (function () {
         }
     };
     Machine.prototype.start = function (pc) {
-        console.log('OP\tOPERANDS\t\t\t\t\tPC\tREGISTERS\tC  Z');
-        console.log('======= =============== =============== =============== ======= =============== =====');
+        console.log('OP      OPERANDS                                        PC      REGISTERS       C  Z');
+        console.log('======= =============== =============== =============== ======= =============== ====');
         this.pc = pc;
-        var jump = this.decode();
-        while (jump > 0) {
-            jump = this.decode();
+        for (var opCode = this.decode(); opCode !== Opcode.hlt; opCode = this.decode()) {
+            opCode = this.decode();
+            this.execute(opCode);
         }
+        ;
     };
     return Machine;
 }());

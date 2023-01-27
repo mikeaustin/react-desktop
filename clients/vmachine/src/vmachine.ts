@@ -3,26 +3,26 @@
 */
 
 class Register {
-  static Names = {
+  static Values = {
     A: 0,
     B: 1,
     C: 2,
     D: 3,
   } as const;
 
-  static Values = {
+  static Names = {
     0: 'A',
     1: 'B',
     2: 'C',
     3: 'D',
   } as const;
 
-  static A = new Register(Register.Names.A);
-  static B = new Register(Register.Names.B);
-  static C = new Register(Register.Names.C);
-  static D = new Register(Register.Names.D);
+  static A = new Register(Register.Values.A);
+  static B = new Register(Register.Values.B);
+  static C = new Register(Register.Values.C);
+  static D = new Register(Register.Values.D);
 
-  constructor(public value: typeof Register.Names[keyof typeof Register.Names]) { }
+  constructor(public value: typeof Register.Values[keyof typeof Register.Values]) { }
 }
 
 class Address {
@@ -30,10 +30,8 @@ class Address {
 }
 
 class Opcode2 {
-  static Names = {
-    load: 0,
-    stor: 1,
-
+  static Values = {
+    hlt: 7,
     mov: 0,
     movm: 1,
     movi: 2,
@@ -41,33 +39,34 @@ class Opcode2 {
     jmp: 4,
     cmp: 5,
     sys: 6,
-    hlt: 7,
-    nop: 8,
   } as const;
 
-  static mov = new Opcode2(Opcode2.Names.mov);
-  static movm = new Opcode2(Opcode2.Names.movm);
-  static movi = new Opcode2(Opcode2.Names.movi);
-  static add = new Opcode2(Opcode2.Names.add);
-  static jmp = new Opcode2(Opcode2.Names.jmp);
-  static cmp = new Opcode2(Opcode2.Names.cmp);
-  static sys = new Opcode2(Opcode2.Names.sys);
-  static hlt = new Opcode2(Opcode2.Names.hlt);
-  static nop = new Opcode2(Opcode2.Names.nop);
+  static Names = {
 
-  constructor(public value: typeof Opcode2.Names[keyof typeof Opcode2.Names]) { }
+  };
+
+  static hlt = new Opcode2(Opcode2.Values.hlt);
+  static mov = new Opcode2(Opcode2.Values.mov);
+  static movm = new Opcode2(Opcode2.Values.movm);
+  static movi = new Opcode2(Opcode2.Values.movi);
+  static add = new Opcode2(Opcode2.Values.add);
+  static jmp = new Opcode2(Opcode2.Values.jmp);
+  static cmp = new Opcode2(Opcode2.Values.cmp);
+  static sys = new Opcode2(Opcode2.Values.sys);
+
+  constructor(public value: typeof Opcode2.Values[keyof typeof Opcode2.Values]) { }
 }
 
 enum Opcode {
+  hlt,
+  movi,
   movr,
   movm,
-  movi,
   add,
-  jmp,
   cmp,
+  jmp,
+  jeq,
   sys,
-  hlt,
-  nop,
 }
 
 enum SysCall {
@@ -91,6 +90,10 @@ function mov(dst: unknown, src: Address | number): number[] {
   return [];
 }
 
+function hlt() {
+  return [Opcode.hlt << 4];
+}
+
 function add(dstReg: Register, srcReg: Register) {
   return [(Opcode.add << 4) | (dstReg.value << 2) | srcReg.value];
 }
@@ -99,16 +102,16 @@ function jmp(srcAddr: Address) {
   return [(Opcode.jmp << 4), srcAddr.value];
 }
 
+function jeq(srcAddr: number) {
+  return [(Opcode.jeq << 4), srcAddr];
+}
+
 function cmp(srcReg1: Register, srcReg2: Register) {
   return [(Opcode.cmp << 4) | (srcReg1.value << 2) | srcReg2.value];
 }
 
 function sys(op: number) {
   return [(Opcode.sys << 4) | op];
-}
-
-function hlt() {
-  return [Opcode.hlt << 4];
 }
 
 function string(string: string): number[] {
@@ -135,6 +138,7 @@ const instructions2: Program = [
   mov(Register.A, 5),
   mov(Register.B, 0),
   cmp(Register.A, Register.B),
+  jeq(255),
 
   // Convert number to ASCII and write to stdout
   mov(Register.B, 48),
@@ -181,9 +185,21 @@ class Machine {
   }
 
   decode() {
-    const opCode = this.memory[this.pc] >> 4;
+    return this.memory[this.pc] >> 4;
+  }
 
+  execute(opCode: number) {
     switch (opCode) {
+      case Opcode.movi: {
+        const dstReg = this.memory[this.pc] & 0xF;
+        const srcValue = this.memory[this.pc + 1];
+
+        this.registers[dstReg] = srcValue;
+
+        this.debug({ dstReg: (Register.Names as any)[dstReg], srcValue });
+
+        return this.pc += 2;
+      }
       case Opcode.movr: {
         const dstReg = this.memory[this.pc] & 0xF;
         const srcAddr = this.memory[this.pc + 1];
@@ -194,27 +210,15 @@ class Machine {
 
         return this.pc += 2;
       }
-      case Opcode.movi: {
-        const dstReg = this.memory[this.pc] & 0xF;
-        const srcValue = this.memory[this.pc + 1];
-
-        this.registers[dstReg] = srcValue;
-
-        this.debug({ dstReg: (Register.Values as any)[dstReg], srcValue });
-
-        return this.pc += 2;
-      }
       case Opcode.movm: {
         const srcReg = this.memory[this.pc] & 0xF;
         const dstAddr = this.memory[this.pc + 1];
 
         this.memory[dstAddr] = this.registers[srcReg];
 
-        this.debug({ dstAddr, srcReg: (Register.Values as any)[srcReg] });
+        this.debug({ dstAddr, srcReg: (Register.Names as any)[srcReg] });
 
-        this.pc += 2;
-
-        return 2;
+        return this.pc += 2;
       }
       case Opcode.add: {
         const dstReg = (this.memory[this.pc] >> 2) & 0x3;
@@ -227,16 +231,23 @@ class Machine {
         this.flags[0] = (this.flags[0] & ~0b10) | (+(value === 0) << 1);
         this.flags[0] = (this.flags[0] & ~0b01);
 
-        this.debug({ dstReg: (Register.Values as any)[dstReg], srcReg: (Register.Values as any)[srcReg] });
+        this.debug({ dstReg: (Register.Names as any)[dstReg], srcReg: (Register.Names as any)[srcReg] });
 
         return this.pc += 1;
       }
       case Opcode.jmp: {
         const srcAddr = this.memory[this.pc + 1];
 
-        this.pc = srcAddr;
+        return this.pc = srcAddr;
+      }
+      case Opcode.jeq: {
+        const srcAddr = this.memory[this.pc + 1];
 
-        return 2;
+        if ((this.flags[0] >> 0) & 0x10) {
+          return this.pc = srcAddr;
+        } else {
+          return this.pc += 2;
+        }
       }
       case Opcode.cmp: {
         const dstReg = (this.memory[this.pc] >> 2) & 0x3;
@@ -247,11 +258,9 @@ class Machine {
         this.flags[0] = (this.flags[0] & ~0b10) | (+(value === 0) << 1);
         this.flags[0] = (this.flags[0] & ~0b01) | +(value > 0);
 
-        this.debug({ dstReg: (Register.Values as any)[dstReg], srcReg: (Register.Values as any)[srcReg] });
+        this.debug({ dstReg: (Register.Names as any)[dstReg], srcReg: (Register.Names as any)[srcReg] });
 
-        this.pc += 1;
-
-        return 1;
+        return this.pc += 1;
       }
       case Opcode.sys: {
         const op = this.memory[this.pc] & 0xF;
@@ -281,6 +290,8 @@ class Machine {
         return this.pc += 1;
       }
       case Opcode.hlt: {
+        this.debug({});
+
         return 0;
       }
       default: {
@@ -292,16 +303,16 @@ class Machine {
   }
 
   start(pc: number) {
-    console.log('OP\tOPERANDS\t\t\t\t\tPC\tREGISTERS\tC  Z');
-    console.log('======= =============== =============== =============== ======= =============== =====');
+    console.log('OP      OPERANDS                                        PC      REGISTERS       C  Z');
+    console.log('======= =============== =============== =============== ======= =============== ====');
 
     this.pc = pc;
 
-    let jump = this.decode();
+    for (let opCode = this.decode(); opCode !== Opcode.hlt; opCode = this.decode()) {
+      opCode = this.decode();
 
-    while (jump > 0) {
-      jump = this.decode();
-    }
+      this.execute(opCode);
+    };
   }
 }
 
