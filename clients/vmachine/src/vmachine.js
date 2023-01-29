@@ -67,16 +67,44 @@ var Opcode2 = /** @class */ (function () {
 }());
 var Opcode;
 (function (Opcode) {
-    Opcode[Opcode["hlt"] = 0] = "hlt";
-    Opcode[Opcode["movi"] = 1] = "movi";
-    Opcode[Opcode["movr"] = 2] = "movr";
-    Opcode[Opcode["movm"] = 3] = "movm";
-    Opcode[Opcode["add"] = 4] = "add";
-    Opcode[Opcode["cmp"] = 5] = "cmp";
-    Opcode[Opcode["jmp"] = 6] = "jmp";
-    Opcode[Opcode["jeq"] = 7] = "jeq";
-    Opcode[Opcode["sys"] = 8] = "sys";
+    Opcode[Opcode["hlt"] = 0] = "hlt"; /* even */
+    Opcode[Opcode["mov"] = 1] = "mov"; /* even */
+    Opcode[Opcode["add"] = 2] = "add"; /* even */
+    Opcode[Opcode["sub"] = 3] = "sub"; /* even */
+    Opcode[Opcode["inc"] = 4] = "inc"; /* even */
+    Opcode[Opcode["dec"] = 5] = "dec"; /* even */
+    Opcode[Opcode["cmp"] = 6] = "cmp"; /* even */
+    Opcode[Opcode["sys"] = 7] = "sys"; /* even */
+    Opcode[Opcode["movr"] = 8] = "movr"; /* odd  */
+    Opcode[Opcode["movi"] = 9] = "movi"; /* odd  */
+    Opcode[Opcode["movm"] = 10] = "movm"; /* odd  */
+    Opcode[Opcode["jmp"] = 11] = "jmp"; /* odd  */
+    Opcode[Opcode["jeq"] = 12] = "jeq"; /* odd  */
+    Opcode[Opcode["jne"] = 13] = "jne"; /* odd  */
+    Opcode[Opcode["jlt"] = 14] = "jlt"; /* odd  */
+    Opcode[Opcode["jgt"] = 15] = "jgt"; /* odd  */
 })(Opcode || (Opcode = {}));
+/*
+
+hlt   even
+mov   even
+add   even
+sub   even
+inc   even
+dec   even
+cmp   even
+sys   even
+
+movi  odd
+movr  odd
+movm  odd
+jmpa  odd
+jeqa  odd
+jnea  odd
+jlta  odd
+jgta  odd
+
+*/
 var SysCall;
 (function (SysCall) {
     SysCall[SysCall["write"] = 1] = "write";

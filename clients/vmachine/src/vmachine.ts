@@ -58,16 +58,48 @@ class Opcode2 {
 }
 
 enum Opcode {
-  hlt,
-  movi,
-  movr,
-  movm,
-  add,
-  cmp,
-  jmp,
-  jeq,
-  sys,
+  hlt  /* even */,
+  mov  /* even */,
+  add  /* even */,
+  sub  /* even */,
+  inc  /* even */,
+  dec  /* even */,
+  cmp  /* even */,
+  sys  /* even */,
+  movr /* odd  */,
+  movi /* odd  */,
+  movm /* odd  */,
+  jmp  /* odd  */,
+  jeq  /* odd  */,
+  jne  /* odd  */,
+  jlt  /* odd  */,
+  jgt  /* odd  */,
 }
+
+/*
+
+jmp has room for 4 bit arg
+use args for == != > >= < <=
+
+hlt   even
+mov   even
+add   even
+sub   even
+inc   even
+dec   even
+cmp   even
+sys   even
+
+movi  odd
+movr  odd
+movm  odd
+jmpa  odd
+jeqa  odd
+jnea  odd
+jlta  odd
+jgta  odd
+
+*/
 
 enum SysCall {
   write = 1,
