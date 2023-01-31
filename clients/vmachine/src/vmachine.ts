@@ -70,39 +70,15 @@ enum Opcode {
   movr /* odd  */ = 0x01,
   movi /* odd  */ = 0x03,
   movm /* odd  */ = 0x05,
-  jmp  /* odd  */ = 0x07,
-  jeq  /* odd  */ = 0x09,
-  jne  /* odd  */ = 0x0B,
-  jlt  /* odd  */ = 0x0D,
-  jgt  /* odd  */ = 0x0F,
+  addi /* odd  */ = 0x07,
+  subi /* odd  */ = 0x09,
+  cmpi /* odd  */ = 0x0B,
+  jmpa /* odd  */ = 0x0D,
+  // jlt  /* odd  */ = 0x0F,
 }
 
-/*
-
-jmp has room for 4 bit arg
-use args for == != > >= < <=
-
-hlt   even
-mov   even
-add   even
-sub   even
-inc   even
-dec   even
-cmp   even
-sys   even
-
-movi  odd
-movr  odd
-movm  odd
-jmpa  odd
-jeqa  odd
-jnea  odd
-jlta  odd
-jgta  odd
-
-*/
-
 enum JmpOp {
+  always,
   eq,
 }
 
@@ -136,11 +112,11 @@ function add(dstReg: Register, srcReg: Register) {
 }
 
 function jmp(srcAddr: Address) {
-  return [(Opcode.jmp << 4), srcAddr.value];
+  return [(Opcode.jmpa << 4) | JmpOp.always, srcAddr.value];
 }
 
 function jeq(srcAddr: number) {
-  return [(Opcode.jeq << 4) | JmpOp.eq, srcAddr];
+  return [(Opcode.jmpa << 4) | JmpOp.eq, srcAddr];
 }
 
 function cmp(srcReg1: Register, srcReg2: Register) {
@@ -226,6 +202,23 @@ class Machine {
   }
 
   execute(opCode: number) {
+    switch (this.memory[this.pc]) {
+      case (Opcode.jmpa << 4) | JmpOp.always: {
+        const srcAddr = this.memory[this.pc + 1];
+
+        return this.pc = srcAddr;
+      }
+      case (Opcode.jmpa << 4) | JmpOp.eq: {
+        const srcAddr = this.memory[this.pc + 1];
+
+        if ((this.flags[0] >> 0) & 0x10) {
+          return this.pc = srcAddr;
+        } else {
+          return this.pc += 2;
+        }
+      }
+    }
+
     switch (opCode) {
       case Opcode.movi: {
         const dstReg = this.memory[this.pc] & 0xF;
@@ -271,21 +264,6 @@ class Machine {
         this.debug({ dstReg: (Register.Names as any)[dstReg], srcReg: (Register.Names as any)[srcReg] });
 
         return this.pc += 1;
-      }
-      case Opcode.jmp: {
-        const srcAddr = this.memory[this.pc + 1];
-
-        return this.pc = srcAddr;
-      }
-      case Opcode.jeq: {
-        const op = this.memory[this.pc] & 0xF;
-        const srcAddr = this.memory[this.pc + 1];
-
-        if ((this.flags[0] >> 0) & 0x10) {
-          return this.pc = srcAddr;
-        } else {
-          return this.pc += 2;
-        }
       }
       case Opcode.cmp: {
         const dstReg = (this.memory[this.pc] >> 2) & 0x3;
