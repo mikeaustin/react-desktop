@@ -127,33 +127,6 @@ function sys(op) {
 function string(string) {
     return string.split('').map(function (char) { return char.charCodeAt(0); });
 }
-var instructions2 = [
-    string('Hello, world.'),
-    // Write string at address 0 to stdout
-    mov(Register.A, 0),
-    mov(Register.B, 13),
-    sys(SysCall.write),
-    // Add 2 + 3 and store at address 0
-    mov(Register.A, 2),
-    mov(Register.B, 3),
-    add(Register.A, Register.B),
-    mov(new Address(0), Register.A),
-    // Compare registers A and B
-    mov(Register.A, 5),
-    mov(Register.B, 0),
-    cmp(Register.A, Register.B),
-    jeq(255),
-    // Convert number to ASCII and write to stdout
-    mov(Register.B, 48),
-    add(Register.A, Register.B),
-    mov(new Address(0), Register.A),
-    mov(Register.A, 0),
-    mov(Register.B, 1),
-    sys(SysCall.write),
-    // Dump memory to stdout
-    sys(SysCall.dump),
-    hlt(),
-];
 var Machine = /** @class */ (function () {
     function Machine(instructions) {
         var _this = this;
@@ -187,7 +160,6 @@ var Machine = /** @class */ (function () {
                 return this.pc = srcAddr;
             }
             case (Opcode.jmpa << 4) | JmpOp.eq: {
-                console.log('here');
                 var srcAddr = this.memory[this.pc + 1];
                 if ((this.flags[0] >> 0) & 0x10) {
                     return this.pc = srcAddr;
@@ -279,8 +251,37 @@ var Machine = /** @class */ (function () {
             this.execute(opCode);
         }
         ;
+        console.log();
     };
     return Machine;
 }());
+var instructions2 = [
+    string('Hello, world.'),
+    // Write string at address 0 to stdout
+    mov(Register.A, 0),
+    mov(Register.B, 13),
+    sys(SysCall.write),
+    hlt(),
+    // Add 2 + 3, convert to ASCII, and write to stdout
+    mov(Register.A, 2),
+    mov(Register.B, 3),
+    add(Register.A, Register.B),
+    // mov(new Address(0), Register.A),
+    mov(Register.B, 48),
+    add(Register.A, Register.B),
+    mov(new Address(0), Register.A),
+    mov(Register.A, 0),
+    mov(Register.B, 1),
+    sys(SysCall.write),
+    hlt(),
+    // Compare registers A and B
+    mov(Register.A, 5),
+    mov(Register.B, 0),
+    cmp(Register.A, Register.B),
+    jeq(255),
+    hlt(),
+];
 var machine = new Machine(instructions2);
 machine.start(13);
+machine.start(19);
+machine.start(35);

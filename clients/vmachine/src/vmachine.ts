@@ -133,40 +133,6 @@ function string(string: string): number[] {
 
 type Program = number[][];
 
-const instructions2: Program = [
-  string('Hello, world.'),
-
-  // Write string at address 0 to stdout
-  mov(Register.A, 0),
-  mov(Register.B, 13),
-  sys(SysCall.write),
-
-  // Add 2 + 3 and store at address 0
-  mov(Register.A, 2),
-  mov(Register.B, 3),
-  add(Register.A, Register.B),
-  mov(new Address(0), Register.A),
-
-  // Compare registers A and B
-  mov(Register.A, 5),
-  mov(Register.B, 0),
-  cmp(Register.A, Register.B),
-  jeq(255),
-
-  // Convert number to ASCII and write to stdout
-  mov(Register.B, 48),
-  add(Register.A, Register.B),
-  mov(new Address(0), Register.A),
-  mov(Register.A, 0),
-  mov(Register.B, 1),
-  sys(SysCall.write),
-
-  // Dump memory to stdout
-  sys(SysCall.dump),
-
-  hlt(),
-];
-
 class Machine {
   registers: Uint8Array;
   memory: Uint8Array;
@@ -329,11 +295,49 @@ class Machine {
 
       this.execute(opCode);
     };
+
+    console.log();
   }
 }
+
+const instructions2: Program = [
+  string('Hello, world.'),
+
+  // Write string at address 0 to stdout
+
+  mov(Register.A, 0),
+  mov(Register.B, 13),
+  sys(SysCall.write),
+  hlt(),
+
+  // Add 2 + 3, convert to ASCII, and write to stdout
+
+  mov(Register.A, 2),
+  mov(Register.B, 3),
+  add(Register.A, Register.B),
+
+  mov(Register.B, 48),
+  add(Register.A, Register.B),
+
+  mov(new Address(0), Register.A),
+  mov(Register.A, 0),
+  mov(Register.B, 1),
+  sys(SysCall.write),
+  hlt(),
+
+  // Compare registers A and B
+
+  mov(Register.A, 5),
+  mov(Register.B, 0),
+  cmp(Register.A, Register.B),
+  jeq(255),
+  hlt(),
+];
 
 const machine = new Machine(instructions2);
 
 machine.start(13);
+machine.start(19);
+machine.start(35);
 
 export { };
