@@ -67,24 +67,27 @@ var Opcode2 = /** @class */ (function () {
 }());
 var Opcode;
 (function (Opcode) {
-    Opcode[Opcode["hlt"] = 0] = "hlt"; /* even */
-    Opcode[Opcode["mov"] = 1] = "mov"; /* even */
-    Opcode[Opcode["add"] = 2] = "add"; /* even */
-    Opcode[Opcode["sub"] = 3] = "sub"; /* even */
-    Opcode[Opcode["inc"] = 4] = "inc"; /* even */
-    Opcode[Opcode["dec"] = 5] = "dec"; /* even */
-    Opcode[Opcode["cmp"] = 6] = "cmp"; /* even */
-    Opcode[Opcode["sys"] = 7] = "sys"; /* even */
-    Opcode[Opcode["movr"] = 8] = "movr"; /* odd  */
-    Opcode[Opcode["movi"] = 9] = "movi"; /* odd  */
-    Opcode[Opcode["movm"] = 10] = "movm"; /* odd  */
-    Opcode[Opcode["jmp"] = 11] = "jmp"; /* odd  */
-    Opcode[Opcode["jeq"] = 12] = "jeq"; /* odd  */
-    Opcode[Opcode["jne"] = 13] = "jne"; /* odd  */
-    Opcode[Opcode["jlt"] = 14] = "jlt"; /* odd  */
-    Opcode[Opcode["jgt"] = 15] = "jgt"; /* odd  */
+    Opcode[Opcode["hlt"] = 0] = "hlt";
+    Opcode[Opcode["mov"] = 2] = "mov";
+    Opcode[Opcode["add"] = 4] = "add";
+    Opcode[Opcode["sub"] = 6] = "sub";
+    Opcode[Opcode["inc"] = 8] = "inc";
+    Opcode[Opcode["dec"] = 10] = "dec";
+    Opcode[Opcode["cmp"] = 12] = "cmp";
+    Opcode[Opcode["sys"] = 14] = "sys";
+    Opcode[Opcode["movr"] = 1] = "movr";
+    Opcode[Opcode["movi"] = 3] = "movi";
+    Opcode[Opcode["movm"] = 5] = "movm";
+    Opcode[Opcode["jmp"] = 7] = "jmp";
+    Opcode[Opcode["jeq"] = 9] = "jeq";
+    Opcode[Opcode["jne"] = 11] = "jne";
+    Opcode[Opcode["jlt"] = 13] = "jlt";
+    Opcode[Opcode["jgt"] = 15] = "jgt";
 })(Opcode || (Opcode = {}));
 /*
+
+jmp has room for 4 bit arg
+use args for == != > >= < <=
 
 hlt   even
 mov   even
@@ -105,6 +108,10 @@ jlta  odd
 jgta  odd
 
 */
+var JmpOp;
+(function (JmpOp) {
+    JmpOp[JmpOp["eq"] = 0] = "eq";
+})(JmpOp || (JmpOp = {}));
 var SysCall;
 (function (SysCall) {
     SysCall[SysCall["write"] = 1] = "write";
@@ -132,7 +139,7 @@ function jmp(srcAddr) {
     return [(Opcode.jmp << 4), srcAddr.value];
 }
 function jeq(srcAddr) {
-    return [(Opcode.jeq << 4), srcAddr];
+    return [(Opcode.jeq << 4) | JmpOp.eq, srcAddr];
 }
 function cmp(srcReg1, srcReg2) {
     return [(Opcode.cmp << 4) | (srcReg1.value << 2) | srcReg2.value];
@@ -234,6 +241,7 @@ var Machine = /** @class */ (function () {
                 return this.pc = srcAddr;
             }
             case Opcode.jeq: {
+                var op = this.memory[this.pc] & 0xF;
                 var srcAddr = this.memory[this.pc + 1];
                 if ((this.flags[0] >> 0) & 0x10) {
                     return this.pc = srcAddr;

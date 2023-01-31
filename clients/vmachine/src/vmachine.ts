@@ -58,22 +58,23 @@ class Opcode2 {
 }
 
 enum Opcode {
-  hlt  /* even */,
-  mov  /* even */,
-  add  /* even */,
-  sub  /* even */,
-  inc  /* even */,
-  dec  /* even */,
-  cmp  /* even */,
-  sys  /* even */,
-  movr /* odd  */,
-  movi /* odd  */,
-  movm /* odd  */,
-  jmp  /* odd  */,
-  jeq  /* odd  */,
-  jne  /* odd  */,
-  jlt  /* odd  */,
-  jgt  /* odd  */,
+  hlt  /* even */ = 0x00,
+  mov  /* even */ = 0x02,
+  add  /* even */ = 0x04,
+  sub  /* even */ = 0x06,
+  inc  /* even */ = 0x08,
+  dec  /* even */ = 0x0A,
+  cmp  /* even */ = 0x0C,
+  sys  /* even */ = 0x0E,
+
+  movr /* odd  */ = 0x01,
+  movi /* odd  */ = 0x03,
+  movm /* odd  */ = 0x05,
+  jmp  /* odd  */ = 0x07,
+  jeq  /* odd  */ = 0x09,
+  jne  /* odd  */ = 0x0B,
+  jlt  /* odd  */ = 0x0D,
+  jgt  /* odd  */ = 0x0F,
 }
 
 /*
@@ -100,6 +101,10 @@ jlta  odd
 jgta  odd
 
 */
+
+enum JmpOp {
+  eq,
+}
 
 enum SysCall {
   write = 1,
@@ -135,7 +140,7 @@ function jmp(srcAddr: Address) {
 }
 
 function jeq(srcAddr: number) {
-  return [(Opcode.jeq << 4), srcAddr];
+  return [(Opcode.jeq << 4) | JmpOp.eq, srcAddr];
 }
 
 function cmp(srcReg1: Register, srcReg2: Register) {
@@ -273,6 +278,7 @@ class Machine {
         return this.pc = srcAddr;
       }
       case Opcode.jeq: {
+        const op = this.memory[this.pc] & 0xF;
         const srcAddr = this.memory[this.pc + 1];
 
         if ((this.flags[0] >> 0) & 0x10) {
