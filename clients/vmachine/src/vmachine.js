@@ -101,7 +101,7 @@ function mov(dst, src) {
     else if (dst instanceof Address && src instanceof Register) {
         return [(Opcode.movm << 4) | dst.value, src.value];
     }
-    else if (dst instanceof Register && typeof src === 'number') {
+    else if (dst instanceof Register && (typeof src === 'number' || typeof src === 'string')) {
         return [(Opcode.movi << 4) | dst.value, src];
     }
     return [];
@@ -124,7 +124,7 @@ function cmp(srcReg1, srcReg2) {
 function sys(op) {
     return [(Opcode.sys << 4) | op];
 }
-function string(string) {
+function ascii(string) {
     return string.split('').map(function (char) { return char.charCodeAt(0); });
 }
 var Machine = /** @class */ (function () {
@@ -135,7 +135,9 @@ var Machine = /** @class */ (function () {
         this.flags = new Uint8Array(new ArrayBuffer(1));
         this.pc = 0;
         instructions.flat().forEach(function (byte, index) {
-            _this.memory[index] = byte;
+            if (typeof byte !== 'string') {
+                _this.memory[index] = byte;
+            }
         });
     }
     Machine.prototype.debug = function (operands) {
@@ -157,11 +159,13 @@ var Machine = /** @class */ (function () {
         switch (this.memory[this.pc]) {
             case (Opcode.jmpa << 4) | JmpOp.always: {
                 var srcAddr = this.memory[this.pc + 1];
+                this.debug({ op: JmpOp[JmpOp.always] });
                 return this.pc = srcAddr;
             }
             case (Opcode.jmpa << 4) | JmpOp.eq: {
                 var srcAddr = this.memory[this.pc + 1];
-                if ((this.flags[0] >> 0) & 0x10) {
+                this.debug({ op: JmpOp[JmpOp.eq] });
+                if (this.flags[0] & 0x2) {
                     return this.pc = srcAddr;
                 }
                 else {
@@ -215,13 +219,13 @@ var Machine = /** @class */ (function () {
                 if (op === SysCall.write) {
                     var address = this.registers[Register.A.value];
                     var length_1 = this.registers[Register.B.value];
-                    var string_1 = this.memory
+                    var string = this.memory
                         .slice(address, address + length_1)
                         .reduce(function (array, charCode) { return __spreadArray(__spreadArray([], array, true), [String.fromCharCode(charCode)], false); }, [])
                         .join('');
                     this.registers[Register.A.value] = 0;
                     this.debug({ op: SysCall[op], address: address, length: length_1 });
-                    console.log(string_1);
+                    console.log(string);
                 }
                 else if (op === SysCall.dump) {
                     this.debug({ op: SysCall[op] });
@@ -246,27 +250,29 @@ var Machine = /** @class */ (function () {
         console.log('OP      OPERANDS                                        PC      REGISTERS       C  Z');
         console.log('======= =============== =============== =============== ======= =============== ====');
         this.pc = pc;
-        for (var opCode = this.decode(); opCode !== Opcode.hlt; opCode = this.decode()) {
+        var opCode;
+        do {
             opCode = this.decode();
             this.execute(opCode);
-        }
-        ;
+        } while (opCode !== Opcode.hlt && opCode <= 0xF);
         console.log();
     };
     return Machine;
 }());
-var instructions2 = [
-    string('Hello, world.'),
-    // Write string at address 0 to stdout
-    mov(Register.A, 0),
+var instructions = [
+    'hello',
+    ascii('Hello, world.'),
+    'goodbye',
+    ascii('Goodbye.'),
+    'start',
+    mov(Register.A, 'hello'),
     mov(Register.B, 13),
     sys(SysCall.write),
     hlt(),
-    // Add 2 + 3, convert to ASCII, and write to stdout
+    'add',
     mov(Register.A, 2),
     mov(Register.B, 3),
     add(Register.A, Register.B),
-    // mov(new Address(0), Register.A),
     mov(Register.B, 48),
     add(Register.A, Register.B),
     mov(new Address(0), Register.A),
@@ -274,14 +280,63 @@ var instructions2 = [
     mov(Register.B, 1),
     sys(SysCall.write),
     hlt(),
-    // Compare registers A and B
+    'compare',
     mov(Register.A, 5),
-    mov(Register.B, 0),
+    mov(Register.B, 5),
     cmp(Register.A, Register.B),
-    jeq(255),
+    jeq('end'),
+    hlt(),
+    'end',
+    mov(Register.A, 'goodbye'),
+    mov(Register.B, 8),
+    sys(SysCall.write),
     hlt(),
 ];
+// instructions.filter(inst => typeof inst !== 'string').flat().forEach((byte, index) => {
+//   if (typeof byte !== 'string') {
+//     this.memory[index] = byte;
+//   }
+// });
+var labels = {};
+var index = 0;
+for (var _i = 0, instructions_1 = instructions; _i < instructions_1.length; _i++) {
+    var data = instructions_1[_i];
+    if (typeof data === 'string') {
+        labels[data] = index;
+    }
+    else {
+        index += data.length;
+    }
+}
+;
+console.log(labels);
+var instructions2 = [];
+for (var _a = 0, instructions_2 = instructions; _a < instructions_2.length; _a++) {
+    var data = instructions_2[_a];
+    if (typeof data !== 'string') {
+        instructions2.push(data.map(function (data) { return typeof data === 'string' ? labels[data] : data; }));
+    }
+}
+;
+// const instructions2 = instructions.reduce((instructions, data) => {
+//   if (typeof data === 'string') {
+//   } else {
+//     return data.map(data => typeof data === 'string' ? labels[data] : data)
+//   }
+// });
+// const labels = instructions.reduce<[{}, number]>(([labels, index], data) => ({
+//   ...(typeof data === 'string'
+//     ? [{ ...labels, [data]: index }, index]
+//     : [labels, index + data.length]),
+// }), [{}, 0]);
+// const labels2 = instructions.reduce<[{}, number]>(([labels, index], data) => {
+//   if (typeof data === 'string') {
+//     return [{ ...labels, [data]: index }, index];
+//   } else {
+//     return [labels, index + data.length];
+//   }
+// }, [{}, 0]);
 var machine = new Machine(instructions2);
-machine.start(13);
-machine.start(19);
-machine.start(35);
+machine.start(labels.start);
+machine.start(labels.add);
+machine.start(labels.compare);

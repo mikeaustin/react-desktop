@@ -90,13 +90,14 @@ enum SysCall {
 function mov(dst: Register, src: Address): number[];
 function mov(dst: Address, src: Register): number[];
 function mov(dst: Register, src: number): number[];
+function mov(dst: Register, src: string): number[];
 
-function mov(dst: unknown, src: Address | number): number[] {
+function mov(dst: unknown, src: unknown): (number | string)[] {
   if (dst instanceof Register && src instanceof Address) {
     return [(Opcode.movr << 4) | dst.value, src.value];
   } else if (dst instanceof Address && src instanceof Register) {
     return [(Opcode.movm << 4) | dst.value, src.value];
-  } else if (dst instanceof Register && typeof src === 'number') {
+  } else if (dst instanceof Register && (typeof src === 'number' || typeof src === 'string')) {
     return [(Opcode.movi << 4) | dst.value, src];
   }
 
@@ -115,7 +116,7 @@ function jmp(srcAddr: Address) {
   return [(Opcode.jmpa << 4) | JmpOp.always, srcAddr.value];
 }
 
-function jeq(srcAddr: number) {
+function jeq(srcAddr: number | string) {
   return [(Opcode.jmpa << 4) | JmpOp.eq, srcAddr];
 }
 
@@ -127,11 +128,11 @@ function sys(op: number) {
   return [(Opcode.sys << 4) | op];
 }
 
-function string(string: string): number[] {
+function ascii(string: string): number[] {
   return string.split('').map(char => char.charCodeAt(0));
 }
 
-type Program = number[][];
+type Program = ((number | string)[] | string)[];
 
 class Machine {
   registers: Uint8Array;
@@ -146,7 +147,9 @@ class Machine {
     this.pc = 0;
 
     instructions.flat().forEach((byte, index) => {
-      this.memory[index] = byte;
+      if (typeof byte !== 'string') {
+        this.memory[index] = byte;
+      }
     });
   }
 
@@ -172,12 +175,16 @@ class Machine {
       case (Opcode.jmpa << 4) | JmpOp.always: {
         const srcAddr = this.memory[this.pc + 1];
 
+        this.debug({ op: JmpOp[JmpOp.always] });
+
         return this.pc = srcAddr;
       }
       case (Opcode.jmpa << 4) | JmpOp.eq: {
         const srcAddr = this.memory[this.pc + 1];
 
-        if ((this.flags[0] >> 0) & 0x10) {
+        this.debug({ op: JmpOp[JmpOp.eq] });
+
+        if (this.flags[0] & 0x2) {
           return this.pc = srcAddr;
         } else {
           return this.pc += 2;
@@ -290,28 +297,32 @@ class Machine {
 
     this.pc = pc;
 
-    for (let opCode = this.decode(); opCode !== Opcode.hlt; opCode = this.decode()) {
+    let opCode;
+
+    do {
       opCode = this.decode();
 
       this.execute(opCode);
-    };
+    } while (opCode !== Opcode.hlt && opCode <= 0xF);
 
     console.log();
   }
 }
 
-const instructions2: Program = [
-  string('Hello, world.'),
+const instructions: Program = [
+  'hello',
+  ascii('Hello, world.'),
 
-  // Write string at address 0 to stdout
+  'goodbye',
+  ascii('Goodbye.'),
 
-  mov(Register.A, 0),
+  'start',
+  mov(Register.A, 'hello'),
   mov(Register.B, 13),
   sys(SysCall.write),
   hlt(),
 
-  // Add 2 + 3, convert to ASCII, and write to stdout
-
+  'add',
   mov(Register.A, 2),
   mov(Register.B, 3),
   add(Register.A, Register.B),
@@ -325,19 +336,75 @@ const instructions2: Program = [
   sys(SysCall.write),
   hlt(),
 
-  // Compare registers A and B
-
+  'compare',
   mov(Register.A, 5),
-  mov(Register.B, 0),
+  mov(Register.B, 5),
   cmp(Register.A, Register.B),
-  jeq(255),
+  jeq('end'),
+  hlt(),
+
+  'end',
+  mov(Register.A, 'goodbye'),
+  mov(Register.B, 8),
+  sys(SysCall.write),
   hlt(),
 ];
 
+// instructions.filter(inst => typeof inst !== 'string').flat().forEach((byte, index) => {
+//   if (typeof byte !== 'string') {
+//     this.memory[index] = byte;
+//   }
+// });
+
+let labels: { [label: string]: number; } = {};
+let index = 0;
+
+for (const data of instructions) {
+  if (typeof data === 'string') {
+    labels[data] = index;
+  } else {
+    index += data.length;
+  }
+};
+
+console.log(labels);
+
+let instructions2 = [];
+
+for (const data of instructions) {
+  if (typeof data !== 'string') {
+    instructions2.push(
+      data.map(data => typeof data === 'string' ? labels[data] : data)
+    );
+  }
+};
+
+// const instructions2 = instructions.reduce((instructions, data) => {
+//   if (typeof data === 'string') {
+
+//   } else {
+//     return data.map(data => typeof data === 'string' ? labels[data] : data)
+//   }
+// });
+
+// const labels = instructions.reduce<[{}, number]>(([labels, index], data) => ({
+//   ...(typeof data === 'string'
+//     ? [{ ...labels, [data]: index }, index]
+//     : [labels, index + data.length]),
+// }), [{}, 0]);
+
+// const labels2 = instructions.reduce<[{}, number]>(([labels, index], data) => {
+//   if (typeof data === 'string') {
+//     return [{ ...labels, [data]: index }, index];
+//   } else {
+//     return [labels, index + data.length];
+//   }
+// }, [{}, 0]);
+
 const machine = new Machine(instructions2);
 
-machine.start(13);
-machine.start(19);
-machine.start(35);
+machine.start(labels.start);
+machine.start(labels.add);
+machine.start(labels.compare);
 
 export { };
