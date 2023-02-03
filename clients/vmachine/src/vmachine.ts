@@ -1,7 +1,3 @@
-/*
-  clear && tsc --lib esnext,dom test.ts && node test.js
-*/
-
 class Register {
   static Values = {
     A: 0,
@@ -57,22 +53,32 @@ class Opcode2 {
   constructor(public value: typeof Opcode2.Values[keyof typeof Opcode2.Values]) { }
 }
 
+/*
+  add
+  sub
+  cmp
+  sys
+  lodi
+  lod
+  str
+  jmp
+*/
+
 enum Opcode {
-  hlt  /* even */ = 0x00,
-  mov  /* even */ = 0x02,
+  // mov  /* even */ = 0x02,
   add  /* even */ = 0x04,
   sub  /* even */ = 0x06,
-  inc  /* even */ = 0x08,
-  dec  /* even */ = 0x0A,
+  // inc  /* even */ = 0x08,
+  // dec  /* even */ = 0x0A,
   cmp  /* even */ = 0x0C,
   sys  /* even */ = 0x0E,
 
   movr /* odd  */ = 0x01,
   movi /* odd  */ = 0x03,
   movm /* odd  */ = 0x05,
-  addi /* odd  */ = 0x07,
-  subi /* odd  */ = 0x09,
-  cmpi /* odd  */ = 0x0B,
+  // addi /* odd  */ = 0x07,
+  // subi /* odd  */ = 0x09,
+  // cmpi /* odd  */ = 0x0B,
   jmpa /* odd  */ = 0x0D,
   // jlt  /* odd  */ = 0x0F,
 }
@@ -83,6 +89,7 @@ enum JmpOp {
 }
 
 enum SysCall {
+  exit = 0,
   write = 1,
   dump = 2,
 }
@@ -102,10 +109,6 @@ function mov(dst: unknown, src: unknown): (number | string)[] {
   }
 
   return [];
-}
-
-function hlt() {
-  return [Opcode.hlt << 4];
 }
 
 function add(dstReg: Register, srcReg: Register) {
@@ -254,34 +257,40 @@ class Machine {
       case Opcode.sys: {
         const op = this.memory[this.pc] & 0xF;
 
-        if (op === SysCall.write) {
-          const address = this.registers[Register.A.value];
-          const length = this.registers[Register.B.value];
+        switch (op) {
+          case SysCall.write: {
+            const address = this.registers[Register.A.value];
+            const length = this.registers[Register.B.value];
 
-          const string = this.memory
-            .slice(address, address + length)
-            .reduce<string[]>((array, charCode) => [...array, String.fromCharCode(charCode)], [])
-            .join('');
+            const string = this.memory
+              .slice(address, address + length)
+              .reduce<string[]>((array, charCode) => [...array, String.fromCharCode(charCode)], [])
+              .join('');
 
-          this.registers[Register.A.value] = 0;
+            this.registers[Register.A.value] = 0;
 
-          this.debug({ op: SysCall[op], address, length });
+            this.debug({ op: SysCall[op], address, length });
 
-          console.log(string);
-        } else if (op === SysCall.dump) {
-          this.debug({ op: SysCall[op] });
+            console.log(string);
 
-          console.log(this.memory);
-        } else {
-          console.log('Invalid syscall');
+            break;
+          }
+          case SysCall.dump: {
+            this.debug({ op: SysCall[op] });
+
+            console.log(this.memory);
+
+            break;
+          }
+          case SysCall.exit: {
+            return this.pc = 255;
+          }
+          default: {
+            console.log('Invalid syscall');
+          }
         }
 
         return this.pc += 1;
-      }
-      case Opcode.hlt: {
-        this.debug({});
-
-        return 0;
       }
       default: {
         console.log('Illegal operation');
@@ -303,7 +312,7 @@ class Machine {
       opCode = this.decode();
 
       this.execute(opCode);
-    } while (opCode !== Opcode.hlt && opCode <= 0xF);
+    } while (this.pc !== 255);
 
     console.log();
   }
@@ -320,7 +329,7 @@ const instructions: Program = [
   mov(Register.A, 'hello'),
   mov(Register.B, 13),
   sys(SysCall.write),
-  hlt(),
+  sys(SysCall.exit),
 
   'add',
   mov(Register.A, 2),
@@ -334,20 +343,20 @@ const instructions: Program = [
   mov(Register.A, 0),
   mov(Register.B, 1),
   sys(SysCall.write),
-  hlt(),
+  sys(SysCall.exit),
 
   'compare',
   mov(Register.A, 5),
   mov(Register.B, 5),
   cmp(Register.A, Register.B),
   jeq('end'),
-  hlt(),
+  sys(SysCall.exit),
 
   'end',
   mov(Register.A, 'goodbye'),
   mov(Register.B, 8),
   sys(SysCall.write),
-  hlt(),
+  sys(SysCall.exit),
 ];
 
 // instructions.filter(inst => typeof inst !== 'string').flat().forEach((byte, index) => {

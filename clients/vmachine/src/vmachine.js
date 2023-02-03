@@ -1,7 +1,4 @@
 "use strict";
-/*
-  clear && tsc --lib esnext,dom test.ts && node test.js
-*/
 var __spreadArray = (this && this.__spreadArray) || function (to, from, pack) {
     if (pack || arguments.length === 2) for (var i = 0, l = from.length, ar; i < l; i++) {
         if (ar || !(i in from)) {
@@ -65,22 +62,31 @@ var Opcode2 = /** @class */ (function () {
     Opcode2.sys = new Opcode2(Opcode2.Values.sys);
     return Opcode2;
 }());
+/*
+  add
+  sub
+  cmp
+  sys
+  lodi
+  lod
+  str
+  jmp
+*/
 var Opcode;
 (function (Opcode) {
-    Opcode[Opcode["hlt"] = 0] = "hlt";
-    Opcode[Opcode["mov"] = 2] = "mov";
+    // mov  /* even */ = 0x02,
     Opcode[Opcode["add"] = 4] = "add";
     Opcode[Opcode["sub"] = 6] = "sub";
-    Opcode[Opcode["inc"] = 8] = "inc";
-    Opcode[Opcode["dec"] = 10] = "dec";
+    // inc  /* even */ = 0x08,
+    // dec  /* even */ = 0x0A,
     Opcode[Opcode["cmp"] = 12] = "cmp";
     Opcode[Opcode["sys"] = 14] = "sys";
     Opcode[Opcode["movr"] = 1] = "movr";
     Opcode[Opcode["movi"] = 3] = "movi";
     Opcode[Opcode["movm"] = 5] = "movm";
-    Opcode[Opcode["addi"] = 7] = "addi";
-    Opcode[Opcode["subi"] = 9] = "subi";
-    Opcode[Opcode["cmpi"] = 11] = "cmpi";
+    // addi /* odd  */ = 0x07,
+    // subi /* odd  */ = 0x09,
+    // cmpi /* odd  */ = 0x0B,
     Opcode[Opcode["jmpa"] = 13] = "jmpa";
     // jlt  /* odd  */ = 0x0F,
 })(Opcode || (Opcode = {}));
@@ -91,6 +97,7 @@ var JmpOp;
 })(JmpOp || (JmpOp = {}));
 var SysCall;
 (function (SysCall) {
+    SysCall[SysCall["exit"] = 0] = "exit";
     SysCall[SysCall["write"] = 1] = "write";
     SysCall[SysCall["dump"] = 2] = "dump";
 })(SysCall || (SysCall = {}));
@@ -105,9 +112,6 @@ function mov(dst, src) {
         return [(Opcode.movi << 4) | dst.value, src];
     }
     return [];
-}
-function hlt() {
-    return [Opcode.hlt << 4];
 }
 function add(dstReg, srcReg) {
     return [(Opcode.add << 4) | (dstReg.value << 2) | srcReg.value];
@@ -216,29 +220,32 @@ var Machine = /** @class */ (function () {
             }
             case Opcode.sys: {
                 var op = this.memory[this.pc] & 0xF;
-                if (op === SysCall.write) {
-                    var address = this.registers[Register.A.value];
-                    var length_1 = this.registers[Register.B.value];
-                    var string = this.memory
-                        .slice(address, address + length_1)
-                        .reduce(function (array, charCode) { return __spreadArray(__spreadArray([], array, true), [String.fromCharCode(charCode)], false); }, [])
-                        .join('');
-                    this.registers[Register.A.value] = 0;
-                    this.debug({ op: SysCall[op], address: address, length: length_1 });
-                    console.log(string);
-                }
-                else if (op === SysCall.dump) {
-                    this.debug({ op: SysCall[op] });
-                    console.log(this.memory);
-                }
-                else {
-                    console.log('Invalid syscall');
+                switch (op) {
+                    case SysCall.write: {
+                        var address = this.registers[Register.A.value];
+                        var length_1 = this.registers[Register.B.value];
+                        var string = this.memory
+                            .slice(address, address + length_1)
+                            .reduce(function (array, charCode) { return __spreadArray(__spreadArray([], array, true), [String.fromCharCode(charCode)], false); }, [])
+                            .join('');
+                        this.registers[Register.A.value] = 0;
+                        this.debug({ op: SysCall[op], address: address, length: length_1 });
+                        console.log(string);
+                        break;
+                    }
+                    case SysCall.dump: {
+                        this.debug({ op: SysCall[op] });
+                        console.log(this.memory);
+                        break;
+                    }
+                    case SysCall.exit: {
+                        return this.pc = 255;
+                    }
+                    default: {
+                        console.log('Invalid syscall');
+                    }
                 }
                 return this.pc += 1;
-            }
-            case Opcode.hlt: {
-                this.debug({});
-                return 0;
             }
             default: {
                 console.log('Illegal operation');
@@ -254,7 +261,7 @@ var Machine = /** @class */ (function () {
         do {
             opCode = this.decode();
             this.execute(opCode);
-        } while (opCode !== Opcode.hlt && opCode <= 0xF);
+        } while (this.pc !== 255);
         console.log();
     };
     return Machine;
@@ -268,7 +275,7 @@ var instructions = [
     mov(Register.A, 'hello'),
     mov(Register.B, 13),
     sys(SysCall.write),
-    hlt(),
+    sys(SysCall.exit),
     'add',
     mov(Register.A, 2),
     mov(Register.B, 3),
@@ -279,18 +286,18 @@ var instructions = [
     mov(Register.A, 0),
     mov(Register.B, 1),
     sys(SysCall.write),
-    hlt(),
+    sys(SysCall.exit),
     'compare',
     mov(Register.A, 5),
     mov(Register.B, 5),
     cmp(Register.A, Register.B),
     jeq('end'),
-    hlt(),
+    sys(SysCall.exit),
     'end',
     mov(Register.A, 'goodbye'),
     mov(Register.B, 8),
     sys(SysCall.write),
-    hlt(),
+    sys(SysCall.exit),
 ];
 // instructions.filter(inst => typeof inst !== 'string').flat().forEach((byte, index) => {
 //   if (typeof byte !== 'string') {
