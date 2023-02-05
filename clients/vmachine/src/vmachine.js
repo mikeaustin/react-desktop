@@ -55,8 +55,7 @@ var Opcode2 = /** @class */ (function () {
     Opcode2.Values = {
         hlt: 7,
         mov: 0,
-        movm: 1,
-        movi: 2,
+        sto: 1,
         add: 3,
         jmp: 4,
         cmp: 5,
@@ -65,8 +64,7 @@ var Opcode2 = /** @class */ (function () {
     Opcode2.Names = {};
     Opcode2.hlt = new Opcode2(Opcode2.Values.hlt);
     Opcode2.mov = new Opcode2(Opcode2.Values.mov);
-    Opcode2.movm = new Opcode2(Opcode2.Values.movm);
-    Opcode2.movi = new Opcode2(Opcode2.Values.movi);
+    Opcode2.sto = new Opcode2(Opcode2.Values.sto);
     Opcode2.add = new Opcode2(Opcode2.Values.add);
     Opcode2.jmp = new Opcode2(Opcode2.Values.jmp);
     Opcode2.cmp = new Opcode2(Opcode2.Values.cmp);
@@ -74,32 +72,25 @@ var Opcode2 = /** @class */ (function () {
     return Opcode2;
 }());
 /*
-  add
-  sub
-  cmp
-  sys
-  lodi
-  lod
-  str
-  jmp
+  add add registers
+  sub subtract registers
+  cmp compare registers
+  sys system call
+  mov move immediate
+  lod load from memory
+  sto store to memory
+  jmp jump to address
 */
 var Opcode;
 (function (Opcode) {
-    // mov  /* even */ = 0x02,
-    Opcode[Opcode["add"] = 4] = "add";
-    Opcode[Opcode["sub"] = 6] = "sub";
-    // inc  /* even */ = 0x08,
-    // dec  /* even */ = 0x0A,
-    Opcode[Opcode["cmp"] = 12] = "cmp";
-    Opcode[Opcode["sys"] = 14] = "sys";
-    Opcode[Opcode["movr"] = 1] = "movr";
-    Opcode[Opcode["movi"] = 3] = "movi";
-    Opcode[Opcode["movm"] = 5] = "movm";
-    // addi /* odd  */ = 0x07,
-    // subi /* odd  */ = 0x09,
-    // cmpi /* odd  */ = 0x0B,
-    Opcode[Opcode["jmpa"] = 13] = "jmpa";
-    // jlt  /* odd  */ = 0x0F,
+    Opcode[Opcode["add"] = 2] = "add";
+    Opcode[Opcode["sub"] = 4] = "sub";
+    Opcode[Opcode["cmp"] = 6] = "cmp";
+    Opcode[Opcode["sys"] = 8] = "sys";
+    Opcode[Opcode["mov"] = 1] = "mov";
+    Opcode[Opcode["lod"] = 3] = "lod";
+    Opcode[Opcode["sto"] = 5] = "sto";
+    Opcode[Opcode["jmp"] = 7] = "jmp";
 })(Opcode || (Opcode = {}));
 var JmpOp;
 (function (JmpOp) {
@@ -115,13 +106,13 @@ var SysCall;
 })(SysCall || (SysCall = {}));
 function mov(dst, src) {
     if (dst instanceof Register && src instanceof Address) {
-        return [(Opcode.movr << 4) | dst.value, src.value];
+        return [(Opcode.lod << 4) | dst.value, src.value];
     }
     else if (dst instanceof Address && src instanceof Register) {
-        return [(Opcode.movm << 4) | dst.value, src.value];
+        return [(Opcode.sto << 4) | dst.value, src.value];
     }
     else if (dst instanceof Register && (typeof src === 'number' || typeof src === 'string')) {
-        return [(Opcode.movi << 4) | dst.value, src];
+        return [(Opcode.mov << 4) | dst.value, src];
     }
     return [];
 }
@@ -132,13 +123,13 @@ function sub(dstReg, srcReg) {
     return [(Opcode.sub << 4) | (dstReg.value << 2) | srcReg.value];
 }
 function jmp(srcAddr) {
-    return [(Opcode.jmpa << 4) | JmpOp.always, srcAddr.value];
+    return [(Opcode.jmp << 4) | JmpOp.always, srcAddr.value];
 }
 function jeq(srcAddr) {
-    return [(Opcode.jmpa << 4) | JmpOp.eq, srcAddr];
+    return [(Opcode.jmp << 4) | JmpOp.eq, srcAddr];
 }
 function jlt(srcAddr) {
-    return [(Opcode.jmpa << 4) | JmpOp.lt, srcAddr];
+    return [(Opcode.jmp << 4) | JmpOp.lt, srcAddr];
 }
 function cmp(srcReg1, srcReg2) {
     return [(Opcode.cmp << 4) | (srcReg1.value << 2) | srcReg2.value];
@@ -179,12 +170,12 @@ var Machine = /** @class */ (function () {
     };
     Machine.prototype.execute = function (opCode) {
         switch (this.memory[this.pc]) {
-            case (Opcode.jmpa << 4) | JmpOp.always: {
+            case (Opcode.jmp << 4) | JmpOp.always: {
                 var srcAddr = this.memory[this.pc + 1];
                 this.debug({ op: JmpOp[JmpOp.always] });
                 return this.pc = srcAddr;
             }
-            case (Opcode.jmpa << 4) | JmpOp.eq: {
+            case (Opcode.jmp << 4) | JmpOp.eq: {
                 var srcAddr = this.memory[this.pc + 1];
                 this.debug({ op: JmpOp[JmpOp.eq] });
                 if ((this.flags[0] & 0x02) === 0x02) {
@@ -194,7 +185,7 @@ var Machine = /** @class */ (function () {
                     return this.pc += 2;
                 }
             }
-            case (Opcode.jmpa << 4) | JmpOp.lt: {
+            case (Opcode.jmp << 4) | JmpOp.lt: {
                 var srcAddr = this.memory[this.pc + 1];
                 this.debug({ op: JmpOp[JmpOp.lt] });
                 if (this.flags[0] === 0x01) {
@@ -206,21 +197,21 @@ var Machine = /** @class */ (function () {
             }
         }
         switch (opCode) {
-            case Opcode.movi: {
+            case Opcode.mov: {
                 var dstReg = this.memory[this.pc] & 0xF;
                 var srcValue = this.memory[this.pc + 1];
                 this.registers[dstReg] = srcValue;
                 this.debug({ dstReg: Register.Names[dstReg], srcValue: srcValue });
                 return this.pc += 2;
             }
-            case Opcode.movr: {
+            case Opcode.lod: {
                 var dstReg = this.memory[this.pc] & 0x03;
                 var srcAddr = this.memory[this.pc + 1];
                 this.registers[dstReg] = this.memory[srcAddr];
                 this.debug({ dstReg: dstReg, srcAddr: srcAddr });
                 return this.pc += 2;
             }
-            case Opcode.movm: {
+            case Opcode.sto: {
                 var srcReg = this.memory[this.pc] & 0x3;
                 var dstAddr = this.memory[this.pc + 1];
                 this.memory[dstAddr] = this.registers[srcReg];

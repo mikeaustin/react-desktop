@@ -29,8 +29,7 @@ class Opcode2 {
   static Values = {
     hlt: 7,
     mov: 0,
-    movm: 1,
-    movi: 2,
+    sto: 1,
     add: 3,
     jmp: 4,
     cmp: 5,
@@ -43,8 +42,7 @@ class Opcode2 {
 
   static hlt = new Opcode2(Opcode2.Values.hlt);
   static mov = new Opcode2(Opcode2.Values.mov);
-  static movm = new Opcode2(Opcode2.Values.movm);
-  static movi = new Opcode2(Opcode2.Values.movi);
+  static sto = new Opcode2(Opcode2.Values.sto);
   static add = new Opcode2(Opcode2.Values.add);
   static jmp = new Opcode2(Opcode2.Values.jmp);
   static cmp = new Opcode2(Opcode2.Values.cmp);
@@ -54,33 +52,25 @@ class Opcode2 {
 }
 
 /*
-  add
-  sub
-  cmp
-  sys
-  lodi
-  lod
-  str
-  jmp
+  add add registers
+  sub subtract registers
+  cmp compare registers
+  sys system call
+  mov move immediate
+  lod load from memory
+  sto store to memory
+  jmp jump to address
 */
 
 enum Opcode {
-  // mov  /* even */ = 0x02,
-  add  /* even */ = 0x04,
-  sub  /* even */ = 0x06,
-  // inc  /* even */ = 0x08,
-  // dec  /* even */ = 0x0A,
-  cmp  /* even */ = 0x0C,
-  sys  /* even */ = 0x0E,
-
-  movr /* odd  */ = 0x01,
-  movi /* odd  */ = 0x03,
-  movm /* odd  */ = 0x05,
-  // addi /* odd  */ = 0x07,
-  // subi /* odd  */ = 0x09,
-  // cmpi /* odd  */ = 0x0B,
-  jmpa /* odd  */ = 0x0D,
-  // jlt  /* odd  */ = 0x0F,
+  add  /* even */ = 0x02,
+  sub  /* even */ = 0x04,
+  cmp  /* even */ = 0x06,
+  sys  /* even */ = 0x08,
+  mov  /* odd  */ = 0x01,
+  lod  /* odd  */ = 0x03,
+  sto  /* odd  */ = 0x05,
+  jmp  /* odd  */ = 0x07,
 }
 
 enum JmpOp {
@@ -102,11 +92,11 @@ function mov(dst: Register, src: string): number[];
 
 function mov(dst: unknown, src: unknown): (number | string)[] {
   if (dst instanceof Register && src instanceof Address) {
-    return [(Opcode.movr << 4) | dst.value, src.value];
+    return [(Opcode.lod << 4) | dst.value, src.value];
   } else if (dst instanceof Address && src instanceof Register) {
-    return [(Opcode.movm << 4) | dst.value, src.value];
+    return [(Opcode.sto << 4) | dst.value, src.value];
   } else if (dst instanceof Register && (typeof src === 'number' || typeof src === 'string')) {
-    return [(Opcode.movi << 4) | dst.value, src];
+    return [(Opcode.mov << 4) | dst.value, src];
   }
 
   return [];
@@ -121,15 +111,15 @@ function sub(dstReg: Register, srcReg: Register) {
 }
 
 function jmp(srcAddr: Address) {
-  return [(Opcode.jmpa << 4) | JmpOp.always, srcAddr.value];
+  return [(Opcode.jmp << 4) | JmpOp.always, srcAddr.value];
 }
 
 function jeq(srcAddr: number | string) {
-  return [(Opcode.jmpa << 4) | JmpOp.eq, srcAddr];
+  return [(Opcode.jmp << 4) | JmpOp.eq, srcAddr];
 }
 
 function jlt(srcAddr: number | string) {
-  return [(Opcode.jmpa << 4) | JmpOp.lt, srcAddr];
+  return [(Opcode.jmp << 4) | JmpOp.lt, srcAddr];
 }
 
 function cmp(srcReg1: Register, srcReg2: Register) {
@@ -184,14 +174,14 @@ class Machine {
 
   execute(opCode: number) {
     switch (this.memory[this.pc]) {
-      case (Opcode.jmpa << 4) | JmpOp.always: {
+      case (Opcode.jmp << 4) | JmpOp.always: {
         const srcAddr = this.memory[this.pc + 1];
 
         this.debug({ op: JmpOp[JmpOp.always] });
 
         return this.pc = srcAddr;
       }
-      case (Opcode.jmpa << 4) | JmpOp.eq: {
+      case (Opcode.jmp << 4) | JmpOp.eq: {
         const srcAddr = this.memory[this.pc + 1];
 
         this.debug({ op: JmpOp[JmpOp.eq] });
@@ -202,7 +192,7 @@ class Machine {
           return this.pc += 2;
         }
       }
-      case (Opcode.jmpa << 4) | JmpOp.lt: {
+      case (Opcode.jmp << 4) | JmpOp.lt: {
         const srcAddr = this.memory[this.pc + 1];
 
         this.debug({ op: JmpOp[JmpOp.lt] });
@@ -216,7 +206,7 @@ class Machine {
     }
 
     switch (opCode) {
-      case Opcode.movi: {
+      case Opcode.mov: {
         const dstReg = this.memory[this.pc] & 0xF;
         const srcValue = this.memory[this.pc + 1];
 
@@ -226,7 +216,7 @@ class Machine {
 
         return this.pc += 2;
       }
-      case Opcode.movr: {
+      case Opcode.lod: {
         const dstReg = this.memory[this.pc] & 0x03;
         const srcAddr = this.memory[this.pc + 1];
 
@@ -236,7 +226,7 @@ class Machine {
 
         return this.pc += 2;
       }
-      case Opcode.movm: {
+      case Opcode.sto: {
         const srcReg = this.memory[this.pc] & 0x3;
         const dstAddr = this.memory[this.pc + 1];
 
