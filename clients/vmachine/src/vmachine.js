@@ -1,4 +1,15 @@
 "use strict";
+var __assign = (this && this.__assign) || function () {
+    __assign = Object.assign || function(t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+                t[p] = s[p];
+        }
+        return t;
+    };
+    return __assign.apply(this, arguments);
+};
 var __spreadArray = (this && this.__spreadArray) || function (to, from, pack) {
     if (pack || arguments.length === 2) for (var i = 0, l = from.length, ar; i < l; i++) {
         if (ar || !(i in from)) {
@@ -94,6 +105,7 @@ var JmpOp;
 (function (JmpOp) {
     JmpOp[JmpOp["always"] = 0] = "always";
     JmpOp[JmpOp["eq"] = 1] = "eq";
+    JmpOp[JmpOp["lt"] = 2] = "lt";
 })(JmpOp || (JmpOp = {}));
 var SysCall;
 (function (SysCall) {
@@ -116,11 +128,17 @@ function mov(dst, src) {
 function add(dstReg, srcReg) {
     return [(Opcode.add << 4) | (dstReg.value << 2) | srcReg.value];
 }
+function sub(dstReg, srcReg) {
+    return [(Opcode.sub << 4) | (dstReg.value << 2) | srcReg.value];
+}
 function jmp(srcAddr) {
     return [(Opcode.jmpa << 4) | JmpOp.always, srcAddr.value];
 }
 function jeq(srcAddr) {
     return [(Opcode.jmpa << 4) | JmpOp.eq, srcAddr];
+}
+function jlt(srcAddr) {
+    return [(Opcode.jmpa << 4) | JmpOp.lt, srcAddr];
 }
 function cmp(srcReg1, srcReg2) {
     return [(Opcode.cmp << 4) | (srcReg1.value << 2) | srcReg2.value];
@@ -176,6 +194,16 @@ var Machine = /** @class */ (function () {
                     return this.pc += 2;
                 }
             }
+            case (Opcode.jmpa << 4) | JmpOp.lt: {
+                var srcAddr = this.memory[this.pc + 1];
+                this.debug({ op: JmpOp[JmpOp.lt] });
+                if ((this.flags[0] & 0x1) === 0 && ((this.flags[0] & 0x2) === 0)) {
+                    return this.pc = srcAddr;
+                }
+                else {
+                    return this.pc += 2;
+                }
+            }
         }
         switch (opCode) {
             case Opcode.movi: {
@@ -203,6 +231,16 @@ var Machine = /** @class */ (function () {
                 var dstReg = (this.memory[this.pc] >> 2) & 0x3;
                 var srcReg = this.memory[this.pc] & 0x3;
                 var value = this.registers[dstReg] + this.registers[srcReg];
+                this.registers[dstReg] = value;
+                this.flags[0] = (this.flags[0] & ~2) | (+(value === 0) << 1);
+                this.flags[0] = (this.flags[0] & ~1);
+                this.debug({ dstReg: Register.Names[dstReg], srcReg: Register.Names[srcReg] });
+                return this.pc += 1;
+            }
+            case Opcode.sub: {
+                var dstReg = (this.memory[this.pc] >> 2) & 0x3;
+                var srcReg = this.memory[this.pc] & 0x3;
+                var value = this.registers[dstReg] - this.registers[srcReg];
                 this.registers[dstReg] = value;
                 this.flags[0] = (this.flags[0] & ~2) | (+(value === 0) << 1);
                 this.flags[0] = (this.flags[0] & ~1);
@@ -249,7 +287,7 @@ var Machine = /** @class */ (function () {
             }
             default: {
                 console.log('Illegal operation');
-                return 0;
+                return this.pc = 255;
             }
         }
     };
@@ -298,52 +336,51 @@ var instructions = [
     mov(Register.B, 8),
     sys(SysCall.write),
     sys(SysCall.exit),
+    'start2',
+    mov(Register.A, 3),
+    mov(Register.B, 1),
+    'loop',
+    sub(Register.A, Register.B),
+    jlt('loop'),
+    sys(SysCall.exit),
 ];
-// instructions.filter(inst => typeof inst !== 'string').flat().forEach((byte, index) => {
-//   if (typeof byte !== 'string') {
-//     this.memory[index] = byte;
+// let labels: { [label: string]: number; } = {};
+// let index = 0;
+// for (const data of instructions) {
+//   if (typeof data === 'string') {
+//     labels[data] = index;
+//   } else {
+//     index += data.length;
 //   }
-// });
-var labels = {};
-var index = 0;
-for (var _i = 0, instructions_1 = instructions; _i < instructions_1.length; _i++) {
-    var data = instructions_1[_i];
+// };
+// console.log(labels);
+var _a = instructions.reduce(function (_a, data) {
+    var _b;
+    var inst = _a[0], labels = _a[1], index = _a[2];
     if (typeof data === 'string') {
-        labels[data] = index;
+        return [inst, __assign(__assign({}, labels), (_b = {}, _b[data] = index, _b)), index];
     }
     else {
-        index += data.length;
+        return [__spreadArray(__spreadArray([], inst, true), data, true), labels, index + data.length];
     }
-}
-;
-console.log(labels);
-var instructions2 = [];
-for (var _a = 0, instructions_2 = instructions; _a < instructions_2.length; _a++) {
-    var data = instructions_2[_a];
-    if (typeof data !== 'string') {
-        instructions2.push(data.map(function (data) { return typeof data === 'string' ? labels[data] : data; }));
+}, [[], {}, 0]), instructions2 = _a[0], labels2 = _a[1];
+var _b = instructions.reduce(function (_a, data) {
+    var _b;
+    var inst = _a[0], labels = _a[1], index = _a[2];
+    if (typeof data === 'string') {
+        labels[data] = index;
+        return [inst, __assign(__assign({}, labels), (_b = {}, _b[data] = index, _b)), index];
     }
-}
-;
-// const instructions2 = instructions.reduce((instructions, data) => {
-//   if (typeof data === 'string') {
-//   } else {
-//     return data.map(data => typeof data === 'string' ? labels[data] : data)
-//   }
-// });
-// const labels = instructions.reduce<[{}, number]>(([labels, index], data) => ({
-//   ...(typeof data === 'string'
-//     ? [{ ...labels, [data]: index }, index]
-//     : [labels, index + data.length]),
-// }), [{}, 0]);
-// const labels2 = instructions.reduce<[{}, number]>(([labels, index], data) => {
-//   if (typeof data === 'string') {
-//     return [{ ...labels, [data]: index }, index];
-//   } else {
-//     return [labels, index + data.length];
-//   }
-// }, [{}, 0]);
-var machine = new Machine(instructions2);
-machine.start(labels.start);
-machine.start(labels.add);
-machine.start(labels.compare);
+    else {
+        inst = __spreadArray(__spreadArray([], inst, true), data, true);
+        index = index + data.length;
+    }
+    return [data, labels, index];
+}, [[], {}, 0]), instructions3 = _b[0], labels3 = _b[1];
+console.log(instructions2);
+var instructions4 = instructions2.map(function (data) { return typeof data === 'string' ? labels2[data] : data; });
+var machine = new Machine(instructions4);
+machine.start(labels2.start);
+machine.start(labels2.add);
+machine.start(labels2.compare);
+machine.start(labels2.start2);
