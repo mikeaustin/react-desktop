@@ -196,7 +196,7 @@ class Machine {
 
         this.debug({ op: JmpOp[JmpOp.eq] });
 
-        if (this.flags[0] & 0x2) {
+        if ((this.flags[0] & 0x02) === 0x02) {
           return this.pc = srcAddr;
         } else {
           return this.pc += 2;
@@ -207,7 +207,7 @@ class Machine {
 
         this.debug({ op: JmpOp[JmpOp.lt] });
 
-        if ((this.flags[0] & 0x1) === 0 && ((this.flags[0] & 0x2) === 0)) {
+        if (this.flags[0] === 0x01) {
           return this.pc = srcAddr;
         } else {
           return this.pc += 2;
@@ -227,7 +227,7 @@ class Machine {
         return this.pc += 2;
       }
       case Opcode.movr: {
-        const dstReg = this.memory[this.pc] & 0xF;
+        const dstReg = this.memory[this.pc] & 0x03;
         const srcAddr = this.memory[this.pc + 1];
 
         this.registers[dstReg] = this.memory[srcAddr];
@@ -237,7 +237,7 @@ class Machine {
         return this.pc += 2;
       }
       case Opcode.movm: {
-        const srcReg = this.memory[this.pc] & 0xF;
+        const srcReg = this.memory[this.pc] & 0x3;
         const dstAddr = this.memory[this.pc + 1];
 
         this.memory[dstAddr] = this.registers[srcReg];
@@ -255,7 +255,7 @@ class Machine {
         this.registers[dstReg] = value;
 
         this.flags[0] = (this.flags[0] & ~0b10) | (+(value === 0) << 1);
-        this.flags[0] = (this.flags[0] & ~0b01);
+        this.flags[0] = (this.flags[0] & ~0b01) | +(value > 0);
 
         this.debug({ dstReg: (Register.Names as any)[dstReg], srcReg: (Register.Names as any)[srcReg] });
 
@@ -270,7 +270,7 @@ class Machine {
         this.registers[dstReg] = value;
 
         this.flags[0] = (this.flags[0] & ~0b10) | (+(value === 0) << 1);
-        this.flags[0] = (this.flags[0] & ~0b01);
+        this.flags[0] = (this.flags[0] & ~0b01) | +(value > 0);
 
         this.debug({ dstReg: (Register.Names as any)[dstReg], srcReg: (Register.Names as any)[srcReg] });
 

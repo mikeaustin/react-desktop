@@ -187,7 +187,7 @@ var Machine = /** @class */ (function () {
             case (Opcode.jmpa << 4) | JmpOp.eq: {
                 var srcAddr = this.memory[this.pc + 1];
                 this.debug({ op: JmpOp[JmpOp.eq] });
-                if (this.flags[0] & 0x2) {
+                if ((this.flags[0] & 0x02) === 0x02) {
                     return this.pc = srcAddr;
                 }
                 else {
@@ -197,7 +197,7 @@ var Machine = /** @class */ (function () {
             case (Opcode.jmpa << 4) | JmpOp.lt: {
                 var srcAddr = this.memory[this.pc + 1];
                 this.debug({ op: JmpOp[JmpOp.lt] });
-                if ((this.flags[0] & 0x1) === 0 && ((this.flags[0] & 0x2) === 0)) {
+                if (this.flags[0] === 0x01) {
                     return this.pc = srcAddr;
                 }
                 else {
@@ -214,14 +214,14 @@ var Machine = /** @class */ (function () {
                 return this.pc += 2;
             }
             case Opcode.movr: {
-                var dstReg = this.memory[this.pc] & 0xF;
+                var dstReg = this.memory[this.pc] & 0x03;
                 var srcAddr = this.memory[this.pc + 1];
                 this.registers[dstReg] = this.memory[srcAddr];
                 this.debug({ dstReg: dstReg, srcAddr: srcAddr });
                 return this.pc += 2;
             }
             case Opcode.movm: {
-                var srcReg = this.memory[this.pc] & 0xF;
+                var srcReg = this.memory[this.pc] & 0x3;
                 var dstAddr = this.memory[this.pc + 1];
                 this.memory[dstAddr] = this.registers[srcReg];
                 this.debug({ dstAddr: dstAddr, srcReg: Register.Names[srcReg] });
@@ -233,7 +233,7 @@ var Machine = /** @class */ (function () {
                 var value = this.registers[dstReg] + this.registers[srcReg];
                 this.registers[dstReg] = value;
                 this.flags[0] = (this.flags[0] & ~2) | (+(value === 0) << 1);
-                this.flags[0] = (this.flags[0] & ~1);
+                this.flags[0] = (this.flags[0] & ~1) | +(value > 0);
                 this.debug({ dstReg: Register.Names[dstReg], srcReg: Register.Names[srcReg] });
                 return this.pc += 1;
             }
@@ -243,7 +243,7 @@ var Machine = /** @class */ (function () {
                 var value = this.registers[dstReg] - this.registers[srcReg];
                 this.registers[dstReg] = value;
                 this.flags[0] = (this.flags[0] & ~2) | (+(value === 0) << 1);
-                this.flags[0] = (this.flags[0] & ~1);
+                this.flags[0] = (this.flags[0] & ~1) | +(value > 0);
                 this.debug({ dstReg: Register.Names[dstReg], srcReg: Register.Names[srcReg] });
                 return this.pc += 1;
             }
