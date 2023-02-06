@@ -186,7 +186,7 @@ class Machine {
 
         this.debug({ op: JmpOp[JmpOp.eq] });
 
-        if ((this.flags[0] & 0x02) === 0x02) {
+        if (this.flags[0] & 0b010) {
           return this.pc = srcAddr;
         } else {
           return this.pc += 2;
@@ -197,7 +197,7 @@ class Machine {
 
         this.debug({ op: JmpOp[JmpOp.lt] });
 
-        if (this.flags[0] === 0x01) {
+        if (this.flags[0] & 0b01) {
           return this.pc = srcAddr;
         } else {
           return this.pc += 2;

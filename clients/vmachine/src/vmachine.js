@@ -178,7 +178,7 @@ var Machine = /** @class */ (function () {
             case (Opcode.jmp << 4) | JmpOp.eq: {
                 var srcAddr = this.memory[this.pc + 1];
                 this.debug({ op: JmpOp[JmpOp.eq] });
-                if ((this.flags[0] & 0x02) === 0x02) {
+                if (this.flags[0] & 2) {
                     return this.pc = srcAddr;
                 }
                 else {
@@ -188,7 +188,7 @@ var Machine = /** @class */ (function () {
             case (Opcode.jmp << 4) | JmpOp.lt: {
                 var srcAddr = this.memory[this.pc + 1];
                 this.debug({ op: JmpOp[JmpOp.lt] });
-                if (this.flags[0] === 0x01) {
+                if (this.flags[0] & 1) {
                     return this.pc = srcAddr;
                 }
                 else {
