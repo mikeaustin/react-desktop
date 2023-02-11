@@ -85,21 +85,16 @@ enum SysCall {
   dump = 2,
 }
 
-function mov(dst: Register, src: Address): number[];
-function mov(dst: Address, src: Register): number[];
-function mov(dst: Register, src: number): number[];
-function mov(dst: Register, src: string): number[];
+function mov(dst: Register, src: number | string): (number | string)[] {
+  return [(Opcode.mov << 4) | dst.value, src];
+}
 
-function mov(dst: unknown, src: unknown): (number | string)[] {
-  if (dst instanceof Register && src instanceof Address) {
-    return [(Opcode.lod << 4) | dst.value, src.value];
-  } else if (dst instanceof Address && src instanceof Register) {
-    return [(Opcode.sto << 4) | dst.value, src.value];
-  } else if (dst instanceof Register && (typeof src === 'number' || typeof src === 'string')) {
-    return [(Opcode.mov << 4) | dst.value, src];
-  }
+function lod(dst: Register, src: Address) {
+  return [(Opcode.lod << 4) | dst.value, src.value];
+}
 
-  return [];
+function sto(dst: Address, src: Register) {
+  return [(Opcode.sto << 4) | dst.value, src.value];
 }
 
 function add(dstReg: Register, srcReg: Register) {
@@ -162,7 +157,7 @@ class Machine {
     console.log(
       Opcode[opCode] + '\t' + ops +
       '\r\t\t\t\t\t\t\t' + this.pc +
-      '\t' + this.registers.join(', ') +
+      '\t' + Array.from(this.registers).map(register => register.toString().padStart(3, '0')).join('  ') +
       '\t' + ((this.flags[0] >> 0) & 0x01) +
       '  ' + ((this.flags[0] >> 1) & 0x01)
     );
@@ -308,6 +303,8 @@ class Machine {
             break;
           }
           case SysCall.exit: {
+            this.debug({ op: SysCall[op] });
+
             return this.pc = 255;
           }
           default: {
@@ -325,11 +322,31 @@ class Machine {
     }
   }
 
-  start(pc: number) {
-    console.log('OP      OPERANDS                                        PC      REGISTERS       C  Z');
-    console.log('======= =============== =============== =============== ======= =============== ====');
+  async loop(): Promise<void> {
+    const opCode = this.decode();
+
+    this.execute(opCode);
+
+    if (this.pc !== 255) {
+      return new Promise((resolve) => {
+        setTimeout(async () => {
+          await this.loop();
+
+          resolve();
+        }, 500 - Date.now() % 500);
+      });
+    }
+
+    return Promise.resolve();
+  }
+
+  async start(pc: number) {
+    console.log('OP      OPERANDS                                        PC        A    B    C    D      C  Z');
+    console.log('======= =============== =============== =============== ======= ======================= ====');
 
     this.pc = pc;
+
+    // await this.loop();
 
     let opCode;
 
@@ -364,7 +381,7 @@ const instructions: Program = [
   mov(Register.B, 48),
   add(Register.A, Register.B),
 
-  mov(new Address(0), Register.A),
+  sto(new Address(0), Register.A),
   mov(Register.A, 0),
   mov(Register.B, 1),
   sys(SysCall.write),
@@ -392,58 +409,87 @@ const instructions: Program = [
   sys(SysCall.exit),
 ];
 
-// let labels: { [label: string]: number; } = {};
-// let index = 0;
+function transform(instructions: Program): number[] {
+  let labels2: { [label: string]: number; } = {};
+  let instructions2: (number | string)[] = [];
+  let index = 0;
 
-// for (const data of instructions) {
-//   if (typeof data === 'string') {
-//     labels[data] = index;
-//   } else {
-//     index += data.length;
-//   }
-// };
+  for (const data of instructions) {
+    if (typeof data === 'string') {
+      labels2[data] = index;
+    } else {
+      instructions2.push(...data);
+      index += data.length;
+    }
+  };
+
+  index = 0;
+
+  for (const data of instructions2) {
+    if (typeof data === 'string') {
+      instructions2[index] = labels2[data];
+    }
+
+    ++index;
+  }
+
+  return instructions2 as number[];
+}
+
+let labels2: { [label: string]: number; } = {};
+let instructions2: (number | string)[] = [];
+let index = 0;
+
+for (const data of instructions) {
+  if (typeof data === 'string') {
+    labels2[data] = index;
+  } else {
+    instructions2.push(...data);
+    index += data.length;
+  }
+};
 
 // console.log(labels);
 
-const [instructions2, labels2] = instructions.reduce<[
-  (number | string)[],
-  { [label: string]: number; },
-  number,
-]>(([inst, labels, index], data) => {
-  if (typeof data === 'string') {
-    return [inst, { ...labels, [data]: index }, index];
-  } else {
-    return [[...inst, ...data], labels, index + data.length];
-  }
-}, [[], {}, 0]);
+// const [instructions2, labels2] = instructions.reduce<[
+//   (number | string)[],
+//   { [label: string]: number; },
+//   number,
+// ]>(([inst, labels, index], data) => {
+//   if (typeof data === 'string') {
+//     return [inst, { ...labels, [data]: index }, index];
+//   } else {
+//     return [[...inst, ...data], labels, index + data.length];
+//   }
+// }, [[], {}, 0]);
 
-const [instructions3, labels3] = instructions.reduce<[
-  (number | string)[],
-  { [label: string]: number; },
-  number,
-]>(([inst, labels, index], data) => {
-  if (typeof data === 'string') {
-    labels[data] = index;
-    return [inst, { ...labels, [data]: index }, index];
-  } else {
-    inst = [...inst, ...data];
-    index = index + data.length;
-  }
+// const [instructions3, labels3] = instructions.reduce(([inst, labels, index], data) => {
+//   if (typeof data === 'string') {
+//     labels[data] = index;
+//   } else {
+//     inst = [...inst, ...data];
+//     index = index + data.length;
+//   }
 
-  return [data, labels, index];
-}, [[], {}, 0]);
-
-console.log(instructions2);
+//   return [inst, labels, index];
+// }, [[] as (number | string)[], {} as { [label: string]: number; }, 0]);
 
 const instructions4 = instructions2.map(
   data => typeof data === 'string' ? labels2[data] : data
 );
 
-const machine = new Machine(instructions4);
+console.log(instructions4, '\n');
 
-machine.start(labels2.start);
-machine.start(labels2.add);
-machine.start(labels2.compare);
-machine.start(labels2.start2);
+// const machine = new Machine(instructions4);
+const machine = new Machine(transform(instructions));
+
+async function start() {
+  await machine.start(labels2.start);
+  await machine.start(labels2.add);
+  await machine.start(labels2.compare);
+  await machine.start(labels2.start2);
+}
+
+start();
 
 export { };
