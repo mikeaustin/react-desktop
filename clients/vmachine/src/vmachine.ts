@@ -94,7 +94,7 @@ function lod(dst: Register, src: Address) {
 }
 
 function sto(dst: Address, src: Register) {
-  return [(Opcode.sto << 4) | dst.value, src.value];
+  return [(Opcode.sto << 4) | src.value, dst.value];
 }
 
 function add(dstReg: Register, srcReg: Register) {
@@ -132,10 +132,37 @@ function ascii(string: string): number[] {
 type Program = ((number | string)[] | string)[];
 
 class Machine {
-  registers: Uint8Array;
-  memory: Uint8Array;
-  flags: Uint8Array;
-  pc: number;
+  public registers: Uint8Array;
+  public memory: Uint8Array;
+  public flags: Uint8Array;
+  public pc: number;
+
+  static transform(instructions: Program): [number[], { [label: string]: number; }] {
+    let labels: { [label: string]: number; } = {};
+    let opcodes: (number | string)[] = [];
+    let index = 0;
+
+    for (const data of instructions) {
+      if (typeof data === 'string') {
+        labels[data] = index;
+      } else {
+        opcodes.push(...data);
+        index += data.length;
+      }
+    };
+
+    index = 0;
+
+    for (const data of opcodes) {
+      if (typeof data === 'string') {
+        opcodes[index] = labels[data];
+      }
+
+      ++index;
+    }
+
+    return [opcodes as number[], labels];
+  }
 
   constructor(instructions: number[]) {
     this.registers = new Uint8Array(new ArrayBuffer(4));
@@ -360,95 +387,6 @@ class Machine {
   }
 }
 
-const instructions: Program = [
-  'hello',
-  ascii('Hello, world.'),
-
-  'goodbye',
-  ascii('Goodbye.'),
-
-  'start',
-  mov(Register.A, 'hello'),
-  mov(Register.B, 13),
-  sys(SysCall.write),
-  sys(SysCall.exit),
-
-  'add',
-  mov(Register.A, 2),
-  mov(Register.B, 3),
-  add(Register.A, Register.B),
-
-  mov(Register.B, 48),
-  add(Register.A, Register.B),
-
-  sto(new Address(0), Register.A),
-  mov(Register.A, 0),
-  mov(Register.B, 1),
-  sys(SysCall.write),
-  sys(SysCall.exit),
-
-  'compare',
-  mov(Register.A, 5),
-  mov(Register.B, 5),
-  cmp(Register.A, Register.B),
-  jeq('end'),
-  sys(SysCall.exit),
-
-  'end',
-  mov(Register.A, 'goodbye'),
-  mov(Register.B, 8),
-  sys(SysCall.write),
-  sys(SysCall.exit),
-
-  'start2',
-  mov(Register.A, 3),
-  mov(Register.B, 1),
-  'loop',
-  sub(Register.A, Register.B),
-  jlt('loop'),
-  sys(SysCall.exit),
-];
-
-function transform(instructions: Program): number[] {
-  let labels2: { [label: string]: number; } = {};
-  let instructions2: (number | string)[] = [];
-  let index = 0;
-
-  for (const data of instructions) {
-    if (typeof data === 'string') {
-      labels2[data] = index;
-    } else {
-      instructions2.push(...data);
-      index += data.length;
-    }
-  };
-
-  index = 0;
-
-  for (const data of instructions2) {
-    if (typeof data === 'string') {
-      instructions2[index] = labels2[data];
-    }
-
-    ++index;
-  }
-
-  return instructions2 as number[];
-}
-
-let labels2: { [label: string]: number; } = {};
-let instructions2: (number | string)[] = [];
-let index = 0;
-
-for (const data of instructions) {
-  if (typeof data === 'string') {
-    labels2[data] = index;
-  } else {
-    instructions2.push(...data);
-    index += data.length;
-  }
-};
-
 // console.log(labels);
 
 // const [instructions2, labels2] = instructions.reduce<[
@@ -474,22 +412,22 @@ for (const data of instructions) {
 //   return [inst, labels, index];
 // }, [[] as (number | string)[], {} as { [label: string]: number; }, 0]);
 
-const instructions4 = instructions2.map(
-  data => typeof data === 'string' ? labels2[data] : data
-);
+export default Machine;
 
-console.log(instructions4, '\n');
-
-// const machine = new Machine(instructions4);
-const machine = new Machine(transform(instructions));
-
-async function start() {
-  await machine.start(labels2.start);
-  await machine.start(labels2.add);
-  await machine.start(labels2.compare);
-  await machine.start(labels2.start2);
-}
-
-start();
-
-export { };
+export {
+  type Program,
+  Address,
+  Register,
+  SysCall,
+  add,
+  sub,
+  cmp,
+  sys,
+  mov,
+  lod,
+  sto,
+  jmp,
+  jeq,
+  jlt,
+  ascii,
+};
