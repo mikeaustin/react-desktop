@@ -56,12 +56,14 @@ const instructions: Program = [
   sys(SysCall.exit),
 
   'display',
-  mov(Register.A, 0b11111111),
-  sto(new Address(253), Register.A),
-  mov(Register.A, 0b11110000),
-  sto(new Address(254), Register.A),
-  mov(Register.A, 0b10101010),
-  sto(new Address(255), Register.A),
+  mov(Register.A, 0b11101110),
+  sto(new Address(224), Register.A),
+  mov(Register.A, 0b11101110),
+  sto(new Address(225), Register.A),
+  mov(Register.A, 0b01000000),
+  sto(new Address(239), Register.A),
+  mov(Register.A, 0b00111110),
+  sto(new Address(252), Register.A),
   sys(SysCall.exit),
 ];
 
@@ -85,57 +87,55 @@ function App() {
     })();
   }, []);
 
-  let pixels: number[] = [];
-
-  console.log(machine.memory[255].toString(2));
-
-  Array.from(machine.memory.slice(256 - 2, 256)).forEach(data => {
-    for (let bit = 7; bit >= 0; --bit) {
-      pixels.push(data & (0x01 << bit));
-    }
-  });
-
   const context = canvasRef.current?.getContext('2d');
 
   if (context) {
-    context.fillStyle = '#00000060';
+    context.clearRect(0, 0, 309, 309);
+
+    machine.memory.slice(224, 254).forEach((data, index) => {
+      for (let bit = 7; bit >= 0; --bit) {
+        context.fillStyle = data & (1 << bit) ? '#00000080' : '#00000000';
+
+        context.fillRect(
+          ((7 - bit) + (index * 8)) % 16 * 20 + 5,
+          Math.floor(index / 2) * 20 + 5,
+          19,
+          19
+        );
+      }
+    });
   }
 
-  machine.memory.slice(254, 256).forEach((data, index) => {
-    for (let bit = 7; bit >= 0; --bit) {
-      data & (0x01 << bit) && context?.fillRect((7 - bit) * 20 + (index * 8 * 20), 0, 19, 19);
-    }
-  });
-
-  console.log(pixels);
-
   return (
-    <View className="App">
-      <View as="ul" style={{ display: 'grid', gap: 5, width: 'min-content', gridTemplateColumns: 'repeat(16, 1fr)', margin: 0, padding: 0 }}>
+    <View padding="medium" className="App" style={{ margin: 0, fontFamily: 'monospace', fontSize: 14, whiteSpace: 'pre' }}>
+      <View style={{ margin: 0, fontFamily: 'monospace', whiteSpace: 'pre' }}>
+        REGISTERS        FLAGS  PC{'\n'}
         {Array.from(machine.registers).map((byte, index) => (
-          <View as="li" key={index} style={{ margin: 0, fontFamily: 'monospace' }}>{byte.toString().padStart(3, '0')}</View>
+          <React.Fragment>{byte.toString().padStart(3, '0')} </React.Fragment>
         ))}
-      </View>
-      <Spacer size="small" />
-      <View as="ul" style={{ display: 'grid', gap: 5, width: 'min-content', gridTemplateColumns: 'repeat(16, 1fr)', margin: 0, padding: 0 }}>
+        {' '}
         {Array.from(machine.flags).map((byte, index) => (
-          <View as="li" key={index} style={{ margin: 0, fontFamily: 'monospace' }}>{byte.toString().padStart(3, '0')}</View>
+          <React.Fragment>{byte.toString().padStart(3, '0')} </React.Fragment>
+        ))}
+        {'   '}
+        {Array.from([machine.pc]).map((byte, index) => (
+          <React.Fragment>{byte.toString().padStart(3, '0')} </React.Fragment>
         ))}
       </View>
-      <Spacer size="small" />
-      <View as="ul" style={{ display: 'grid', gap: 5, width: 'min-content', gridTemplateColumns: 'repeat(16, 1fr)', margin: 0, padding: 0 }}>
+      <Spacer size="medium" />
+      <View id="memory" style={{ margin: 0, fontFamily: 'monospace', whiteSpace: 'pre', lineHeight: 1.5 }}>
+        MEMORY{'\n'}
         {Array.from(machine.memory).map((byte, index) => (
-          <View as="li" key={index} style={{ margin: 0, fontFamily: 'monospace' }}>{byte.toString().padStart(3, '0')}</View>
+          <React.Fragment key={Math.random()}>
+            {/* {index > 0 && index % 16 === 0 && '\n'} */}
+            {(index > 0 ? (index % 16 === 0 ? '\n' : ' ') : '') + byte.toString().padStart(3, '0')}
+          </React.Fragment>
         ))}
       </View>
-      <Spacer size="small" />
-      <svg style={{ background: '#d8f5a2', height: 150 }}>
-        {pixels.map((pixel, index) => (
-          <rect x={index * 20} y={0} width="19" height="19" fill={pixel === 0 ? '#00000000' : '#000000A0'} />
-        ))}
-      </svg>
-      <Spacer size="small" />
-      <canvas ref={canvasRef} width={300} height={300} style={{ width: 300, height: 300, background: '#d8f5a2' }} />
+      <Spacer size="medium" />
+      <View className="lcd">
+        <canvas ref={canvasRef} width={309} height={309} style={{ width: 309, height: 309, background: '#98A200' }} />
+      </View>
     </View>
   );
 }
