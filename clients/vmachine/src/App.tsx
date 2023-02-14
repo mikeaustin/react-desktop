@@ -97,8 +97,8 @@ function App() {
         context.fillStyle = data & (1 << bit) ? '#00000080' : '#00000000';
 
         context.fillRect(
-          ((7 - bit) + (index * 8)) % 16 * 20 + 5,
-          Math.floor(index / 2) * 20 + 5,
+          ((7 - bit) + (index * 8)) % 16 * 20 + 10,
+          Math.floor(index / 2) * 20 + 10,
           19,
           19
         );
@@ -134,7 +134,7 @@ function App() {
       </View>
       <Spacer size="medium" />
       <View className="lcd">
-        <canvas ref={canvasRef} width={309} height={309} style={{ width: 309, height: 309, background: '#98A200' }} />
+        <canvas ref={canvasRef} width={319} height={319} style={{ width: 319, height: 319, background: '#98A200' }} />
       </View>
     </View>
   );
