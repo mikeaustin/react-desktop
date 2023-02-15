@@ -71,9 +71,33 @@ const [opcodes, labels] = Machine.transform(instructions);
 
 const machine = new Machine(opcodes);
 
+const animate = (context: CanvasRenderingContext2D, memory: Uint8Array) => {
+  const tick = () => {
+    context.clearRect(0, 0, 309, 309);
+
+    machine.memory.slice(224, 254).forEach((data, index) => {
+      for (let bit = 7; bit >= 0; --bit) {
+        context.fillStyle = data & (1 << bit) ? '#00000080' : '#00000000';
+
+        context.fillRect(
+          ((7 - bit) + (index * 8)) % 16 * 20 + 10,
+          Math.floor(index / 2) * 20 + 10,
+          19,
+          19
+        );
+      }
+    });
+
+    machine.memory[239] = ((machine.memory[239] >>> 1) | (machine.memory[239] << (7 - 1))) & 0b11111110;
+  };
+
+  return setInterval(tick, 1000 / 1);
+};
+
 function App() {
   const [isInitialized, setIsInitialized] = useState(false);
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const timerRef = useRef<NodeJS.Timer>();
 
   useEffect(() => {
     (async () => {
@@ -85,6 +109,16 @@ function App() {
 
       setIsInitialized(true);
     })();
+
+    const context = canvasRef.current?.getContext('2d');
+
+    if (context) {
+      timerRef.current = animate(context, machine.memory);
+    }
+
+    return () => {
+      clearInterval(timerRef.current);
+    };
   }, []);
 
   const context = canvasRef.current?.getContext('2d');
