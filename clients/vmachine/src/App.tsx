@@ -133,8 +133,12 @@ function App() {
         ))}
       </View>
       <Spacer size="medium" />
-      <View className="lcd">
-        <canvas ref={canvasRef} width={319} height={319} style={{ width: 319, height: 319, background: '#98A200' }} />
+      <View horizontal>
+        <View fillColor="gray-5" style={{ padding: '30px 30px 30px 30px', borderRadius: 20, boxShadow: '0 0 0 2px #adb5bd, inset 0 0 15px #FFFFFFC0' }}>
+          <View className="lcd">
+            <canvas ref={canvasRef} width={319} height={319} style={{ width: 319, height: 319, background: '#98A200' }} />
+          </View>
+        </View>
       </View>
     </View>
   );
