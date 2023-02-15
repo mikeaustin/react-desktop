@@ -105,8 +105,8 @@ function sub(dstReg: Register, srcReg: Register) {
   return [(Opcode.sub << 4) | (dstReg.value << 2) | srcReg.value];
 }
 
-function jmp(srcAddr: Address) {
-  return [(Opcode.jmp << 4) | JmpOp.always, srcAddr.value];
+function jmp(srcAddr: number | string) {
+  return [(Opcode.jmp << 4) | JmpOp.always, srcAddr];
 }
 
 function jeq(srcAddr: number | string) {
@@ -136,6 +136,8 @@ class Machine {
   public memory: Uint8Array;
   public flags: Uint8Array;
   public pc: number;
+
+  timeout: number = 0;
 
   static transform(instructions: Program): [number[], { [label: string]: number; }] {
     let labels: { [label: string]: number; } = {};
@@ -349,22 +351,24 @@ class Machine {
     }
   }
 
-  async loop(): Promise<void> {
-    const opCode = this.decode();
+  async run(): Promise<void> {
+    clearInterval(this.timeout);
 
-    this.execute(opCode);
+    return new Promise(resolve => {
+      const loop = () => {
+        const opCode = this.decode();
 
-    if (this.pc !== 255) {
-      return new Promise((resolve) => {
-        setTimeout(async () => {
-          await this.loop();
+        this.execute(opCode);
+
+        if (this.pc === 255) {
+          clearTimeout(this.timeout);
 
           resolve();
-        }, 500 - Date.now() % 500);
-      });
-    }
+        }
+      };
 
-    return Promise.resolve();
+      this.timeout = window.setInterval(loop, 1000 / 5);
+    });
   }
 
   async start(pc: number) {
@@ -373,15 +377,7 @@ class Machine {
 
     this.pc = pc;
 
-    // await this.loop();
-
-    let opCode;
-
-    do {
-      opCode = this.decode();
-
-      this.execute(opCode);
-    } while (this.pc !== 255);
+    await this.run();
 
     console.log();
   }

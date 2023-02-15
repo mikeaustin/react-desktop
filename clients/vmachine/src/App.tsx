@@ -60,10 +60,20 @@ const instructions: Program = [
   sto(new Address(224), Register.A),
   mov(Register.A, 0b11101110),
   sto(new Address(225), Register.A),
-  mov(Register.A, 0b01000000),
+  mov(Register.A, 0b10000000),
   sto(new Address(239), Register.A),
+  mov(Register.A, 0b00000010),
+  sto(new Address(238), Register.A),
   mov(Register.A, 0b00111110),
   sto(new Address(252), Register.A),
+  sys(SysCall.exit),
+
+  'animate',
+  mov(Register.A, 0),
+  'loop2',
+  add(Register.A, Register.B),
+  sto(new Address(230), Register.A),
+  jmp('loop2'),
   sys(SysCall.exit),
 ];
 
@@ -88,10 +98,11 @@ const animate = (context: CanvasRenderingContext2D, memory: Uint8Array) => {
       }
     });
 
-    machine.memory[239] = ((machine.memory[239] >>> 1) | (machine.memory[239] << (7 - 1))) & 0b11111110;
+    // machine.memory[239] = ((machine.memory[239] >>> 1) | (machine.memory[239] << (7 - 1))) & 0b11111110;
+    // machine.memory[238] = ((machine.memory[238] << 1) | (machine.memory[238] >>> (7 - 1))) & 0b11111110;
   };
 
-  return setInterval(tick, 1000 / 1);
+  return setInterval(tick, 1000 / 5);
 };
 
 function App() {
@@ -100,6 +111,12 @@ function App() {
   const timerRef = useRef<NodeJS.Timer>();
 
   useEffect(() => {
+    const context = canvasRef.current?.getContext('2d');
+
+    if (context) {
+      timerRef.current = animate(context, machine.memory);
+    }
+
     (async () => {
       await machine.start(labels.start);
       await machine.start(labels.add);
@@ -107,14 +124,10 @@ function App() {
       await machine.start(labels.start2);
       await machine.start(labels.display);
 
+      await machine.start(labels.animate);
+
       setIsInitialized(true);
     })();
-
-    const context = canvasRef.current?.getContext('2d');
-
-    if (context) {
-      timerRef.current = animate(context, machine.memory);
-    }
 
     return () => {
       clearInterval(timerRef.current);
