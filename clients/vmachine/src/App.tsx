@@ -106,9 +106,13 @@ const animate = (context: CanvasRenderingContext2D, memory: Uint8Array) => {
 };
 
 function App() {
-  const [isInitialized, setIsInitialized] = useState(false);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const timerRef = useRef<NodeJS.Timer>();
+
+  const handleStopClick = () => {
+    clearInterval(machine.timeout);
+    clearInterval(timerRef.current);
+  };
 
   useEffect(() => {
     const context = canvasRef.current?.getContext('2d');
@@ -125,8 +129,6 @@ function App() {
       await machine.start(labels.display);
 
       await machine.start(labels.animate);
-
-      setIsInitialized(true);
     })();
 
     return () => {
@@ -186,6 +188,10 @@ function App() {
             <canvas ref={canvasRef} width={319} height={319} style={{ width: 319, height: 319, background: '#98A200' }} />
           </View>
         </View>
+      </View>
+      <Spacer size="medium" />
+      <View horizontal>
+        <Button solid title="Stop" onClick={handleStopClick} />
       </View>
     </View>
   );
