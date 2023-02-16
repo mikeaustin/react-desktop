@@ -77,7 +77,7 @@ const instructions: Program = [
   sys(SysCall.exit),
 ];
 
-function handlePCChanged(address: number) {
+function handleCounterChanged(address: number) {
 
 }
 
@@ -98,7 +98,7 @@ function handleMemoryChange(address: number, value: number) {
 
 const [opcodes, labels] = Machine.transform(instructions);
 
-const machine = new Machine(opcodes, handleMemoryChange);
+const machine = new Machine(opcodes, handleMemoryChange, handleCounterChanged);
 
 const animate = (context: CanvasRenderingContext2D, memory: Uint8Array) => {
   const tick = () => {
@@ -176,15 +176,15 @@ function App() {
       <View style={{ margin: 0, fontFamily: 'monospace', whiteSpace: 'pre' }}>
         REGISTERS        FLAGS  PC{'\n'}
         {Array.from(machine.registers).map((byte, index) => (
-          <React.Fragment>{byte.toString().padStart(3, '0')} </React.Fragment>
+          <React.Fragment key={index}>{byte.toString().padStart(3, '0')} </React.Fragment>
         ))}
         {' '}
         {Array.from(machine.flags).map((byte, index) => (
-          <React.Fragment>{byte.toString().padStart(3, '0')} </React.Fragment>
+          <React.Fragment key={index}>{byte.toString().padStart(3, '0')} </React.Fragment>
         ))}
         {'   '}
         {Array.from([machine.pc]).map((byte, index) => (
-          <React.Fragment>{byte.toString().padStart(3, '0')} </React.Fragment>
+          <React.Fragment key={index}>{byte.toString().padStart(3, '0')} </React.Fragment>
         ))}
       </View>
       <Spacer size="medium" />
@@ -193,7 +193,7 @@ function App() {
         <Spacer size="small" />
         <View as="ul" id="memory" style={{ display: 'grid', gridTemplateColumns: 'repeat(16, 1fr)', gap: 10, width: 'min-content', margin: 0, padding: 0, listStyle: 'none' }}>
           {Array.from(machine.memory).map((byte, index) => (
-            <li key={Math.random()} style={{ margin: 0, padding: 0 }}>
+            <li key={index} style={{ margin: 0, padding: 0 }}>
               {byte.toString().padStart(3, '0')}
             </li>
           ))}
