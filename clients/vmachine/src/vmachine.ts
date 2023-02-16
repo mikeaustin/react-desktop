@@ -138,6 +138,7 @@ class Machine {
   public pc: number;
 
   timeout: number = 0;
+  onMemoryChange?: (address: number, value: number) => void;
 
   static transform(instructions: Program): [number[], { [label: string]: number; }] {
     let labels: { [label: string]: number; } = {};
@@ -166,7 +167,7 @@ class Machine {
     return [opcodes as number[], labels];
   }
 
-  constructor(instructions: number[]) {
+  constructor(instructions: number[], onMemoryChange?: (address: number, value: number) => void) {
     this.registers = new Uint8Array(new ArrayBuffer(4));
     this.memory = new Uint8Array(new ArrayBuffer(256));
     this.flags = new Uint8Array(new ArrayBuffer(1));
@@ -177,9 +178,13 @@ class Machine {
         this.memory[index] = byte;
       }
     });
+
+    this.onMemoryChange = onMemoryChange;
   }
 
   debug(operands: { [key: string]: string | number; }): void {
+    return;
+
     const opCode = this.memory[this.pc] >> 4;
     const ops = Object.entries(operands).map(([name, value]) => `${name}: ${value}`).join('\t');
 
@@ -257,6 +262,10 @@ class Machine {
         this.memory[dstAddr] = this.registers[srcReg];
 
         this.debug({ dstAddr, srcReg: (Register.Names as any)[srcReg] });
+
+        if (this.onMemoryChange) {
+          this.onMemoryChange(dstAddr, this.registers[srcReg]);
+        }
 
         return this.pc += 2;
       }

@@ -77,9 +77,28 @@ const instructions: Program = [
   sys(SysCall.exit),
 ];
 
+function handlePCChanged(address: number) {
+
+}
+
+function handleMemoryChange(address: number, value: number) {
+  const memoryElement = document.querySelector('#memory') as HTMLElement;
+  const child = memoryElement?.children[address] as HTMLElement;
+
+  if (child) {
+    child.textContent = value.toString().padStart(3, '0');
+
+    child.addEventListener('animationend', () => {
+      child.style.animation = '';
+    });
+
+    child.style.animation = '0.5s flash';
+  }
+}
+
 const [opcodes, labels] = Machine.transform(instructions);
 
-const machine = new Machine(opcodes);
+const machine = new Machine(opcodes, handleMemoryChange);
 
 const animate = (context: CanvasRenderingContext2D, memory: Uint8Array) => {
   const tick = () => {
@@ -97,9 +116,6 @@ const animate = (context: CanvasRenderingContext2D, memory: Uint8Array) => {
         );
       }
     });
-
-    // machine.memory[239] = ((machine.memory[239] >>> 1) | (machine.memory[239] << (7 - 1))) & 0b11111110;
-    // machine.memory[238] = ((machine.memory[238] << 1) | (machine.memory[238] >>> (7 - 1))) & 0b11111110;
   };
 
   return setInterval(tick, 1000 / 5);
@@ -156,7 +172,7 @@ function App() {
   }
 
   return (
-    <View padding="medium" className="App" style={{ margin: 0, fontFamily: 'monospace', fontSize: 14, whiteSpace: 'pre' }}>
+    <View padding="medium" className="App" style={{ margin: 0, fontFamily: 'monospace', fontSize: 14 }}>
       <View style={{ margin: 0, fontFamily: 'monospace', whiteSpace: 'pre' }}>
         REGISTERS        FLAGS  PC{'\n'}
         {Array.from(machine.registers).map((byte, index) => (
@@ -172,14 +188,16 @@ function App() {
         ))}
       </View>
       <Spacer size="medium" />
-      <View id="memory" style={{ margin: 0, fontFamily: 'monospace', whiteSpace: 'pre', lineHeight: 1.5 }}>
-        MEMORY{'\n'}
-        {Array.from(machine.memory).map((byte, index) => (
-          <React.Fragment key={Math.random()}>
-            {/* {index > 0 && index % 16 === 0 && '\n'} */}
-            {(index > 0 ? (index % 16 === 0 ? '\n' : ' ') : '') + byte.toString().padStart(3, '0')}
-          </React.Fragment>
-        ))}
+      <View>
+        <Text>MEMORY</Text>
+        <Spacer size="small" />
+        <View as="ul" id="memory" style={{ display: 'grid', gridTemplateColumns: 'repeat(16, 1fr)', gap: 10, width: 'min-content', margin: 0, padding: 0, listStyle: 'none' }}>
+          {Array.from(machine.memory).map((byte, index) => (
+            <li key={Math.random()} style={{ margin: 0, padding: 0 }}>
+              {byte.toString().padStart(3, '0')}
+            </li>
+          ))}
+        </View>
       </View>
       <Spacer size="medium" />
       <View horizontal>
