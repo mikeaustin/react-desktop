@@ -152,25 +152,6 @@ function App() {
     };
   }, []);
 
-  const context = canvasRef.current?.getContext('2d');
-
-  if (context) {
-    context.clearRect(0, 0, 309, 309);
-
-    machine.memory.slice(224, 254).forEach((data, index) => {
-      for (let bit = 7; bit >= 0; --bit) {
-        context.fillStyle = data & (1 << bit) ? '#00000080' : '#00000000';
-
-        context.fillRect(
-          ((7 - bit) + (index * 8)) % 16 * 20 + 10,
-          Math.floor(index / 2) * 20 + 10,
-          19,
-          19
-        );
-      }
-    });
-  }
-
   return (
     <View padding="medium" className="App" style={{ margin: 0, fontFamily: 'monospace', fontSize: 14 }}>
       <View style={{ margin: 0, fontFamily: 'monospace', whiteSpace: 'pre' }}>
@@ -201,7 +182,7 @@ function App() {
       </View>
       <Spacer size="medium" />
       <View horizontal>
-        <View fillColor="gray-5" style={{ padding: '30px 30px 30px 30px', borderRadius: 20, boxShadow: '0 0 0 2px #adb5bd, inset 0 0 15px #FFFFFFC0' }}>
+        <View fillColor="gray-5" style={{ padding: '30px 30px 30px 30px', borderRadius: 20, boxShadow: '0 0 0 2px #adb5bd, inset 0 0 25px #FFFFFFC0' }}>
           <View className="lcd">
             <canvas ref={canvasRef} width={319} height={319} style={{ width: 319, height: 319, background: '#98A200' }} />
           </View>
