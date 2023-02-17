@@ -387,7 +387,7 @@ class Machine {
         }
       };
 
-      this.timeout = window.setInterval(loop, 1000 / 5);
+      this.timeout = window.setInterval(loop, 1000 / 10);
     });
   }
 

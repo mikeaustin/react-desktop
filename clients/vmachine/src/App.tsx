@@ -86,11 +86,11 @@ function handleMemoryChange(address: number, value: number) {
   const child = memoryElement?.children[address] as HTMLElement;
 
   if (child) {
+    child.style.animation = '';
+
     child.textContent = value.toString().padStart(3, '0');
 
-    child.addEventListener('animationend', () => {
-      child.style.animation = '';
-    });
+    void child.offsetWidth;
 
     child.style.animation = '0.5s flash';
   }
@@ -153,7 +153,7 @@ function App() {
   }, []);
 
   return (
-    <View padding="medium" className="App" style={{ margin: 0, fontFamily: 'monospace', fontSize: 14 }}>
+    <View padding="medium" className="App" style={{ margin: 0, fontFamily: 'monospace', fontSize: 12 }}>
       <View style={{ margin: 0, fontFamily: 'monospace', whiteSpace: 'pre' }}>
         REGISTERS        FLAGS  PC{'\n'}
         {Array.from(machine.registers).map((byte, index) => (
@@ -172,7 +172,7 @@ function App() {
       <View>
         <Text>MEMORY</Text>
         <Spacer size="small" />
-        <View as="ul" id="memory" style={{ display: 'grid', gridTemplateColumns: 'repeat(16, 1fr)', gap: 10, width: 'min-content', margin: 0, padding: 0, listStyle: 'none' }}>
+        <View as="ul" id="memory" style={{ display: 'grid', gridTemplateColumns: 'repeat(16, 1fr)', gap: 5, width: 'min-content', margin: 0, padding: 0, listStyle: 'none' }}>
           {Array.from(machine.memory).map((byte, index) => (
             <li key={index} style={{ margin: 0, padding: 0 }}>
               {byte.toString().padStart(3, '0')}
