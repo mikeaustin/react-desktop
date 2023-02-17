@@ -139,6 +139,7 @@ class Machine {
 
   timeout: number = 0;
 
+  onRegisterChange?: (address: number, value: number) => void;
   onMemoryChange?: (address: number, value: number) => void;
   onCounterChange?: (address: number) => void;
 
@@ -171,8 +172,10 @@ class Machine {
 
   constructor(
     instructions: number[],
-    onMemoryChange?: (address: number, value: number) => void,
-    onCounterChange?: (address: number) => void
+    options: {
+      onMemoryChange?: (address: number, value: number) => void,
+      onCounterChange?: (address: number) => void;
+    }
   ) {
     this.registers = new Uint8Array(new ArrayBuffer(4));
     this.memory = new Uint8Array(new ArrayBuffer(256));
@@ -185,8 +188,8 @@ class Machine {
       }
     });
 
-    this.onMemoryChange = onMemoryChange;
-    this.onCounterChange = onCounterChange;
+    this.onMemoryChange = options.onMemoryChange;
+    this.onCounterChange = options.onCounterChange;
   }
 
   debug(operands: { [key: string]: string | number; }): void {

@@ -113,7 +113,10 @@ function handleMemoryChange(address: number, value: number) {
 
 const [opcodes, labels] = Machine.transform(instructions);
 
-const machine = new Machine(opcodes, handleMemoryChange, handleCounterChanged);
+const machine = new Machine(opcodes, {
+  onMemoryChange: handleMemoryChange,
+  onCounterChange: handleCounterChanged
+});
 
 const animate = (context: CanvasRenderingContext2D, memory: Uint8Array) => {
   const tick = () => {
