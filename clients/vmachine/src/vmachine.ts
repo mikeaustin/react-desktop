@@ -365,10 +365,6 @@ class Machine {
         return this.pc = 255;
       }
     }
-
-    // if (this.onCounterChange) {
-    //   this.onCounterChange(this.pc);
-    // }
   }
 
   async run(): Promise<void> {
@@ -379,6 +375,10 @@ class Machine {
         const opCode = this.decode();
 
         this.execute(opCode);
+
+        if (this.onCounterChange) {
+          this.onCounterChange(this.pc);
+        }
 
         if (this.pc === 255) {
           clearTimeout(this.timeout);

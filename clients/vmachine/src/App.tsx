@@ -77,8 +77,23 @@ const instructions: Program = [
   sys(SysCall.exit),
 ];
 
-function handleCounterChanged(address: number) {
+let previousChild: HTMLElement | null = null;
 
+function handleCounterChanged(address: number) {
+  const memoryElement = document.querySelector('#memory') as HTMLElement;
+  const child = memoryElement?.children[address] as HTMLElement;
+
+  if (previousChild) {
+    previousChild.style.background = '';
+  }
+
+  if (child) {
+    child.style.background = 'orange';
+
+    void child.offsetWidth;
+
+    previousChild = child;
+  }
 }
 
 function handleMemoryChange(address: number, value: number) {
@@ -102,6 +117,10 @@ const machine = new Machine(opcodes, handleMemoryChange, handleCounterChanged);
 
 const animate = (context: CanvasRenderingContext2D, memory: Uint8Array) => {
   const tick = () => {
+    if (!(machine.flags[0] & 0b00000100)) {
+      // return;
+    }
+
     context.clearRect(0, 0, 309, 309);
 
     machine.memory.slice(224, 254).forEach((data, index) => {
@@ -118,7 +137,7 @@ const animate = (context: CanvasRenderingContext2D, memory: Uint8Array) => {
     });
   };
 
-  return setInterval(tick, 1000 / 5);
+  return setInterval(tick, 1000 / 10);
 };
 
 function App() {
