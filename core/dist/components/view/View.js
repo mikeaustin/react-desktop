@@ -50,6 +50,10 @@ function paddingToStyle(padding) {
             return ['none', 'large'];
         case 'xsmall none':
             return ['xsmall', 'none'];
+        case 'xsmall small':
+            return ['xsmall', 'small'];
+        case 'xsmall medium':
+            return ['xsmall', 'medium'];
         case 'small none':
             return ['small', 'none'];
         case 'small medium':

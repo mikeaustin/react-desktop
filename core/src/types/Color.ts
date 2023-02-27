@@ -27,6 +27,18 @@ type Red =
   | 'red-8'
   | 'red-9';
 
+type Violet =
+  | 'violet-0'
+  | 'violet-1'
+  | 'violet-2'
+  | 'violet-3'
+  | 'violet-4'
+  | 'violet-5'
+  | 'violet-6'
+  | 'violet-7'
+  | 'violet-8'
+  | 'violet-9';
+
 type Blue =
   | 'blue-0'
   | 'blue-1'
@@ -39,6 +51,18 @@ type Blue =
   | 'blue-8'
   | 'blue-9';
 
+type Teal =
+  | 'teal-0'
+  | 'teal-1'
+  | 'teal-2'
+  | 'teal-3'
+  | 'teal-4'
+  | 'teal-5'
+  | 'teal-6'
+  | 'teal-7'
+  | 'teal-8'
+  | 'teal-9';
+
 type Green =
   | 'green-0'
   | 'green-1'
@@ -50,6 +74,18 @@ type Green =
   | 'green-7'
   | 'green-8'
   | 'green-9';
+
+type Lime =
+  | 'lime-0'
+  | 'lime-1'
+  | 'lime-2'
+  | 'lime-3'
+  | 'lime-4'
+  | 'lime-5'
+  | 'lime-6'
+  | 'lime-7'
+  | 'lime-8'
+  | 'lime-9';
 
 type Yellow =
   | 'yellow-0'
@@ -82,6 +118,7 @@ type Color =
   | Gray
   | Blue
   | Yellow
+  | Orange
   ;
 
 export default Color;
