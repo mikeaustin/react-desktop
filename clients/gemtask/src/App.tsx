@@ -15,7 +15,7 @@ const statuses = [
   { title: 'Draft', color: 'gray-4' },
   { title: 'Sprint Ready', color: 'violet-2' },
   { title: 'In Progress', color: 'blue-2' },
-  { title: 'In Review', color: 'teal-3' },
+  { title: 'In Review', color: 'teal-2' },
   { title: 'Complete', color: 'lime-3' },
   { title: 'Blocked', color: 'orange-3' },
 ];
@@ -108,8 +108,8 @@ function App() {
         </View>
         <Divider />
         <View>
-          {groupedStories.map(group => (
-            <View key={group[0].epicId}>
+          {groupedStories.map((group, index) => (
+            <View key={index}>
               <View horizontal>
                 <View padding="small medium">
                   <Spacer size="small" />
