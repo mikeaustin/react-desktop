@@ -1,0 +1,12 @@
+.App {
+  height: 100vh;
+}
+
+.hoverable .onHover {
+  opacity: 0.0;
+  transition: opacity 0.1s;
+}
+
+.hoverable:hover .onHover {
+  opacity: 1.0;
+}
