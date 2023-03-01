@@ -68,8 +68,8 @@ function Story({ id, title, statusId, typeId, blockedById, selected, onSelect }:
       </Stack>
       {blockedById !== undefined && (
         <View horizontal>
-          <View padding="small medium" fillColor="yellow-0" style={{ margin: '0 16px 6px 42px', borderRadius: 4 }}>
-            <Text>Dependent on a story in the “DevOps” project</Text>
+          <View padding="xsmall small" fillColor="yellow-1" style={{ margin: '0 16px 6px 42px', borderRadius: 4 }}>
+            <Text>Dependent on a story in the “DevOps” project: DevOps-1234</Text>
           </View>
         </View>
       )}
@@ -170,13 +170,15 @@ function BacklogPage() {
                   <Icon size="xl" icon="square-plus" color="gray-6" style={{ margin: 0, width: 24 }} />
                 </Stack>
               </View>
-              <Divider />
-              <Stack divider>
-                {group.map(story => (
-                  <Story key={story.id} id={story.id} title={story.title} statusId={story.statusId} typeId={story.typeId} blockedById={story.blockedById} selected={story.id === selectedItemId} onSelect={handleStorySelect} />
-                ))}
-              </Stack>
-              <Divider />
+              {/* <Divider /> */}
+              <View padding="none medium">
+                <Stack divider style={{ borderRadius: 4, overflow: 'hidden', border: '1px solid #dee2e6', boxShadow: 'inset 0 0 0 1px red' }}>
+                  {group.map(story => (
+                    <Story key={story.id} id={story.id} title={story.title} statusId={story.statusId} typeId={story.typeId} blockedById={story.blockedById} selected={story.id === selectedItemId} onSelect={handleStorySelect} />
+                  ))}
+                </Stack>
+              </View>
+              {/* <Divider /> */}
             </View>
           ))}
           <View horizontal padding="medium">
@@ -196,7 +198,7 @@ function BacklogPage() {
                 <View>
                   <Text light caps fontSize="small">Estimate</Text>
                   <Spacer size="small" />
-                  <Text>2 – A few hours</Text>
+                  <Text>A few hours (2)</Text>
                 </View>
                 <View>
                   <Text light caps fontSize="small">Status</Text>
@@ -215,6 +217,15 @@ function BacklogPage() {
               <Text>Blah blah blah</Text>
               <Spacer size="large" />
               <Text light caps fontSize="small">Acceptance Criteria</Text>
+              <View contentEditable placeholder="This item is done when">
+                <Spacer size="small" />
+                <Text>This item is done when...</Text>
+                {/* <ul>
+                  <li></li>
+                </ul> */}
+              </View>
+              <Spacer size="large" />
+              <Text light caps fontSize="small">Out of Scope</Text>
               <View contentEditable placeholder="This item is done when">
                 <Spacer size="small" />
                 <Text>This item is done when...</Text>
