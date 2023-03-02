@@ -257,7 +257,7 @@ function BacklogPage() {
                   <Spacer flex size="small" />
                   <Stack horizontal spacing="medium" padding="xsmall medium" align="bottom right" className={styles.onHover}>
                     <Icon size="lg" icon="sliders" color="gray-6" style={{ marginTop: 0, marginBottom: 2, width: 24 }} />
-                    <Icon size="xl" icon="square-plus" color="gray-6" style={{ margin: 0, width: 24 }} />
+                    <Icon size="xl" icon="square-plus" color="gray-6" style={{ margin: 0, width: 24 }} onClick={() => setIsAddStoryModalOpen(true)} />
                   </Stack>
                 </View>
                 {/* <Divider /> */}
@@ -317,7 +317,15 @@ function BacklogPage() {
         <Modal
           isOpen={isAddStoryModalOpen}
           header={
-            <Field autoFocus fontSize="large" placeholder="A short title..." />
+            <>
+              <Field autoFocus fontSize="large" placeholder="A short title..." />
+              <Spacer size="large" />
+              <Stack horizontal spacing="large">
+                <Field label="Epic" options={epicOptions} />
+                <Field label="Estimate" options={estimateOptions} />
+                <Field label="Tags" initialValue={0} options={tagsOptions} />
+              </Stack>
+            </>
           }
           actions={[
             <Button solid primary title="Add Story" onClick={() => setIsAddStoryModalOpen(false)} />,
@@ -327,6 +335,8 @@ function BacklogPage() {
           <Stack spacing="large">
             <Field label="Description" placeholder="A short description..." />
             <Field label="Acceptance Criteria" placeholder="This story is done when..." />
+            <Field label="Out of Scope" placeholder="Ignore this and that..." />
+            <Field label="Testing instructions" placeholder="To test this story..." />
           </Stack>
         </Modal>
       </View>
