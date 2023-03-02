@@ -4,6 +4,8 @@ import { useParams } from 'react-router-dom';
 
 import { View, Text, Icon, Button, Input, Spacer, Divider, Stack } from 'core';
 
+import Modal from '../../../shared/components/modal';
+
 import styles from '../../../App.module.scss';
 
 const types = [
@@ -14,7 +16,7 @@ const types = [
 
 const statuses = [
   { title: 'Draft', color: 'gray-4' },
-  { title: 'Sprint Ready', color: 'violet-2' },
+  { title: 'Is Ready', color: 'violet-2' },
   { title: 'In Progress', color: 'blue-2' },
   { title: 'In Review', color: 'teal-2' },
   { title: 'Done', color: 'lime-3' },
@@ -30,7 +32,7 @@ const estimateOptions = [
 
 const statusOptions = [
   { label: 'Draft', value: 0 },
-  { label: 'Sprint Ready', value: 1 },
+  { label: 'Is Ready', value: 1 },
   { label: 'In Progress', value: 2 },
   { label: 'In Review', value: 3 },
   { label: 'Done', value: 4 },
@@ -42,7 +44,12 @@ const epicOptions = [
   { label: 'Organization and Polish', value: 1 },
 ];
 
-function Field({ label, initialValue, placeholder, options, ...props }: any) {
+const tagsOptions = [
+  { label: 'payment', value: 0 },
+  { label: 'customer', value: 1 },
+];
+
+function Field({ label, initialValue, placeholder, options, fontSize, autoFocus, ...props }: any) {
   const [value, setValue] = useState('');
 
   useEffect(() => {
@@ -57,7 +64,7 @@ function Field({ label, initialValue, placeholder, options, ...props }: any) {
     </select>
   ) : (
     <View className={styles.Field}>
-      <Text contentEditable style={{ fontStyle: value.length === 0 ? 'italic' : undefined }}>
+      <Text contentEditable autoFocus={autoFocus} fontSize={fontSize} style={{ fontStyle: value.length === 0 ? 'italic' : undefined }}>
         {value.length === 0 ? placeholder : value}
       </Text>
     </View>
@@ -137,39 +144,63 @@ function Story({ id, title, estimateId, statusId, typeId, blockedById, selected,
 
 const Assignees = () => {
   return (
-    <Stack divider>
-      <Stack horizontal spacing="medium" padding="small none">
-        <View horizontal>
-          <View fillColor="gray-2" align="center" style={{ width: 32, height: 32, margin: '-1px 0', borderRadius: 1000, boxShadow: '0 0 0 1px white' }}>
-            <Text fontSize="small" fontWeight="semi-bold">MR</Text>
-          </View>
-          <Spacer size="small" />
-          <View style={{ width: 200 }}>
-            <Text>Annabelle Webber</Text>
+    <View className={styles.hoverable}>
+      <View horizontal style={{ alignItems: 'flex-end' }}>
+        <Text light caps fontSize="small">Assignees</Text>
+        <Spacer flex size="small" />
+        <Stack horizontal spacing="medium" align="right" className={styles.onHover}>
+          <Icon size="lg" icon="sliders" color="gray-6" style={{ marginTop: -3, width: 24 }} />
+          <Icon size="xl" icon="square-plus" color="gray-6" style={{ margin: 0, width: 24 }} />
+        </Stack>
+      </View>
+      <Spacer size="small" />
+      <Divider />
+      <Stack divider>
+        <Stack horizontal spacing="medium" padding="small none">
+          <View horizontal>
+            <View fillColor="gray-2" align="center" style={{ width: 32, height: 32, margin: '-1px 0', borderRadius: 1000, boxShadow: '0 0 0 1px white' }}>
+              <Text fontSize="small" fontWeight="semi-bold">MR</Text>
+            </View>
             <Spacer size="small" />
-            <Text light fontSize="small">c#, microservice, aws</Text>
+            <View style={{ width: 200 }}>
+              <Text>Annabelle Webber</Text>
+              <Spacer size="small" />
+              <Text light fontSize="small">c#, microservice, aws</Text>
+            </View>
           </View>
-        </View>
-        <Field flex placeholder="Responsibilities..." />
-      </Stack>
-      <Stack horizontal spacing="medium" padding="small none">
-        <View horizontal>
-          <View fillColor="gray-2" align="center" style={{ width: 32, height: 32, margin: '-1px 0', borderRadius: 1000, boxShadow: '0 0 0 1px white' }}>
-            <Text fontSize="small" fontWeight="semi-bold">BH</Text>
-          </View>
-          <Spacer size="small" />
-          <View style={{ width: 200 }}>
-            <Text>Beckett Hawkins</Text>
+          <Field flex placeholder="Responsibilities..." />
+        </Stack>
+        <Stack horizontal spacing="medium" padding="small none">
+          <View horizontal>
+            <View fillColor="gray-2" align="center" style={{ width: 32, height: 32, margin: '-1px 0', borderRadius: 1000, boxShadow: '0 0 0 1px white' }}>
+              <Text fontSize="small" fontWeight="semi-bold">BH</Text>
+            </View>
             <Spacer size="small" />
-            <Text light fontSize="small">ui, react, integration</Text>
+            <View style={{ width: 200 }}>
+              <Text>Beckett Hawkins</Text>
+              <Spacer size="small" />
+              <Text light fontSize="small">ui, react, integration</Text>
+            </View>
           </View>
-        </View>
-        <Field flex initialValue="Front-end integration and regression testing" placeholder="Responsibilities..." />
-        {/* <View>
-          <Text contentEditable>Front-end integration and regression testing</Text>
-        </View> */}
+          <Field flex initialValue="Front-end integration and regression testing" placeholder="Responsibilities..." />
+        </Stack>
+        <Stack horizontal spacing="medium" padding="small none">
+          <View horizontal>
+            <View fillColor="gray-2" align="center" style={{ width: 32, height: 32, margin: '-1px 0', borderRadius: 1000, boxShadow: '0 0 0 1px white' }}>
+              <Text fontSize="small" fontWeight="semi-bold">BH</Text>
+            </View>
+            <Spacer size="small" />
+            <View style={{ width: 200 }}>
+              <Text>Beckett Hawkins</Text>
+              <Spacer size="small" />
+              <Text light fontSize="small">ux, figma, zeplin</Text>
+            </View>
+          </View>
+          <Field flex initialValue="Design lead" placeholder="Responsibilities..." />
+        </Stack>
       </Stack>
-    </Stack>
+      <Divider />
+    </View>
   );
 };
 
@@ -179,10 +210,10 @@ const epics = [
 ];
 
 const stories = [
-  { id: 5, title: 'Asdf asdf ccalability is tested', estimateId: 1, epicId: 1, statusId: 5, typeId: 0, blockedById: 2 },
+  { id: 5, title: 'Asdf asdf ccalability is tested', estimateId: 2, epicId: 1, statusId: 5, typeId: 0, blockedById: 2 },
   { id: 0, title: 'Basic UI for logging in is created', estimateId: 1, epicId: 0, statusId: 4, typeId: 0, },
-  { id: 1, title: 'User can log in and view stories', estimateId: 1, epicId: 0, statusId: 3, typeId: 1 },
-  { id: 2, title: 'User can create new account and log in', estimateId: 1, epicId: 0, statusId: 2, typeId: 2 },
+  { id: 1, title: 'User can log in and view stories', estimateId: 2, epicId: 0, statusId: 3, typeId: 1 },
+  { id: 2, title: 'User can create new account and log in', estimateId: 3, epicId: 0, statusId: 2, typeId: 2 },
   { id: 3, title: 'Scroll to selected card in Kanban view', estimateId: 1, epicId: 1, statusId: 1, typeId: 0 },
   { id: 4, title: 'Scalability is tested', estimateId: 0, epicId: 1, statusId: 0, typeId: 0 },
 ];
@@ -192,9 +223,8 @@ const groupedStories = groupWith((a, b) => a.epicId === b.epicId, stories);
 function BacklogPage() {
   const params = useParams();
 
-  console.log(params);
-
   const [selectedItemId, setSelectedItemId] = useState<number | null>(null);
+  const [isAddStoryModalOpen, setIsAddStoryModalOpen] = useState<boolean>(false);
 
   const handleStorySelect = (storyId: number) => {
     console.log('here', storyId);
@@ -203,88 +233,104 @@ function BacklogPage() {
   };
 
   return (
-    <View flex horizontal>
-      <View flex fillColor="gray-1">
-        <View padding="small medium" fillColor="gray-0">
-          <Spacer size="small" />
-          <Text fontSize="large">Product Backlog</Text>
-          <Spacer size="medium" />
-          <Stack horizontal spacing="medium">
-            <Text textColor="blue-7">Assigned to Me</Text>
-            <Text textColor="blue-7">Flagged Items</Text>
-          </Stack>
-        </View>
-        <Divider />
-        <View>
-          {groupedStories.map((group, index) => (
-            <View key={index} className={styles.hoverable}>
-              <View horizontal>
-                <View padding="small medium">
-                  <Spacer size="small" />
-                  <Text caps>{epics[group[0].epicId].title}</Text>
-                </View>
-                <Spacer flex size="small" />
-                <Stack horizontal spacing="medium" padding="xsmall medium" align="bottom right" className={styles.onHover}>
-                  <Icon size="lg" icon="sliders" color="gray-6" style={{ marginTop: 0, marginBottom: 2, width: 24 }} />
-                  <Icon size="xl" icon="square-plus" color="gray-6" style={{ margin: 0, width: 24 }} />
-                </Stack>
-              </View>
-              {/* <Divider /> */}
-              <View padding="none medium">
-                <Stack divider style={{ borderRadius: 4, overflow: 'hidden', border: '1px solid #dee2e6', boxShadow: 'inset 0 0 0 1px red' }}>
-                  {group.map(story => (
-                    <Story key={story.id} selected={story.id === selectedItemId} {...story} onSelect={handleStorySelect} />
-                  ))}
-                </Stack>
-              </View>
-              {/* <Divider /> */}
-            </View>
-          ))}
-          <View horizontal padding="medium">
-            <Button solid title="Add Item" />
+    <>
+      <View flex horizontal>
+        <View flex fillColor="gray-1">
+          <View padding="small medium" fillColor="gray-0">
+            <Spacer size="small" />
+            <Text fontSize="large">Product Backlog</Text>
+            <Spacer size="medium" />
+            <Stack horizontal spacing="medium">
+              <Text textColor="blue-7">Assigned to Me</Text>
+              <Text textColor="blue-7">Flagged Items</Text>
+            </Stack>
           </View>
-        </View>
-      </View>
-      {params.itemId && (
-        <>
           <Divider />
-          <View flex>
-            <View padding="small medium" fillColor="gray-0">
-              <Spacer size="small" />
-              <Text fontSize="large">{stories.find((story) => story.id === selectedItemId)?.title}</Text>
-              <Spacer size="medium" />
-              <Stack horizontal spacing="large">
-                <Field label="Estimate" initialValue={stories.find(story => story.id === selectedItemId)?.estimateId} options={estimateOptions} />
-                <Field label="Status" initialValue={stories.find(story => story.id === selectedItemId)?.statusId} options={statusOptions} />
-                <Field label="Epic" initialValue={stories.find(story => story.id === selectedItemId)?.epicId} options={epicOptions} />
-              </Stack>
-              <Spacer size="large" />
-              <Stack horizontal spacing="medium">
-                <Text fontSize="medium">Details</Text>
-                <Text light fontSize="medium">Comments</Text>
-                <Text light fontSize="medium">Files</Text>
-                <Text light fontSize="medium">Epic</Text>
-              </Stack>
-            </View>
-            <Divider />
-            <View padding="medium" fillColor="white">
-              <Spacer size="small" />
-              <Field label="Description" placeholder="A short description..." />
-              <Spacer size="large" />
-              <Field label="Acceptance Criteria" placeholder="This item is done when..." />
-              <Spacer size="large" />
-              <Field label="Out of Scope" placeholder="Ignore this and that..." />
-              <Spacer size="large" />
-              <Text light caps fontSize="small">Assignees</Text>
-              <Spacer size="small" />
-              <Divider />
-              <Assignees />
-              <Divider />
+          <View>
+            {groupedStories.map((group, index) => (
+              <View key={index} className={styles.hoverable}>
+                <View horizontal>
+                  <View padding="small medium">
+                    <Spacer size="small" />
+                    <Text caps fontSize="small">{epics[group[0].epicId].title}</Text>
+                  </View>
+                  <Spacer flex size="small" />
+                  <Stack horizontal spacing="medium" padding="xsmall medium" align="bottom right" className={styles.onHover}>
+                    <Icon size="lg" icon="sliders" color="gray-6" style={{ marginTop: 0, marginBottom: 2, width: 24 }} />
+                    <Icon size="xl" icon="square-plus" color="gray-6" style={{ margin: 0, width: 24 }} />
+                  </Stack>
+                </View>
+                {/* <Divider /> */}
+                <View padding="none medium">
+                  <Stack divider style={{ borderRadius: 4, overflow: 'hidden', border: '1px solid #dee2e6', boxShadow: 'inset 0 0 0 1px red' }}>
+                    {group.map(story => (
+                      <Story key={story.id} selected={story.id === selectedItemId} {...story} onSelect={handleStorySelect} />
+                    ))}
+                  </Stack>
+                </View>
+                {/* <Divider /> */}
+              </View>
+            ))}
+            <View horizontal padding="medium">
+              <Button solid title="Add Story" onClick={() => setIsAddStoryModalOpen(true)} />
             </View>
           </View>
-        </>
-      )}
-    </View>
+        </View>
+        {params.itemId && (
+          <>
+            <Divider />
+            <View flex>
+              <View padding="small medium" fillColor="gray-0">
+                <Spacer size="small" />
+                <Text fontSize="large">{stories.find((story) => story.id === selectedItemId)?.title}</Text>
+                <Spacer size="medium" />
+                <Stack horizontal spacing="large">
+                  <Field label="Epic" initialValue={stories.find(story => story.id === selectedItemId)?.epicId} options={epicOptions} />
+                  <Field label="Estimate" initialValue={stories.find(story => story.id === selectedItemId)?.estimateId} options={estimateOptions} />
+                  <Field label="Status" initialValue={stories.find(story => story.id === selectedItemId)?.statusId} options={statusOptions} />
+                  <Field label="Tags" initialValue={0} options={tagsOptions} />
+                </Stack>
+                <Spacer size="large" />
+                <Stack horizontal spacing="medium">
+                  <Text fontSize="medium">Details</Text>
+                  <Text light fontSize="medium">Comments</Text>
+                  <Text light fontSize="medium">Files</Text>
+                  <Text light fontSize="medium">Epic</Text>
+                </Stack>
+              </View>
+              <Divider />
+              <View padding="medium" fillColor="white">
+                <Spacer size="small" />
+                <Field label="Description" placeholder="A short description..." />
+                <Spacer size="large" />
+                <Field label="Acceptance Criteria" placeholder="This story is done when..." />
+                <Spacer size="large" />
+                <Field label="Out of Scope" placeholder="Ignore this and that..." />
+                <Spacer size="large" />
+                <Field label="Testing instructions" placeholder="To test this story..." />
+                <Spacer size="large" />
+                <Assignees />
+              </View>
+            </View>
+          </>
+        )}
+        <Modal
+          isOpen={isAddStoryModalOpen}
+          header={
+            <Field autoFocus fontSize="large" placeholder="A short title..." />
+          }
+          actions={[
+            <Button solid primary title="Add Story" onClick={() => setIsAddStoryModalOpen(false)} />,
+            <Button solid title="Cancel" onClick={() => setIsAddStoryModalOpen(false)} />,
+          ]}
+        >
+          <Stack spacing="large">
+            <Field label="Description" placeholder="A short description..." />
+            <Field label="Acceptance Criteria" placeholder="This story is done when..." />
+          </Stack>
+        </Modal>
+      </View>
+    </>
   );
 }
 

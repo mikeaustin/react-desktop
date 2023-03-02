@@ -39,7 +39,7 @@ import { useTextColorStyles } from '../../styles/textColorStyles.js';
 import TextContext from './TextContext.js';
 function Text(_a) {
     var _b, _c, _d;
-    var flex = _a.flex, contain = _a.contain, light = _a.light, caps = _a.caps, fontSize = _a.fontSize, fontWeight = _a.fontWeight, textColor = _a.textColor, textAlign = _a.textAlign, className = _a.className, children = _a.children, props = __rest(_a, ["flex", "contain", "light", "caps", "fontSize", "fontWeight", "textColor", "textAlign", "className", "children"]);
+    var flex = _a.flex, contain = _a.contain, light = _a.light, caps = _a.caps, fontSize = _a.fontSize, fontWeight = _a.fontWeight, textColor = _a.textColor, textAlign = _a.textAlign, autoFocus = _a.autoFocus, className = _a.className, children = _a.children, props = __rest(_a, ["flex", "contain", "light", "caps", "fontSize", "fontWeight", "textColor", "textAlign", "autoFocus", "className", "children"]);
     var isTextParent = useContext(TextContext);
     var _e = useState(contain), isHidden = _e[0], setIsHidden = _e[1];
     var textElementRef = useRef(null);
@@ -57,6 +57,6 @@ function Text(_a) {
     var childrenElement = typeof children === 'string'
         ? children.split('\\n').reduce(function (title, word, index) { return (index > 0 ? __spreadArray(__spreadArray([], title, true), [_jsx("br", {}), word], false) : __spreadArray(__spreadArray([], title, true), [word], false)); }, [])
         : children;
-    return (_jsx(TextContext.Provider, __assign({ value: true }, { children: _jsx("span", __assign({ ref: textElementRef, className: textClassName }, props, { children: childrenElement })) })));
+    return (_jsx(TextContext.Provider, __assign({ value: true }, { children: _jsx("span", __assign({ ref: textElementRef }, { autoFocus: autoFocus }, { className: textClassName }, props, { children: childrenElement })) })));
 }
 export default Text;

@@ -24,6 +24,7 @@ interface TextProps extends React.ComponentProps<'span'> {
   fontWeight?: Weight,
   textColor?: Color | 'theme-text',
   textAlign?: 'center',
+  autoFocus?: boolean,
   className?: string,
   children?: Child<TextProps> | Child<TextProps>[],
 }
@@ -37,6 +38,7 @@ function Text({
   fontWeight,
   textColor,
   textAlign,
+  autoFocus,
   className,
   children,
   ...props
@@ -80,7 +82,7 @@ function Text({
 
   return (
     <TextContext.Provider value={true}>
-      <span ref={textElementRef} className={textClassName} {...props}>
+      <span ref={textElementRef} {...{ autoFocus }} className={textClassName} {...props}>
         {childrenElement}
       </span>
     </TextContext.Provider>
