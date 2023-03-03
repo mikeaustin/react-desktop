@@ -18,7 +18,9 @@ const router = createBrowserRouter([
       }
     ]
   },
-]);
+], {
+  // basename: '/react-desktop/clients/gemtask',
+});
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
