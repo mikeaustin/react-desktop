@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import { groupWith, init } from 'rambda';
 import { useParams } from 'react-router-dom';
+import { useHotkeys } from 'react-hotkeys-hook';
+import { groupWith } from 'rambda';
 
 import { View, Text, Icon, Button, Input, Spacer, Divider, Stack } from 'core';
 
@@ -225,6 +226,8 @@ function BacklogPage() {
 
   const [selectedItemId, setSelectedItemId] = useState<number | null>(null);
   const [isAddStoryModalOpen, setIsAddStoryModalOpen] = useState<boolean>(false);
+
+  useHotkeys('alt+n', () => setIsAddStoryModalOpen(true));
 
   const handleStorySelect = (storyId: number) => {
     console.log('here', storyId);
