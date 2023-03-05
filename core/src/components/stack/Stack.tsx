@@ -24,7 +24,7 @@ const Stack = ({
   return (
     <View ref={ref} {...props}>
       {React.Children.map(children, (child, index) => (
-        <>
+        React.isValidElement(child) && <>
           {divider && index > 0 && (
             <Divider spacing={spacing} />
           )}

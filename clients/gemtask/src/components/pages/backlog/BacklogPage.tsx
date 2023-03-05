@@ -87,7 +87,7 @@ function Field({ label, initialValue, placeholder, options, fontSize, autoFocus,
   );
 }
 
-function Story({ id, title, estimateId, statusId, typeId, blockedById, selected, onSelect }: any) {
+function Story({ id, title, estimateId, statusId, typeId, blockedById, dueDate, questionsCount, selected, onSelect }: any) {
   return (
     <Stack draggable fillColor={selected ? 'blue-0' : 'white'} onClick={() => onSelect(id)}>
       {/* <View style={{ width: 5 }} fillColor={types[typeId].color as any} /> */}
@@ -105,13 +105,22 @@ function Story({ id, title, estimateId, statusId, typeId, blockedById, selected,
                 <Spacer size="xsmall" /> */}
                 <Text light fontSize="small">GEM-42</Text>
               </View>
+              {dueDate && (
+                <View padding="xsmall small" fillColor="yellow-1" style={{ padding: '2px 4px', margin: '-2px 0', borderRadius: 2 }}>
+                  <Text fontSize="small">Due: {dueDate}</Text>
+                </View>
+              )}
+              {questionsCount && (
+                <View padding="xsmall small" fillColor="yellow-1" style={{ padding: '2px 4px', margin: '-2px 0', borderRadius: 2 }}>
+                  <Text fontSize="small">Questions: {questionsCount}</Text>
+                </View>
+              )}
               <View padding="xsmall small" fillColor="gray-1" style={{ padding: '2px 4px', margin: '-2px 0', borderRadius: 2 }}>
                 <Text light fontSize="small">front-end</Text>
               </View>
             </Stack>
           </View>
         </View>
-
         <View style={{ alignItems: 'flex-end' }}>
           <View padding="xsmall small" align="center" fillColor={statuses[statusId].color as any} style={{ borderRadius: 10, width: 30 }}>
             <Text fontSize="xsmall" fontWeight="bold" style={{ fontSize: 11, lineHeight: '18px' }}>{estimateId === 0 ? <>&nbsp;</> : estimateId}</Text>
@@ -119,7 +128,6 @@ function Story({ id, title, estimateId, statusId, typeId, blockedById, selected,
           <Spacer size="xsmall" />
           <Text fontSize="small" fontWeight="normal">{statuses[statusId].title}</Text>
         </View>
-
         <View horizontal>
           <View fillColor="gray-2" align="center" style={{ width: 30, marginLeft: -5, borderRadius: 1000, boxShadow: '0 0 0 1px white' }}>
             <Text fontSize="small" fontWeight="semi-bold">AJ</Text>
@@ -135,7 +143,7 @@ function Story({ id, title, estimateId, statusId, typeId, blockedById, selected,
       {blockedById !== undefined && (
         <View horizontal>
           <View padding="xsmall small" fillColor="yellow-1" style={{ margin: '0 16px 6px 42px', borderRadius: 4 }}>
-            <Text>Dependent on a story DevOps-1234 in the “DevOps” project</Text>
+            <Text fontSize="small">Dependent on a story DevOps-1234 in the “DevOps” project</Text>
           </View>
         </View>
       )}
@@ -169,7 +177,11 @@ const Assignees = () => {
               <Text light fontSize="small">c#, microservice, aws</Text>
             </View>
           </View>
-          <Field flex placeholder="Responsibilities..." />
+          <View>
+            <Text light caps fontSize="small">Story Responsibilities</Text>
+            <Spacer size="small" />
+            <Field flex placeholder="Responsibilities..." />
+          </View>
         </Stack>
         <Stack horizontal spacing="medium" padding="small none">
           <View horizontal>
@@ -183,7 +195,11 @@ const Assignees = () => {
               <Text light fontSize="small">ui, react, integration</Text>
             </View>
           </View>
-          <Field flex initialValue="Front-end integration and regression testing" placeholder="Responsibilities..." />
+          <View>
+            <Text light caps fontSize="small">Story Responsibilities</Text>
+            <Spacer size="small" />
+            <Field flex initialValue="Front-end integration" placeholder="Responsibilities..." />
+          </View>
         </Stack>
         <Stack horizontal spacing="medium" padding="small none">
           <View horizontal>
@@ -197,7 +213,29 @@ const Assignees = () => {
               <Text light fontSize="small">ux, figma, zeplin</Text>
             </View>
           </View>
-          <Field flex initialValue="Design lead" placeholder="Responsibilities..." />
+          <View>
+            <Text light caps fontSize="small">Epic Responsibilities</Text>
+            <Spacer size="small" />
+            <Field flex initialValue="Design lead" placeholder="Responsibilities..." />
+          </View>
+        </Stack>
+        <Stack horizontal spacing="medium" padding="small none">
+          <View horizontal>
+            <View fillColor="gray-2" align="center" style={{ width: 32, height: 32, margin: '-1px 0', borderRadius: 1000, boxShadow: '0 0 0 1px white' }}>
+              <Text fontSize="small" fontWeight="semi-bold">BH</Text>
+            </View>
+            <Spacer size="small" />
+            <View style={{ width: 200 }}>
+              <Text>Beckett Hawkins</Text>
+              <Spacer size="small" />
+              <Text light fontSize="small">ux, figma, zeplin</Text>
+            </View>
+          </View>
+          <View>
+            <Text light caps fontSize="small">Epic Responsibilities</Text>
+            <Spacer size="small" />
+            <Field flex initialValue="Stakeholder" placeholder="Responsibilities..." />
+          </View>
         </Stack>
       </Stack>
       <Divider />
@@ -215,8 +253,8 @@ const stories = [
   { id: 0, title: 'Basic UI for logging in is created', estimateId: 1, epicId: 0, statusId: 4, typeId: 0, },
   { id: 1, title: 'User can log in and view stories', estimateId: 2, epicId: 0, statusId: 3, typeId: 1 },
   { id: 2, title: 'User can create new account and log in', estimateId: 3, epicId: 0, statusId: 2, typeId: 2 },
-  { id: 3, title: 'Scroll to selected card in Kanban view', estimateId: 1, epicId: 1, statusId: 1, typeId: 0 },
-  { id: 4, title: 'Scalability is tested', estimateId: 0, epicId: 1, statusId: 0, typeId: 0 },
+  { id: 3, title: 'Scroll to selected card in Kanban view', estimateId: 1, epicId: 1, statusId: 1, typeId: 0, dueDate: 'Apr 15, 2023' },
+  { id: 4, title: 'Scalability is tested', estimateId: 0, epicId: 1, statusId: 0, typeId: 0, questionsCount: 2 },
 ];
 
 const groupedStories = groupWith((a, b) => a.epicId === b.epicId, stories);
@@ -238,8 +276,8 @@ function BacklogPage() {
   return (
     <>
       <View flex horizontal>
-        <View flex fillColor="gray-1">
-          <View padding="small medium" fillColor="gray-0">
+        <View flex fillColor="gray-1" style={{ flex: 5 }}>
+          <View padding="small medium" fillColor="gray-1">
             <Spacer size="small" />
             <Text fontSize="large">Product Backlog</Text>
             <Spacer size="medium" />
@@ -255,7 +293,7 @@ function BacklogPage() {
                 <View horizontal>
                   <View padding="small medium">
                     <Spacer size="small" />
-                    <Text caps fontSize="small">{epics[group[0].epicId].title}</Text>
+                    <Text caps fontSize="small" textColor="gray-6">{epics[group[0].epicId].title}</Text>
                   </View>
                   <Spacer flex size="small" />
                   <Stack horizontal spacing="medium" padding="xsmall medium" align="bottom right" className={styles.onHover}>
@@ -282,7 +320,7 @@ function BacklogPage() {
         {params.itemId && (
           <>
             <Divider />
-            <View flex>
+            <View flex style={{ flex: 4 }}>
               <View padding="small medium" fillColor="gray-0">
                 <Spacer size="small" />
                 <Text fontSize="large">{stories.find((story) => story.id === selectedItemId)?.title}</Text>
@@ -291,7 +329,7 @@ function BacklogPage() {
                   <Field label="Epic" initialValue={stories.find(story => story.id === selectedItemId)?.epicId} options={epicOptions} />
                   <Field label="Estimate" initialValue={stories.find(story => story.id === selectedItemId)?.estimateId} options={estimateOptions} />
                   <Field label="Status" initialValue={stories.find(story => story.id === selectedItemId)?.statusId} options={statusOptions} />
-                  <Field label="Tags" initialValue={0} options={tagsOptions} />
+                  <Field label="Due Date" initialValue={'Apr 15, 2023'} />
                 </Stack>
                 <Spacer size="large" />
                 <Stack horizontal spacing="medium">
@@ -302,18 +340,14 @@ function BacklogPage() {
                 </Stack>
               </View>
               <Divider />
-              <View padding="medium" fillColor="white">
-                <Spacer size="small" />
-                <Field label="Description" placeholder="A short description..." />
-                <Spacer size="large" />
-                <Field label="Acceptance Criteria" placeholder="This story is done when..." />
-                <Spacer size="large" />
-                <Field label="Out of Scope" placeholder="Ignore this and that..." />
-                <Spacer size="large" />
+              <Spacer size="small" />
+              <Stack spacing="large" padding="medium" fillColor="white">
+                <Field label="Description" placeholder="A short description of who this is for, what it solves, and what is out of scope..." />
+                <Field label="Acceptance Criteria" placeholder="This story is done when these things are true..." />
                 <Field label="Testing instructions" placeholder="To test this story..." />
-                <Spacer size="large" />
+                <Field label="Tags" initialValue={0} options={tagsOptions} />
                 <Assignees />
-              </View>
+              </Stack>
             </View>
           </>
         )}

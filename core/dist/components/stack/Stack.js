@@ -27,6 +27,6 @@ import Divider from '../divider/index.js';
 import Spacer from '../spacer/index.js';
 var Stack = function (_a, ref) {
     var divider = _a.divider, spacing = _a.spacing, spacingColor = _a.spacingColor, children = _a.children, props = __rest(_a, ["divider", "spacing", "spacingColor", "children"]);
-    return (_jsx(View, __assign({ ref: ref }, props, { children: React.Children.map(children, function (child, index) { return (_jsxs(_Fragment, { children: [divider && index > 0 && (_jsx(Divider, { spacing: spacing })), spacing && !divider && index > 0 && (_jsx(Spacer, { size: spacing, color: spacingColor })), child] })); }) })));
+    return (_jsx(View, __assign({ ref: ref }, props, { children: React.Children.map(children, function (child, index) { return (React.isValidElement(child) && _jsxs(_Fragment, { children: [divider && index > 0 && (_jsx(Divider, { spacing: spacing })), spacing && !divider && index > 0 && (_jsx(Spacer, { size: spacing, color: spacingColor })), child] })); }) })));
 };
 export default React.forwardRef(Stack);

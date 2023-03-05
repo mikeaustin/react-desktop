@@ -7,8 +7,8 @@ var useFontSizeStyles = createUseStyles({
     },
     'small': {
         fontSize: 12,
-        lineHeight: '20px',
-        margin: '-5px 0 -5px 0',
+        lineHeight: '19px',
+        margin: '-5px 0 -4px 0',
     },
     'default': {
         fontSize: 14,
