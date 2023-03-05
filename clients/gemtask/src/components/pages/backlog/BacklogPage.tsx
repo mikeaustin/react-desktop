@@ -6,6 +6,9 @@ import { groupWith } from 'rambda';
 import { View, Text, Icon, Button, Input, Spacer, Divider, Stack } from 'core';
 
 import Modal from '../../../shared/components/modal';
+import Field from '../../../shared/components/field';
+
+import Assignees from './components/assignees';
 
 import styles from '../../../App.module.scss';
 
@@ -49,43 +52,6 @@ const tagsOptions = [
   { label: 'payment', value: 0 },
   { label: 'customer', value: 1 },
 ];
-
-function Field({ label, initialValue, placeholder, options, fontSize, autoFocus, ...props }: any) {
-  const [value, setValue] = useState('');
-
-  useEffect(() => {
-    setValue(initialValue ?? '');
-  }, [initialValue]);
-
-  const editor = options ? (
-    <select value={initialValue} className={styles.Select}>
-      {options.map((option: any) => (
-        <option value={option.value}>{option.label}</option>
-      ))}
-    </select>
-  ) : (
-    <View className={styles.Field}>
-      <Text contentEditable autoFocus={autoFocus} fontSize={fontSize} style={{ fontStyle: value.length === 0 ? 'italic' : undefined }}>
-        {value.length === 0 ? placeholder : value}
-      </Text>
-    </View>
-  );
-
-  return (
-    <View {...props}>
-      {label && (
-        <>
-          <View horizontal>
-            <Text light caps fontSize="small">{label}</Text>
-            {options && <Icon icon="caret-down" color="gray-5" />}
-          </View>
-          <Spacer size="small" />
-        </>
-      )}
-      {editor}
-    </View>
-  );
-}
 
 function Story({ id, title, estimateId, statusId, typeId, blockedById, dueDate, questionsCount, selected, onSelect }: any) {
   return (
@@ -151,98 +117,6 @@ function Story({ id, title, estimateId, statusId, typeId, blockedById, dueDate, 
   );
 }
 
-const Assignees = () => {
-  return (
-    <View className={styles.hoverable}>
-      <View horizontal style={{ alignItems: 'flex-end' }}>
-        <Text light caps fontSize="small">Assignees</Text>
-        <Spacer flex size="small" />
-        <Stack horizontal spacing="medium" align="right" className={styles.onHover}>
-          <Icon size="lg" icon="sliders" color="gray-6" style={{ marginTop: -3, width: 24 }} />
-          <Icon size="xl" icon="square-plus" color="gray-6" style={{ margin: 0, width: 24 }} />
-        </Stack>
-      </View>
-      <Spacer size="small" />
-      <Divider />
-      <Stack divider>
-        <Stack horizontal spacing="medium" padding="small none">
-          <View horizontal>
-            <View fillColor="gray-2" align="center" style={{ width: 32, height: 32, margin: '-1px 0', borderRadius: 1000, boxShadow: '0 0 0 1px white' }}>
-              <Text fontSize="small" fontWeight="semi-bold">MR</Text>
-            </View>
-            <Spacer size="small" />
-            <View style={{ width: 200 }}>
-              <Text>Annabelle Webber</Text>
-              <Spacer size="small" />
-              <Text light fontSize="small">c#, microservice, aws</Text>
-            </View>
-          </View>
-          <View>
-            <Text light caps fontSize="small">Story Responsibilities</Text>
-            <Spacer size="small" />
-            <Field flex placeholder="Responsibilities..." />
-          </View>
-        </Stack>
-        <Stack horizontal spacing="medium" padding="small none">
-          <View horizontal>
-            <View fillColor="gray-2" align="center" style={{ width: 32, height: 32, margin: '-1px 0', borderRadius: 1000, boxShadow: '0 0 0 1px white' }}>
-              <Text fontSize="small" fontWeight="semi-bold">BH</Text>
-            </View>
-            <Spacer size="small" />
-            <View style={{ width: 200 }}>
-              <Text>Beckett Hawkins</Text>
-              <Spacer size="small" />
-              <Text light fontSize="small">ui, react, integration</Text>
-            </View>
-          </View>
-          <View>
-            <Text light caps fontSize="small">Story Responsibilities</Text>
-            <Spacer size="small" />
-            <Field flex initialValue="Front-end integration" placeholder="Responsibilities..." />
-          </View>
-        </Stack>
-        <Stack horizontal spacing="medium" padding="small none">
-          <View horizontal>
-            <View fillColor="gray-2" align="center" style={{ width: 32, height: 32, margin: '-1px 0', borderRadius: 1000, boxShadow: '0 0 0 1px white' }}>
-              <Text fontSize="small" fontWeight="semi-bold">BH</Text>
-            </View>
-            <Spacer size="small" />
-            <View style={{ width: 200 }}>
-              <Text>Beckett Hawkins</Text>
-              <Spacer size="small" />
-              <Text light fontSize="small">ux, figma, zeplin</Text>
-            </View>
-          </View>
-          <View>
-            <Text light caps fontSize="small">Epic Responsibilities</Text>
-            <Spacer size="small" />
-            <Field flex initialValue="Design lead" placeholder="Responsibilities..." />
-          </View>
-        </Stack>
-        <Stack horizontal spacing="medium" padding="small none">
-          <View horizontal>
-            <View fillColor="gray-2" align="center" style={{ width: 32, height: 32, margin: '-1px 0', borderRadius: 1000, boxShadow: '0 0 0 1px white' }}>
-              <Text fontSize="small" fontWeight="semi-bold">BH</Text>
-            </View>
-            <Spacer size="small" />
-            <View style={{ width: 200 }}>
-              <Text>Beckett Hawkins</Text>
-              <Spacer size="small" />
-              <Text light fontSize="small">ux, figma, zeplin</Text>
-            </View>
-          </View>
-          <View>
-            <Text light caps fontSize="small">Epic Responsibilities</Text>
-            <Spacer size="small" />
-            <Field flex initialValue="Stakeholder" placeholder="Responsibilities..." />
-          </View>
-        </Stack>
-      </Stack>
-      <Divider />
-    </View>
-  );
-};
-
 const epics = [
   { title: 'Basic Authentication' },
   { title: 'Organization and Polish' },
@@ -276,7 +150,7 @@ function BacklogPage() {
   return (
     <>
       <View flex horizontal>
-        <View flex fillColor="gray-1" style={{ flex: 5 }}>
+        <View flex fillColor="gray-1" style={{ width: 'calc(70vw - 256px)' }}>
           <View padding="small medium" fillColor="gray-1">
             <Spacer size="small" />
             <Text fontSize="large">Product Backlog</Text>
@@ -320,7 +194,7 @@ function BacklogPage() {
         {params.itemId && (
           <>
             <Divider />
-            <View flex style={{ flex: 4 }}>
+            <View flex style={{ width: 'calc(30vw - 256px)' }}>
               <View padding="small medium" fillColor="gray-0">
                 <Spacer size="small" />
                 <Text fontSize="large">{stories.find((story) => story.id === selectedItemId)?.title}</Text>
@@ -341,13 +215,43 @@ function BacklogPage() {
               </View>
               <Divider />
               <Spacer size="small" />
-              <Stack spacing="large" padding="medium" fillColor="white">
-                <Field label="Description" placeholder="A short description of who this is for, what it solves, and what is out of scope..." />
-                <Field label="Acceptance Criteria" placeholder="This story is done when these things are true..." />
-                <Field label="Testing instructions" placeholder="To test this story..." />
-                <Field label="Tags" initialValue={0} options={tagsOptions} />
-                <Assignees />
-              </Stack>
+              <View flex horizontal fillColor="white" style={{ overflow: 'auto', width: '100%', scrollSnapType: 'x mandatory' }}>
+                <Stack spacing="large" padding="medium" style={{ flexBasis: '100%', flexShrink: 0, scrollSnapAlign: 'start' }}>
+                  <Field label="Description" placeholder="A short description of who this is for, what it solves, and what is out of scope..." />
+                  <Field label="Acceptance Criteria" placeholder="This story is done when these things are true..." />
+                  <Field label="Testing instructions" placeholder="To test this story..." />
+                  <Field label="Tags" initialValue={0} options={tagsOptions} />
+                  <Assignees />
+                </Stack>
+                <Stack divider spacing="medium" padding="medium" style={{ flexBasis: '100%', flexShrink: 0, scrollSnapAlign: 'start' }}>
+                  <View>
+                    <View horizontal>
+                      <View fillColor="gray-2" align="center" style={{ width: 32, height: 32, margin: '-1px 0', borderRadius: 1000, boxShadow: '0 0 0 1px white' }}>
+                        <Text fontSize="small" fontWeight="semi-bold">BH</Text>
+                      </View>
+                      <Spacer size="small" />
+                      <View style={{ width: 200 }}>
+                        <Text>Beckett Hawkins</Text>
+                        <Spacer size="small" />
+                        <Text light fontSize="small">ux, figma, zeplin</Text>
+                      </View>
+                    </View>
+                    <Spacer size="medium" />
+                    <Text>
+                      The row displays after clicking Add Story, but it is not optimized. We should update the cache with writeQuery so we don't need to fetch all epics again.
+                    </Text>
+                    <Spacer size="medium" />
+                    <View horizontal align="center">
+                      <Field flex placeholder="Reply to thread..." />
+                      <Spacer size="small" />
+                      <Button solid primary title="Reply" />
+                    </View>
+                  </View>
+                  <View>
+                    <Text>hi</Text>
+                  </View>
+                </Stack>
+              </View>
             </View>
           </>
         )}
@@ -355,7 +259,7 @@ function BacklogPage() {
           isOpen={isAddStoryModalOpen}
           header={
             <>
-              <Field autoFocus fontSize="large" placeholder="A short title..." />
+              <Field autoFocus fontSize="large" placeholder="A short title for this story..." />
               <Spacer size="large" />
               <Stack horizontal spacing="large">
                 <Field label="Epic" options={epicOptions} />
@@ -370,9 +274,8 @@ function BacklogPage() {
           ]}
         >
           <Stack spacing="large">
-            <Field label="Description" placeholder="A short description..." />
-            <Field label="Acceptance Criteria" placeholder="This story is done when..." />
-            <Field label="Out of Scope" placeholder="Ignore this and that..." />
+            <Field label="Description" placeholder="A short description of who this is for, what it solves, and what is out of scope..." />
+            <Field label="Acceptance Criteria" placeholder="This story is done when these things are true..." />
             <Field label="Testing instructions" placeholder="To test this story..." />
           </Stack>
         </Modal>
