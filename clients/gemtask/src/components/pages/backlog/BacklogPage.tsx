@@ -3,29 +3,16 @@ import { useParams, Link } from 'react-router-dom';
 import { useHotkeys } from 'react-hotkeys-hook';
 import { groupWith } from 'rambda';
 
-import { View, Text, Icon, Button, Input, Spacer, Divider, Stack } from 'core';
+import { View, Text, Icon, Button, Spacer, Divider, Stack } from 'core';
 
 import Modal from '../../../shared/components/modal';
 import Field from '../../../shared/components/field';
 
-import Assignees from './components/assignees';
+import Comments from './components/comments';
+import Details from './components/details';
+import Story from './components/story';
 
 import styles from '../../../App.module.scss';
-
-const types = [
-  { title: 'Story', icon: 'book', color: 'green-5' },
-  { title: 'Task', icon: 'gear', color: 'blue-5' },
-  { title: 'Bug', icon: 'bug', color: 'red-5' }
-];
-
-const statuses = [
-  { title: 'Draft', color: 'gray-4' },
-  { title: 'Is Ready', color: 'violet-2' },
-  { title: 'In Progress', color: 'blue-2' },
-  { title: 'In Review', color: 'teal-2' },
-  { title: 'Done', color: 'lime-3' },
-  { title: 'Blocked', color: 'orange-3' },
-];
 
 const estimateOptions = [
   { label: 'No Estimate', value: 0 },
@@ -52,70 +39,6 @@ const tagsOptions = [
   { label: 'payment', value: 0 },
   { label: 'customer', value: 1 },
 ];
-
-function Story({ id, title, estimateId, statusId, typeId, blockedById, dueDate, questionsCount, selected, onSelect }: any) {
-  return (
-    <Stack draggable fillColor={selected ? 'blue-0' : 'white'} onClick={() => onSelect(id)}>
-      {/* <View style={{ width: 5 }} fillColor={types[typeId].color as any} /> */}
-      <Stack flex horizontal spacing="xlarge" padding="small medium">
-        <View flex horizontal>
-          <Icon size="sm" icon={types[typeId].icon as any} style={{ marginTop: -1 }} color={types[typeId].color as any} />
-          {/* <View style={{ width: 12, height: 12, borderRadius: 1000 }} fillColor={statuses[statusId].color as any} /> */}
-          <Spacer size="small" />
-          <View>
-            <Text fontWeight="semi-bold">{title}</Text>
-            <Spacer size="small" />
-            <Stack horizontal spacing="medium">
-              <View horizontal>
-                {/* <Icon size="sm" icon={types[typeId].icon as any} style={{ marginTop: -1 }} color={types[typeId].color as any} />
-                <Spacer size="xsmall" /> */}
-                <Text light fontSize="small">GEM-42</Text>
-              </View>
-              {dueDate && (
-                <View padding="xsmall small" fillColor="yellow-1" style={{ padding: '2px 4px', margin: '-2px 0', borderRadius: 2 }}>
-                  <Text fontSize="small">Due: {dueDate}</Text>
-                </View>
-              )}
-              {questionsCount && (
-                <View padding="xsmall small" fillColor="yellow-1" style={{ padding: '2px 4px', margin: '-2px 0', borderRadius: 2 }}>
-                  <Text fontSize="small">Questions: {questionsCount}</Text>
-                </View>
-              )}
-              <View padding="xsmall small" fillColor="gray-1" style={{ padding: '2px 4px', margin: '-2px 0', borderRadius: 2 }}>
-                <Text light fontSize="small">front-end</Text>
-              </View>
-            </Stack>
-          </View>
-        </View>
-        <View style={{ alignItems: 'flex-end' }}>
-          <View padding="xsmall small" align="center" fillColor={statuses[statusId].color as any} style={{ borderRadius: 10, width: 30 }}>
-            <Text fontSize="xsmall" fontWeight="bold" style={{ fontSize: 11, lineHeight: '18px' }}>{estimateId === 0 ? <>&nbsp;</> : estimateId}</Text>
-          </View>
-          <Spacer size="xsmall" />
-          <Text fontSize="small" fontWeight="normal">{statuses[statusId].title}</Text>
-        </View>
-        <View horizontal>
-          <View fillColor="gray-2" align="center" style={{ width: 30, marginLeft: -5, borderRadius: 1000, boxShadow: '0 0 0 1px white' }}>
-            <Text fontSize="small" fontWeight="semi-bold">AJ</Text>
-          </View>
-          <View fillColor="gray-2" align="center" style={{ width: 30, marginLeft: -5, borderRadius: 1000, boxShadow: '0 0 0 1px white' }}>
-            <Text fontSize="small" fontWeight="semi-bold">MR</Text>
-          </View>
-          <View fillColor="gray-2" align="center" style={{ width: 30, marginLeft: -5, borderRadius: '50%', boxShadow: '0 0 0 1px white' }}>
-            <Icon icon="ellipsis" />
-          </View>
-        </View>
-      </Stack>
-      {blockedById !== undefined && (
-        <View horizontal>
-          <View padding="xsmall small" fillColor="yellow-1" style={{ margin: '0 16px 6px 42px', borderRadius: 4 }}>
-            <Text fontSize="small">Dependent on a story DevOps-1234 in the “DevOps” project</Text>
-          </View>
-        </View>
-      )}
-    </Stack>
-  );
-}
 
 const epics = [
   { title: 'Basic Authentication' },
@@ -200,10 +123,10 @@ function BacklogPage() {
                 <Text fontSize="large">{stories.find((story) => story.id === selectedItemId)?.title}</Text>
                 <Spacer size="medium" />
                 <Stack horizontal spacing="large">
-                  <Field label="Epic" initialValue={stories.find(story => story.id === selectedItemId)?.epicId} options={epicOptions} />
                   <Field label="Estimate" initialValue={stories.find(story => story.id === selectedItemId)?.estimateId} options={estimateOptions} />
                   <Field label="Status" initialValue={stories.find(story => story.id === selectedItemId)?.statusId} options={statusOptions} />
                   <Field label="Due Date" initialValue={'Apr 15, 2023'} />
+                  <Field label="Epic" initialValue={stories.find(story => story.id === selectedItemId)?.epicId} options={epicOptions} />
                 </Stack>
                 <Spacer size="large" />
                 <Stack horizontal spacing="medium">
@@ -216,41 +139,8 @@ function BacklogPage() {
               <Divider />
               <Spacer size="small" />
               <View flex horizontal fillColor="white" style={{ overflow: 'auto', width: '100%', scrollSnapType: 'x mandatory' }}>
-                <Stack spacing="large" padding="medium" style={{ flexBasis: '100%', flexShrink: 0, scrollSnapAlign: 'start' }}>
-                  <Field label="Description" placeholder="A short description of who this is for, what it solves, and what is out of scope..." />
-                  <Field label="Acceptance Criteria" placeholder="This story is done when these things are true..." />
-                  <Field label="Testing instructions" placeholder="To test this story..." />
-                  <Field label="Tags" initialValue={0} options={tagsOptions} />
-                  <Assignees />
-                </Stack>
-                <Stack divider spacing="medium" padding="medium" style={{ flexBasis: '100%', flexShrink: 0, scrollSnapAlign: 'start' }}>
-                  <View>
-                    <View horizontal>
-                      <View fillColor="gray-2" align="center" style={{ width: 32, height: 32, margin: '-1px 0', borderRadius: 1000, boxShadow: '0 0 0 1px white' }}>
-                        <Text fontSize="small" fontWeight="semi-bold">BH</Text>
-                      </View>
-                      <Spacer size="small" />
-                      <View style={{ width: 200 }}>
-                        <Text>Beckett Hawkins</Text>
-                        <Spacer size="small" />
-                        <Text light fontSize="small">ux, figma, zeplin</Text>
-                      </View>
-                    </View>
-                    <Spacer size="medium" />
-                    <Text>
-                      The row displays after clicking Add Story, but it is not optimized. We should update the cache with writeQuery so we don't need to fetch all epics again.
-                    </Text>
-                    <Spacer size="medium" />
-                    <View horizontal align="center">
-                      <Field flex placeholder="Reply to thread..." />
-                      <Spacer size="small" />
-                      <Button solid primary title="Reply" />
-                    </View>
-                  </View>
-                  <View>
-                    <Text>hi</Text>
-                  </View>
-                </Stack>
+                <Details />
+                <Comments />
               </View>
             </View>
           </>
