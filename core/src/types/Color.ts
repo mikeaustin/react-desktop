@@ -116,7 +116,12 @@ type Color =
   | White
   | Black
   | Gray
+  | Red
+  | Violet
   | Blue
+  | Teal
+  | Green
+  | Lime
   | Yellow
   | Orange
   ;

@@ -6,115 +6,120 @@ import Field from '../../../../../shared/components/field';
 
 const Comments = () => {
   return (
-    <View padding="medium" style={{ flexBasis: '100%', flexShrink: 0, scrollSnapAlign: 'start' }}>
-      <View>
-        <Text light caps fontSize="small">Unanswered Questions</Text>
+    <View fillColor="gray-1" style={{ flexBasis: '100%', flexShrink: 0, scrollSnapAlign: 'start' }}>
+      <View padding="small medium" fillColor="gray-1">
         <Spacer size="small" />
+        <Text light caps fontSize="small">Unresolved Questions</Text>
       </View>
-
-      <Stack spacing="medium" >
-        <View fillColor="gray-0" style={{ border: '1px solid #dee2e6', borderRadius: 4 }}>
-          <View horizontal padding="small medium">
+      <Divider />
+      <Stack fillColor="gray-1">
+        <View fillColor="white">
+          <View horizontal padding="small medium" fillColor="white">
             <View fillColor="gray-2" align="center" style={{ width: 32, height: 32, margin: '-1px 0', borderRadius: 1000, boxShadow: '0 0 0 1px white' }}>
               <Text fontSize="small" fontWeight="semi-bold">BH</Text>
             </View>
             <Spacer size="small" />
             <View style={{ width: 200 }}>
-              <Text>Beckett Hawkins</Text>
+              <Text fontWeight="medium">Beckett Hawkins</Text>
               <Spacer size="small" />
               <Text light fontSize="small">Mon, Mar 6, 2023</Text>
             </View>
             <Spacer flex size="small" />
-            <Button solid size="small" title="Resolve Question" />
+            <Button solid size="small" title="Mark Resolved" />
           </View>
-          <Divider />
-          <View padding="medium">
+          <Divider style={{ marginLeft: 16 }} />
+          <View padding="small medium">
+            <Spacer size="small" />
             <Text>
-              The row displays after clicking Add Story, but it is not optimized. Should we update the cache with writeQuery so we don't need to fetch all epics again.
+              The row displays after clicking Add Story, but it is not optimized. Should we update the cache with writeQuery so we don't need to fetch all epics again?
             </Text>
             <Spacer size="medium" />
-            <View padding="medium" fillColor="gray-2" style={{ borderRadius: 4 }}>
-              <Text light fontSize="small" fontWeight="semi-bold">Annabelle Webber @ Mon, Mar 6, 2023</Text>
+            <View horizontal>
+              <View fillColor="gray-1" align="center" style={{ width: 28, height: 28, borderRadius: 1000, marginLeft: 5 }}>
+                <Text fontSize="xsmall" fontWeight="semi-bold">AW</Text>
+              </View>
               <Spacer size="small" />
-              <Text>In reply to your question, yes, we should update the cache with writeQuery</Text>
-            </View>
-            <Spacer size="medium" />
-            <View padding="medium" fillColor="gray-2" style={{ borderRadius: 4 }}>
-              <Text light fontSize="small" fontWeight="semi-bold">Annabelle Webber @ Mon, Mar 6, 2023</Text>
-              <Spacer size="small" />
-              <Text>In reply to your question, yes, we should update the cache with writeQuery</Text>
-            </View>
-          </View>
-          <Divider />
-          <View horizontal align="center" padding="small medium" fillColor="white">
-            <Field flex placeholder="Reply to thread..." />
-            <Spacer size="small" />
-            <Button solid primary size="small" title="Reply" />
-          </View>
-        </View>
-
-        <View fillColor="gray-0" style={{ border: '1px solid #dee2e6', borderRadius: 4 }}>
-          <View horizontal padding="small medium">
-            <View fillColor="gray-2" align="center" style={{ width: 32, height: 32, margin: '-1px 0', borderRadius: 1000, boxShadow: '0 0 0 1px white' }}>
-              <Text fontSize="small" fontWeight="semi-bold">BH</Text>
+              <View padding="small medium" fillColor="gray-1" style={{ borderRadius: 4 }}>
+                <Text>In reply to your question, yes, we should update the cache with writeQuery</Text>
+                <Spacer size="small" />
+                <Text light fontSize="small">Annabelle Webber &nbsp;&middot;&nbsp; Mon, Mar 6, 2023</Text>
+              </View>
             </View>
             <Spacer size="small" />
-            <View style={{ width: 200 }}>
-              <Text>Beckett Hawkins</Text>
+            <View horizontal align="center" fillColor="white">
+              <Field flex placeholder="Reply to thread..." style={{ marginLeft: 41 }} />
               <Spacer size="small" />
-              <Text light fontSize="small">Mon, Mar 6, 2023</Text>
+              <Button solid primary size="small" title="Reply" />
             </View>
-            <Spacer flex size="small" />
-            <Button solid size="small" title="Resolve" />
-          </View>
-          <Divider />
-          <View padding="medium">
-            <Text>
-              The row displays after clicking Add Story, but it is not optimized. We should update the cache with writeQuery so we don't need to fetch all epics again.
-            </Text>
-            <Spacer size="medium" />
-            <View padding="medium" fillColor="gray-2" style={{ borderRadius: 4 }}>
-              <Text light fontSize="small" fontWeight="semi-bold">Annabelle Webber @ Mon, Mar 6, 2023</Text>
-              <Spacer size="small" />
-              <Text>In reply to your question, yes, we should update the cache with writeQuery</Text>
-            </View>
-          </View>
-          <Divider />
-          <View horizontal align="center" padding="small medium" fillColor="white">
-            <Field flex placeholder="Reply to thread..." />
-            <Spacer size="small" />
-            <Button solid primary size="small" title="Reply" />
           </View>
         </View>
       </Stack>
 
-      <View>
-        <Spacer size="medium" />
-        <Text light caps fontSize="small">Story Updates</Text>
+      <Divider />
+
+      <View padding="small medium" fillColor="gray-1">
         <Spacer size="small" />
+        <Text light caps fontSize="small">Resolved Questions</Text>
       </View>
+      <Divider />
 
-      <Stack spacing="medium" >
-        <View fillColor="gray-0" style={{ border: '1px solid #dee2e6', borderRadius: 4 }}>
-          <View horizontal padding="small medium">
+      <Stack fillColor="gray-1">
+        <View fillColor="white">
+          <View horizontal padding="small medium" fillColor="white">
             <View fillColor="gray-2" align="center" style={{ width: 32, height: 32, margin: '-1px 0', borderRadius: 1000, boxShadow: '0 0 0 1px white' }}>
               <Text fontSize="small" fontWeight="semi-bold">BH</Text>
             </View>
             <Spacer size="small" />
-            <View style={{ width: 200 }}>
-              <Text>Beckett Hawkins</Text>
-              <Spacer size="small" />
-              <Text light fontSize="small">Mon, Mar 6, 2023</Text>
+            <View flex horizontal align="left">
+              <View>
+                <Text fontWeight="medium">Beckett Hawkins</Text>
+                <Spacer size="small" />
+                <Text light fontSize="small">Mon, Mar 6, 2023</Text>
+              </View>
+              <Spacer flex size="small" />
+              <View horizontal align="left">
+                <Icon icon="circle-check" color="green-5" />
+                <Spacer size="xsmall" />
+                <Text fontWeight="semi-bold" textColor="green-6">Resolved</Text>
+              </View>
             </View>
           </View>
-          <Divider />
-          <View padding="medium">
+          <Divider style={{ marginLeft: 16 }} />
+          <View padding="small medium">
+            <Spacer size="small" />
             <Text>
-              The row displays after clicking Add Story, but it is not optimized. We should update the cache with writeQuery so we don't need to fetch all epics again.
+              The row displays after clicking Add Story, but it is not optimized. Should we update the cache with writeQuery so we don't need to fetch all epics again?
             </Text>
+            <Spacer size="medium" />
+            <View horizontal>
+              <View fillColor="gray-1" align="center" style={{ width: 26, height: 26, borderRadius: 1000, marginLeft: 7 }}>
+                <Text fontSize="xsmall" fontWeight="semi-bold">AW</Text>
+              </View>
+              <Spacer size="small" />
+              <View padding="small medium" fillColor="gray-1" style={{ borderRadius: 4 }}>
+                <Text>In reply to your question, yes, we should update the cache with writeQuery</Text>
+                <Spacer size="small" />
+                <Text light fontSize="small">Annabelle Webber &nbsp;&middot;&nbsp; Mon, Mar 6, 2023</Text>
+              </View>
+            </View>
+            <Spacer size="small" />
+            <View horizontal>
+              <View fillColor="gray-1" align="center" style={{ width: 26, height: 26, borderRadius: 1000, marginLeft: 7 }}>
+                <Text fontSize="xsmall" fontWeight="semi-bold">AW</Text>
+              </View>
+              <Spacer size="small" />
+              <View padding="small medium" fillColor="gray-1" style={{ borderRadius: 4, position: 'relative' }}>
+                <Icon icon="thumbs-up" color="blue-5" style={{ position: 'absolute', right: -24 }} />
+                <Text>Yes, we should update the cache with writeQuery</Text>
+                <Spacer size="small" />
+                <Text light fontSize="small">Annabelle Webber &nbsp;&middot;&nbsp; Mon, Mar 6, 2023</Text>
+              </View>
+            </View>
           </View>
         </View>
       </Stack>
+
+      <Divider />
 
     </View>
   );

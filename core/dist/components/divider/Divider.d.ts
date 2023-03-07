@@ -5,6 +5,7 @@ import Color from '../../types/Color.js';
 interface DividerProps extends React.ComponentProps<typeof View> {
     color?: Color | 'theme-divider';
     spacing?: Spacing;
+    style?: React.CSSProperties;
 }
-declare const Divider: ({ color, spacing, ...props }: DividerProps) => JSX.Element;
+declare const Divider: ({ color, spacing, style, ...props }: DividerProps) => JSX.Element;
 export default Divider;
