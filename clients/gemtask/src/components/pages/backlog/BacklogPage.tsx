@@ -137,8 +137,8 @@ function BacklogPage() {
                 </Stack>
               </View>
               <Divider />
-              <Spacer size="small" />
               <View flex horizontal fillColor="white" style={{ overflow: 'auto', width: '100%', scrollSnapType: 'x mandatory' }}>
+                <Spacer size="small" />
                 <Details />
                 <Comments />
               </View>
