@@ -2,9 +2,9 @@ import { View, Text, Divider, Spacer, Stack, Icon, Button } from 'core';
 
 import Field from '../../../shared/components/field';
 
-const Requirement = ({ title, createdDate, updatedDate, storyId }: any) => {
+const Requirement = ({ title, createdDate, updatedDate, storyId, selected }: any) => {
   return (
-    <View horizontal padding="small none">
+    <View horizontal padding="small" fillColor={selected && 'blue-0'}>
       <Icon icon="clipboard-list" color="violet-4" style={{ marginTop: -2 }} />
       <Spacer size="xsmall" />
       <View>
@@ -22,7 +22,7 @@ const Requirement = ({ title, createdDate, updatedDate, storyId }: any) => {
             <Text fontSize="small">&nbsp;&nbsp;&middot;&nbsp;&nbsp;</Text>
           )}
           {storyId && (
-            <Text fontSize="small" textColor="blue-6">GEM-1324</Text>
+            <Text fontSize="small" textColor="blue-6">Story GEM-1324</Text>
           )}
         </View>
       </View>
@@ -34,38 +34,42 @@ const EpicsPage = () => {
   return (
     <Stack flex horizontal divider>
       <View style={{ width: 320 }}>
-        <View padding="small medium">
+        <View padding="small medium" fillColor="gray-0">
           <Spacer size="small" />
-          <Text fontSize="large">Epics</Text>
+          <Text fontSize="large">Epic Stories</Text>
         </View>
 
         <Divider />
 
-        <Stack divider fillColor="gray-1" padding="medium">
-          <View padding="small medium" fillColor="white">
-            <Text>Chubb Rate Quote Response Mapping</Text>
-          </View>
-          <View padding="small medium" fillColor="white">
-            <Text>Edit stories and epics</Text>
-          </View>
-        </Stack>
+        <View fillColor="gray-1" padding="medium">
+          <Stack divider style={{ border: '1px solid #dee2e6', borderRadius: 4, overflow: 'hidden' }}>
+            <View padding="small medium" fillColor="blue-0">
+              <Text>Chubb Rate Quote Response Mapping</Text>
+            </View>
+            <View padding="small medium" fillColor="white">
+              <Text>Edit stories and epics</Text>
+            </View>
+          </Stack>
+        </View>
       </View>
 
       <View flex>
         <View padding="small medium" fillColor="gray-0">
           <Spacer size="small" />
+          <Text light caps fontSize="small">Epic Story</Text>
+          <Spacer size="small" />
           <Text fontSize="large">Chubb Rate Quote Response Mapping</Text>
-          <Spacer size="large" />
+          <Spacer size="medium" />
           <Stack horizontal>
             <Field label="Budget" initialValue="One month" />
             <Spacer size="large" />
-            <Field label="Initiative" initialValue="One month" />
+            <Field label="Initiative" initialValue="Increase sales" />
           </Stack>
           <Spacer size="large" />
           <Text fontSize="medium">Details</Text>
         </View>
         <Divider />
-        <Spacer size="small" />
+        {/* <Spacer size="small" /> */}
         <Stack padding="medium" spacing="large">
           <Field label="Description" initialValue="Document changes made to Quote from a carrier’s response to our rate request, items to capture from response such as messaging, premium, URL link to carrier portal, etc.\n\n
 Current Implementations:\n\n
@@ -80,7 +84,7 @@ https://bitbucket.insureondev.com/ projects/ATOM/repos/ chubbrater/browse/Ion.Ch
             <Spacer size="small" />
             <Divider />
             <Stack divider>
-              <Requirement title="Info Alert response mapping for new field in Chubb WC rater" createdDate="Feb 16, 2023" updatedDate="Feb 20, 2023" storyId={1} />
+              <Requirement selected title="Info Alert response mapping for new field in Chubb WC rater" createdDate="Feb 16, 2023" updatedDate="Feb 20, 2023" storyId={1} />
               <Requirement title="Quote Proposal PDF stored for Chubb WC rater" createdDate="Feb 16, 2023" updatedDate="Feb 20, 2023" />
               <Requirement title="Ratability Reasons file consolidated to one for Chubb GL, BOP, WC rater" createdDate="Feb 16, 2023" />
             </Stack>
@@ -92,12 +96,16 @@ https://bitbucket.insureondev.com/ projects/ATOM/repos/ chubbrater/browse/Ion.Ch
       <View flex>
         <View padding="small medium" fillColor="gray-0">
           <Spacer size="small" />
-          <Text fontSize="large">Info Alert response mapping for new field in Chubb WC rater</Text>
+          <Text light caps fontSize="small">Requirement</Text>
           <Spacer size="small" />
-          <View horizontal align="bottom left">
-            <Text fontSize="medium">Details</Text>
+          <Text fontSize="large">Info Alert response mapping for new field in Chubb WC rater</Text>
+          <Spacer size="medium" />
+          <View horizontal>
+            <Field label="Priority" initialValue="Must Have" />
+            <Spacer size="large" />
+            <Field label="Tags" initialValue="infrastructure" />
             <Spacer flex size="small" />
-            <Button primary size="small" title="Create Story" />
+            <Button primary size="small" title="Create User Story" />
           </View>
         </View>
         <Divider />

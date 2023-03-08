@@ -93,7 +93,7 @@ function App() {
           <Text>GEMTASK</Text>
           <Spacer size="medium" />
           <Stack>
-            <Link to="/backlog">Backlog</Link>
+            <Link to="/backlog/GEM-1324">Backlog</Link>
             <Spacer size="small" />
             <Link to="/epics">Epics</Link>
             <Spacer size="small" />

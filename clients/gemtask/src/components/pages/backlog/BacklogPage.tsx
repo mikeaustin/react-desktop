@@ -152,6 +152,8 @@ function BacklogPage() {
             <View flex style={{ width: 'calc(30vw - 256px - 2px)' }}>
               <View padding="small medium" fillColor="gray-0">
                 <Spacer size="small" />
+                <Text light caps fontSize="small">GEM-1324 — User Story</Text>
+                <Spacer size="small" />
                 <Text fontSize="large">{stories.find((story) => story.id === selectedItemId)?.title}</Text>
                 <Spacer size="medium" />
                 <Stack horizontal spacing="large">
