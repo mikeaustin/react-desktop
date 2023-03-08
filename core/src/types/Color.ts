@@ -27,6 +27,18 @@ type Red =
   | 'red-8'
   | 'red-9';
 
+type Grape =
+  | 'grape-0'
+  | 'grape-1'
+  | 'grape-2'
+  | 'grape-3'
+  | 'grape-4'
+  | 'grape-5'
+  | 'grape-6'
+  | 'grape-7'
+  | 'grape-8'
+  | 'grape-9';
+
 type Violet =
   | 'violet-0'
   | 'violet-1'
@@ -117,6 +129,7 @@ type Color =
   | Black
   | Gray
   | Red
+  | Grape
   | Violet
   | Blue
   | Teal

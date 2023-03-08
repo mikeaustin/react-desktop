@@ -95,6 +95,8 @@ function App() {
           <Stack>
             <Link to="/backlog">Backlog</Link>
             <Spacer size="small" />
+            <Link to="/epics">Epics</Link>
+            <Spacer size="small" />
             <Link to="/agile">Being Agile</Link>
           </Stack>
         </View>

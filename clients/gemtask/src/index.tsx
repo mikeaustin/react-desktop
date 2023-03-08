@@ -5,6 +5,8 @@ import { createBrowserRouter, RouterProvider, BrowserRouter, useRoutes } from 'r
 import './index.css';
 import App from './App';
 import BacklogPage from './components/pages/backlog';
+import EpicsPage from './components/pages/epics-page';
+
 import reportWebVitals from './reportWebVitals';
 
 const router = createBrowserRouter([
@@ -15,7 +17,11 @@ const router = createBrowserRouter([
       {
         path: 'backlog/:itemId?',
         element: <BacklogPage />,
-      }
+      },
+      {
+        path: 'epics/:epicId?',
+        element: <EpicsPage />,
+      },
     ]
   },
 ], {

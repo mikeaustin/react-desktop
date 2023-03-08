@@ -163,7 +163,7 @@ function BacklogPage() {
                 <Spacer size="large" />
                 <Stack horizontal spacing="medium">
                   <Text light={detailsTabIndex !== 0} fontSize="medium" onClick={() => setDetailsTabIndex(0)} style={{ cursor: 'pointer' }}>Details</Text>
-                  <Text light={detailsTabIndex !== 1} fontSize="medium" onClick={() => setDetailsTabIndex(1)} style={{ cursor: 'pointer' }}>Comments</Text>
+                  <Text light={detailsTabIndex !== 1} fontSize="medium" onClick={() => setDetailsTabIndex(1)} style={{ cursor: 'pointer' }}>Questions</Text>
                   <Text light={detailsTabIndex !== 2} fontSize="medium" onClick={() => setDetailsTabIndex(2)} style={{ cursor: 'pointer' }}>Files</Text>
                   <Text light={detailsTabIndex !== 3} fontSize="medium" onClick={() => setDetailsTabIndex(3)} style={{ cursor: 'pointer' }}>Epic</Text>
                 </Stack>
