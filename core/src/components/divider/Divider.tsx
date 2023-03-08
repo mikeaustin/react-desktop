@@ -18,7 +18,9 @@ const Divider = ({
   ...props
 }: DividerProps) => {
   const dividerStyle = {
-    minHeight: 1, minWidth: 1, ...style,
+    minHeight: 1,
+    minWidth: 1,
+    ...style,
   };
 
   return (

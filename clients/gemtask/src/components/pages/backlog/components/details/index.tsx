@@ -12,7 +12,7 @@ const tagsOptions = [
 
 const Details = () => {
   return (
-    <Stack spacing="large" padding="medium" style={{ flexBasis: '100%', flexShrink: 0, scrollSnapAlign: 'start' }}>
+    <Stack id="details" spacing="large" padding="medium" style={{ flexBasis: '100%', flexShrink: 0, scrollSnapAlign: 'start' }}>
       <Field label="Description" placeholder="A short description of who this is for, what it solves, and what is out of scope..." />
       <Field label="Acceptance Criteria" placeholder="This story is done when these things are true..." />
       <Field label="Testing instructions" placeholder="To test this story..." />

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { useHotkeys } from 'react-hotkeys-hook';
 import { groupWith } from 'rambda';
@@ -60,7 +60,10 @@ function BacklogPage() {
   const params = useParams();
 
   const [selectedItemId, setSelectedItemId] = useState<number | null>(null);
+  const [detailsTabIndex, setDetailsTabIndex] = useState<number>(0);
   const [isAddStoryModalOpen, setIsAddStoryModalOpen] = useState<boolean>(false);
+
+  const scrollTimerRef = useRef<ReturnType<typeof setTimeout>>();
 
   useHotkeys('alt+n', () => setIsAddStoryModalOpen(true));
 
@@ -70,10 +73,39 @@ function BacklogPage() {
     setSelectedItemId(storyId);
   };
 
+  const handleDetailsScroll = () => {
+    clearTimeout(scrollTimerRef.current);
+
+    scrollTimerRef.current = setTimeout(() => {
+      const parentElement = document.getElementById('details')?.parentElement;
+
+      if (parentElement) {
+        console.log('here', Math.round(parentElement.scrollLeft / (parentElement.scrollWidth - parentElement.clientWidth)));
+
+        const index = parentElement.scrollLeft / (parentElement.scrollWidth - parentElement.clientWidth);
+
+        if (Math.floor(index) === index) {
+          setDetailsTabIndex(Math.floor(index));
+        }
+      }
+    }, 100);
+  };
+
+  useEffect(() => {
+    switch (detailsTabIndex) {
+      case 0:
+        document.getElementById('details')?.scrollIntoView({ behavior: 'smooth' });
+        break;
+      case 1:
+        document.getElementById('comments')?.scrollIntoView({ behavior: 'smooth' });
+        break;
+    }
+  }, [detailsTabIndex]);
+
   return (
     <>
       <View flex horizontal>
-        <View flex fillColor="gray-1" style={{ width: 'calc(70vw - 256px)' }}>
+        <View flex fillColor="gray-1" style={{ width: 'calc(70vw - 256px - 2px)' }}>
           <View padding="small medium" fillColor="gray-1">
             <Spacer size="small" />
             <Text fontSize="large">Product Backlog</Text>
@@ -117,7 +149,7 @@ function BacklogPage() {
         {params.itemId && (
           <>
             <Divider />
-            <View flex style={{ width: 'calc(30vw - 256px)' }}>
+            <View flex style={{ width: 'calc(30vw - 256px - 2px)' }}>
               <View padding="small medium" fillColor="gray-0">
                 <Spacer size="small" />
                 <Text fontSize="large">{stories.find((story) => story.id === selectedItemId)?.title}</Text>
@@ -130,16 +162,16 @@ function BacklogPage() {
                 </Stack>
                 <Spacer size="large" />
                 <Stack horizontal spacing="medium">
-                  <Text fontSize="medium">Details</Text>
-                  <Text light fontSize="medium">Comments</Text>
-                  <Text light fontSize="medium">Files</Text>
-                  <Text light fontSize="medium">Epic</Text>
+                  <Text light={detailsTabIndex !== 0} fontSize="medium" onClick={() => setDetailsTabIndex(0)} style={{ cursor: 'pointer' }}>Details</Text>
+                  <Text light={detailsTabIndex !== 1} fontSize="medium" onClick={() => setDetailsTabIndex(1)} style={{ cursor: 'pointer' }}>Comments</Text>
+                  <Text light={detailsTabIndex !== 2} fontSize="medium" onClick={() => setDetailsTabIndex(2)} style={{ cursor: 'pointer' }}>Files</Text>
+                  <Text light={detailsTabIndex !== 3} fontSize="medium" onClick={() => setDetailsTabIndex(3)} style={{ cursor: 'pointer' }}>Epic</Text>
                 </Stack>
               </View>
               <Divider />
-              <View flex horizontal fillColor="white" style={{ overflow: 'auto', width: '100%', scrollSnapType: 'x mandatory' }}>
-                <Spacer size="small" />
+              <View flex horizontal fillColor="white" style={{ overflow: 'auto', width: '100%', scrollSnapType: 'x mandatory' }} onScroll={handleDetailsScroll}>
                 <Details />
+                <Divider style={{ marginLeft: -1 }} />
                 <Comments />
               </View>
             </View>

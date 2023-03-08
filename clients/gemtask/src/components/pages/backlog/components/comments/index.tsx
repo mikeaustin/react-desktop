@@ -6,7 +6,7 @@ import Field from '../../../../../shared/components/field';
 
 const Comments = () => {
   return (
-    <View fillColor="gray-1" style={{ flexBasis: '100%', flexShrink: 0, scrollSnapAlign: 'start' }}>
+    <View id="comments" fillColor="gray-1" style={{ flexBasis: '100%', flexShrink: 0, scrollSnapAlign: 'start' }}>
       <View padding="small medium" fillColor="gray-1">
         <Spacer size="small" />
         <Text light caps fontSize="small">Unresolved Questions</Text>
@@ -27,9 +27,8 @@ const Comments = () => {
             <Spacer flex size="small" />
             <Button solid size="small" title="Mark Resolved" />
           </View>
-          <Divider style={{ marginLeft: 16 }} />
+          {/* <Divider style={{ marginLeft: 16 }} /> */}
           <View padding="small medium">
-            <Spacer size="small" />
             <Text>
               The row displays after clicking Add Story, but it is not optimized. Should we update the cache with writeQuery so we don't need to fetch all epics again?
             </Text>
