@@ -85,6 +85,7 @@ const agilePages = [
 
 function App() {
   const [agilePageIndex, setAgilePageIndex] = useState(0);
+  const [isAgileModalOpen, setIsAgileModalOpen] = useState(false);
 
   return (
     <>
@@ -97,14 +98,15 @@ function App() {
             <Spacer size="small" />
             <Link to="/epics">Epics</Link>
             <Spacer size="small" />
-            <Link to="/agile">Being Agile</Link>
+            <Text onClick={() => setIsAgileModalOpen(true)}>Being Agile</Text>
           </Stack>
         </View>
         <Outlet />
       </Stack>
       <Modal
-        isOpen={false}
+        isOpen={isAgileModalOpen}
         title="Being Agile"
+        width={800}
         height={600}
         actions={[
           <Button solid title="Back" onClick={() => setAgilePageIndex((agilePageIndex) => agilePageIndex - 1)} />,

@@ -155,7 +155,7 @@ function BacklogPage() {
                 <Text light caps fontSize="small">GEM-1324 — User Story</Text>
                 <Spacer size="small" />
                 <Text fontSize="large">{stories.find((story) => story.id === selectedItemId)?.title}</Text>
-                <Spacer size="medium" />
+                <Spacer size="large" />
                 <Stack horizontal spacing="large">
                   <Field label="Estimate" initialValue={stories.find(story => story.id === selectedItemId)?.estimateId} options={estimateOptions} />
                   <Field label="Status" initialValue={stories.find(story => story.id === selectedItemId)?.statusId} options={statusOptions} />

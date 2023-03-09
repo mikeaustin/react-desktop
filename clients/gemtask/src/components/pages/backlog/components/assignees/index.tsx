@@ -14,7 +14,7 @@ const Assignees = () => {
       <View>
         <View className={styles.hoverable}>
           <View horizontal style={{ alignItems: 'flex-end' }}>
-            <Text light caps fontSize="small">Story Assignees</Text>
+            <Text light caps fontSize="small">Assignees</Text>
             <Spacer flex size="small" />
             <Stack horizontal spacing="medium" align="right" className={styles.onHover}>
               <Icon size="lg" icon="sliders" color="gray-6" style={{ marginTop: -3, width: 24 }} />
@@ -22,53 +22,43 @@ const Assignees = () => {
             </Stack>
           </View>
           <Spacer size="small" />
-          <Divider />
-          <Stack divider>
-            <Stack horizontal spacing="medium" padding="small none">
-              <View horizontal>
-                <View fillColor="gray-2" align="center" style={{ width: 32, height: 32, margin: '-1px 0', borderRadius: 1000, boxShadow: '0 0 0 1px white' }}>
-                  <Text fontSize="small" fontWeight="semi-bold">MR</Text>
-                </View>
-                <Spacer size="small" />
-                <View style={{ width: 200 }}>
-                  <Text>Annabelle Webber</Text>
-                  <Spacer size="small" />
-                  <Text light fontSize="small">c#, microservice, aws</Text>
-                </View>
+
+          <View horizontal style={{ gap: 8, flexWrap: 'wrap' }}>
+            <View horizontal fillColor="gray-1" padding="xsmall" align="left" style={{ borderRadius: 1000 }}>
+              <View fillColor="white" align="center" style={{ width: 32, height: 32, borderRadius: 1000 }}>
+                <Text fontSize="small" fontWeight="semi-bold">PH</Text>
               </View>
-              <View>
-                <Text light caps fontSize="small">Story Responsibilities</Text>
-                <Spacer size="small" />
-                <Field flex placeholder="Responsibilities..." />
+              <View padding="none small" >
+                <Text>Philip Hirsch</Text>
+                <Spacer size="xsmall" />
+                <Text light fontSize="small">c#, microservice, aws</Text>
               </View>
-            </Stack>
-            <Stack horizontal spacing="medium" padding="small none">
-              <View horizontal>
-                <View fillColor="gray-2" align="center" style={{ width: 32, height: 32, margin: '-1px 0', borderRadius: 1000, boxShadow: '0 0 0 1px white' }}>
-                  <Text fontSize="small" fontWeight="semi-bold">BH</Text>
-                </View>
-                <Spacer size="small" />
-                <View style={{ width: 200 }}>
-                  <Text>Beckett Hawkins</Text>
-                  <Spacer size="small" />
-                  <Text light fontSize="small">ui, react, integration</Text>
-                </View>
+            </View>
+            <View horizontal fillColor="gray-1" padding="xsmall" align="left" style={{ borderRadius: 1000 }}>
+              <View fillColor="white" align="center" style={{ width: 32, height: 32, borderRadius: 1000 }}>
+                <Text fontSize="small" fontWeight="semi-bold">LH</Text>
               </View>
-              <View>
-                <Text light caps fontSize="small">Story Responsibilities</Text>
-                <Spacer size="small" />
-                <Field flex initialValue="Front-end integration" placeholder="Responsibilities..." />
+              <View padding="none small">
+                <Text>Lawrence Hughes</Text>
+                <Spacer size="xsmall" />
+                <Text light fontSize="small">javascript, ui, react</Text>
               </View>
-            </Stack>
-          </Stack>
-          <Divider />
+            </View>
+          </View>
         </View>
 
+        <Spacer size="large" />
+
+        <Divider />
+        <Spacer size="large" />
+        <Text light caps fontSize="small">Epic</Text>
+        <Spacer size="small" />
+        <Text fontSize="medium">Chubb Rate Quote Response Mapping</Text>
         <Spacer size="small" />
 
         <View className={styles.hoverable}>
           <View horizontal style={{ alignItems: 'flex-end' }}>
-            <Text light caps fontSize="small">Epic Assignees</Text>
+            <Text light caps fontSize="small">Assignees</Text>
             <Spacer flex size="small" />
             <Stack horizontal spacing="medium" align="right" className={styles.onHover}>
               <Icon size="lg" icon="sliders" color="gray-6" style={{ marginTop: -3, width: 24 }} />
@@ -76,46 +66,28 @@ const Assignees = () => {
             </Stack>
           </View>
           <Spacer size="small" />
-          <Divider />
-          <Stack divider>
-            <Stack horizontal spacing="medium" padding="small none">
-              <View horizontal>
-                <View fillColor="gray-2" align="center" style={{ width: 32, height: 32, margin: '-1px 0', borderRadius: 1000, boxShadow: '0 0 0 1px white' }}>
-                  <Text fontSize="small" fontWeight="semi-bold">MR</Text>
-                </View>
-                <Spacer size="small" />
-                <View style={{ width: 200 }}>
-                  <Text>Annabelle Webber</Text>
-                  <Spacer size="small" />
-                  <Text light fontSize="small">c#, microservice, aws</Text>
-                </View>
+          <View horizontal style={{ gap: 8, flexWrap: 'wrap' }}>
+            <View horizontal fillColor="gray-1" padding="xsmall" align="left" style={{ borderRadius: 1000 }}>
+              <View fillColor="white" align="center" style={{ width: 32, height: 32, borderRadius: 1000 }}>
+                <Text fontSize="small" fontWeight="semi-bold">PJ</Text>
               </View>
-              <View>
-                <Text light caps fontSize="small">Story Responsibilities</Text>
-                <Spacer size="small" />
-                <Field flex placeholder="Responsibilities..." />
+              <View padding="none small" >
+                <Text>Patricia N. Jackson</Text>
+                <Spacer size="xsmall" />
+                <Text light fontSize="small">figma, ux, zeplin</Text>
               </View>
-            </Stack>
-            <Stack horizontal spacing="medium" padding="small none">
-              <View horizontal>
-                <View fillColor="gray-2" align="center" style={{ width: 32, height: 32, margin: '-1px 0', borderRadius: 1000, boxShadow: '0 0 0 1px white' }}>
-                  <Text fontSize="small" fontWeight="semi-bold">BH</Text>
-                </View>
-                <Spacer size="small" />
-                <View style={{ width: 200 }}>
-                  <Text>Beckett Hawkins</Text>
-                  <Spacer size="small" />
-                  <Text light fontSize="small">ui, react, integration</Text>
-                </View>
+            </View>
+            <View horizontal fillColor="gray-1" padding="xsmall" align="left" style={{ borderRadius: 1000 }}>
+              <View fillColor="white" align="center" style={{ width: 32, height: 32, borderRadius: 1000 }}>
+                <Text fontSize="small" fontWeight="semi-bold">EO</Text>
               </View>
-              <View>
-                <Text light caps fontSize="small">Story Responsibilities</Text>
-                <Spacer size="small" />
-                <Field flex initialValue="Front-end integration" placeholder="Responsibilities..." />
+              <View padding="none small">
+                <Text>Elizabeth Ohara</Text>
+                <Spacer size="xsmall" />
+                <Text light fontSize="small">product</Text>
               </View>
-            </Stack>
-          </Stack>
-          <Divider />
+            </View>
+          </View>
         </View>
 
       </View>

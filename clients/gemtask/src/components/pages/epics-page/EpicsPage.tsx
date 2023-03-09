@@ -59,7 +59,7 @@ const EpicsPage = () => {
           <Text light caps fontSize="small">Epic Story</Text>
           <Spacer size="small" />
           <Text fontSize="large">Chubb Rate Quote Response Mapping</Text>
-          <Spacer size="medium" />
+          <Spacer size="large" />
           <Stack horizontal>
             <Field label="Budget" initialValue="One month" />
             <Spacer size="large" />
@@ -99,7 +99,7 @@ https://bitbucket.insureondev.com/ projects/ATOM/repos/ chubbrater/browse/Ion.Ch
           <Text light caps fontSize="small">Requirement</Text>
           <Spacer size="small" />
           <Text fontSize="large">Info Alert response mapping for new field in Chubb WC rater</Text>
-          <Spacer size="medium" />
+          <Spacer size="large" />
           <View horizontal>
             <Field label="Priority" initialValue="Must Have" />
             <Spacer size="large" />
