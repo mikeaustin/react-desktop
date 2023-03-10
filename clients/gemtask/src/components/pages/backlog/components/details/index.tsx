@@ -21,7 +21,25 @@ const Details = () => {
         initialValue="As the Quote Product Owner, I need UW Question 1970 mapping updated for Chubb WC rater, so that we enhance validation"
         placeholder="A short description of who this is for, what it solves, and what is out of scope..."
       />
-      <Field label="Acceptance Criteria" placeholder="This story is done when these things are true..." />
+      {/* <Field label="Acceptance Criteria" placeholder="This story is done when these things are true..." /> */}
+      <View>
+        <Text light caps fontSize="small">Acceptance Criteria</Text>
+        <Spacer size="small" />
+        <View className={styles.Field}>
+          <Text contentEditable>
+            <View style={{ margin: 0, paddingLeft: 0, listStyle: 'none' }}>
+              <View horizontal align="top left">
+                <input checked type="checkbox" style={{ marginTop: 4 }} />
+                &nbsp;New coverage fields are in the comparison document as listed in the sample attached
+              </View>
+              <View horizontal align="top left">
+                <input type="checkbox" style={{ marginTop: 4 }} />
+                &nbsp;Quote Comparison document accurately reflects the fields from TRUDI
+              </View>
+            </View>
+          </Text>
+        </View>
+      </View>
       <Field label="Testing instructions" placeholder="To test this story..." />
       <View className={styles.hoverable}>
         <Text light caps fontSize="small">Tags</Text>
