@@ -89,8 +89,8 @@ function App() {
 
   return (
     <>
-      <Stack flex horizontal divider className={styles.App}>
-        <View padding="medium" style={{ minWidth: 256 }}>
+      <Stack flex horizontal divider className={styles.App} style={{ overflow: 'auto', scrollSnapType: 'x mandatory' }}>
+        <View padding="medium" style={{ flex: '0 0 256px', scrollSnapAlign: 'start' }}>
           <Text>GEMTASK</Text>
           <Spacer size="medium" />
           <Stack>
@@ -101,6 +101,7 @@ function App() {
             <Text onClick={() => setIsAgileModalOpen(true)}>Being Agile</Text>
           </Stack>
         </View>
+
         <Outlet />
       </Stack>
       <Modal

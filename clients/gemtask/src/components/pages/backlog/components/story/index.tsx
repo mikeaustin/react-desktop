@@ -24,13 +24,13 @@ function Story({ id, title, estimateId, statusId, typeId, blockedById, dueDate, 
   return (
     <Stack draggable fillColor={selected ? 'blue-0' : 'white'} onClick={() => onSelect(id)}>
       {/* <View style={{ width: 5 }} fillColor={types[typeId].color as any} /> */}
-      <Stack flex horizontal spacing="xlarge" padding="small medium">
+      <Stack flex horizontal padding="small medium" style={{ flexWrap: 'wrap', columnGap: 24, rowGap: 8 }}>
         <View flex horizontal>
           <Icon size="sm" icon={types[typeId].icon as any} style={{ marginTop: -1 }} color={types[typeId].color as any} />
           {/* <View style={{ width: 12, height: 12, borderRadius: 1000 }} fillColor={statuses[statusId].color as any} /> */}
           <Spacer size="small" />
           <View>
-            <Text fontWeight="semi-bold">{title}</Text>
+            <Text fontWeight="semi-bold" style={{ minWidth: 300 }}>{title}</Text>
             <Spacer size="small" />
             <Stack horizontal spacing="medium">
               <View horizontal>
@@ -54,7 +54,7 @@ function Story({ id, title, estimateId, statusId, typeId, blockedById, dueDate, 
             </Stack>
           </View>
         </View>
-        <View style={{ alignItems: 'flex-end' }}>
+        <View style={{ alignItems: 'flex-end', flexBasis: 64 }}>
           <View padding="xsmall small" align="center" fillColor={statuses[statusId].color as any} style={{ borderRadius: 10, width: 30 }}>
             <Text fontSize="xsmall" fontWeight="bold" style={{ fontSize: 11, lineHeight: '18px' }}>{estimateId === 0 ? <>&nbsp;</> : estimateId}</Text>
           </View>
