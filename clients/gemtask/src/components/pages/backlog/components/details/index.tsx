@@ -28,19 +28,23 @@ const Details = () => {
         <View className={styles.Field}>
           <Text contentEditable>
             <View style={{ margin: 0, paddingLeft: 0, listStyle: 'none' }}>
+              <Divider spacing="xsmall" />
               <View horizontal align="top left">
-                <input checked type="checkbox" style={{ marginTop: 4 }} />
-                &nbsp;New coverage fields are in the comparison document as listed in the sample attached
+                <input checked type="checkbox" style={{ marginTop: 4, marginRight: 8 }} />
+                New coverage fields are in the comparison document as listed in the sample attached
               </View>
+              <Divider spacing="xsmall" style={{ marginLeft: 24 }} />
               <View horizontal align="top left">
-                <input type="checkbox" style={{ marginTop: 4 }} />
-                &nbsp;Quote Comparison document accurately reflects the fields from TRUDI
+                <input type="checkbox" style={{ marginTop: 4, marginRight: 8 }} />
+                Quote Comparison document accurately reflects the fields from TRUDI
               </View>
+              <Spacer size="xsmall" />
+              <Divider />
             </View>
           </Text>
         </View>
       </View>
-      <Field label="Testing instructions" placeholder="To test this story..." />
+      {/* <Field label="Testing instructions" placeholder="To test this story..." /> */}
       <View className={styles.hoverable}>
         <Text light caps fontSize="small">Tags</Text>
         <Spacer size="small" />
