@@ -61,14 +61,14 @@ function Story({ id, title, estimateId, statusId, typeId, blockedById, dueDate, 
           <Spacer size="xsmall" />
           <Text fontSize="small" fontWeight="normal">{statuses[statusId].title}</Text>
         </View>
-        <View horizontal>
-          <View fillColor="gray-2" align="center" style={{ width: 30, marginLeft: -5, borderRadius: 1000, boxShadow: '0 0 0 1px white' }}>
+        <View horizontal align="top left">
+          <View fillColor="gray-2" align="center" style={{ width: 30, height: 30, marginLeft: -5, borderRadius: 1000, boxShadow: '0 0 0 1px white' }}>
             <Text fontSize="small" fontWeight="semi-bold">AJ</Text>
           </View>
-          <View fillColor="gray-2" align="center" style={{ width: 30, marginLeft: -5, borderRadius: 1000, boxShadow: '0 0 0 1px white' }}>
+          <View fillColor="gray-2" align="center" style={{ width: 30, height: 30, marginLeft: -5, borderRadius: 1000, boxShadow: '0 0 0 1px white' }}>
             <Text fontSize="small" fontWeight="semi-bold">MR</Text>
           </View>
-          <View fillColor="gray-2" align="center" style={{ width: 30, marginLeft: -5, borderRadius: '50%', boxShadow: '0 0 0 1px white' }}>
+          <View fillColor="gray-2" align="center" style={{ width: 30, height: 30, marginLeft: -5, borderRadius: '50%', boxShadow: '0 0 0 1px white' }}>
             <Icon icon="ellipsis" />
           </View>
         </View>

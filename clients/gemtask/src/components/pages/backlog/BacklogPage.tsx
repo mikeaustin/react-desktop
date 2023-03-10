@@ -156,7 +156,7 @@ function BacklogPage() {
                 <Spacer size="small" />
                 <Text fontSize="large">{stories.find((story) => story.id === selectedItemId)?.title}</Text>
                 <Spacer size="large" />
-                <Stack horizontal spacing="large">
+                <Stack horizontal style={{ flexWrap: 'wrap', gap: 16 }}>
                   <Field label="Estimate" initialValue={stories.find(story => story.id === selectedItemId)?.estimateId} options={estimateOptions} />
                   <Field label="Status" initialValue={stories.find(story => story.id === selectedItemId)?.statusId} options={statusOptions} />
                   <Field label="Due Date" initialValue={'Apr 15, 2023'} />
