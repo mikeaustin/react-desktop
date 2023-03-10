@@ -43,6 +43,38 @@ var gray = {
         background: OpenColor.gray[9],
     },
 };
+var red = {
+    'red-0': {
+        background: OpenColor.red[0],
+    },
+    'red-1': {
+        background: OpenColor.red[1],
+    },
+    'red-2': {
+        background: OpenColor.red[2],
+    },
+    'red-3': {
+        background: OpenColor.red[3],
+    },
+    'red-4': {
+        background: OpenColor.red[4],
+    },
+    'red-5': {
+        background: OpenColor.red[5],
+    },
+    'red-6': {
+        background: OpenColor.red[6],
+    },
+    'red-7': {
+        background: OpenColor.red[7],
+    },
+    'red-8': {
+        background: OpenColor.red[8],
+    },
+    'red-9': {
+        background: OpenColor.red[9],
+    },
+};
 var grape = {
     'grape-0': {
         background: OpenColor.grape[0],
@@ -363,7 +395,7 @@ var orange = {
         background: OpenColor.orange[9],
     },
 };
-var useFillColorStyles = createUseStyles(__assign(__assign(__assign(__assign(__assign(__assign(__assign(__assign(__assign(__assign(__assign({ 'theme-content': {
+var useFillColorStyles = createUseStyles(__assign(__assign(__assign(__assign(__assign(__assign(__assign(__assign(__assign(__assign(__assign(__assign({ 'theme-content': {
         background: 'var(--theme-content-color)',
     }, 'theme-panel': {
         background: 'var(--theme-panel-color)',
@@ -377,5 +409,5 @@ var useFillColorStyles = createUseStyles(__assign(__assign(__assign(__assign(__a
         background: OpenColor.black
     }, 'white': {
         background: OpenColor.white
-    } }, gray), grape), violet), indigo), blue), cyan), teal), green), lime), yellow), orange));
+    } }, gray), red), grape), violet), indigo), blue), cyan), teal), green), lime), yellow), orange));
 export default useFillColorStyles;

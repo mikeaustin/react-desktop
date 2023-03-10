@@ -66,7 +66,10 @@ const EpicsPage = () => {
             <Field label="Initiative" initialValue="Increase sales" />
           </Stack>
           <Spacer size="large" />
-          <Text fontSize="medium">Details</Text>
+          <Stack horizontal spacing="medium">
+            <Text fontSize="medium">Details</Text>
+            <Text fontSize="medium">Questions</Text>
+          </Stack>
         </View>
         <Divider />
         {/* <Spacer size="small" /> */}
@@ -110,18 +113,26 @@ https://bitbucket.insureondev.com/ projects/ATOM/repos/ chubbrater/browse/Ion.Ch
         </View>
         <Divider />
         <View padding="medium">
-          <Text style={{ whiteSpace: 'pre-wrap' }}>{`Add Information only Quote Alert and parse response from new field data.digitalQuoteRateResponse.quoteInfo.bridgeLinkDesc in Quote Alerts
+          <Text style={{ whiteSpace: 'pre-wrap' }}>{`As the Quote Product Owner, I need Chubb WC rater mapping files cleaned up in preparation for ADP's move to the V2 version of the application.
 
-Sample:
-bridgeLinkDesc_QuoteResponse_Sample (1).json
-26 Oct 2022, 02:14 PM
+Reference: https://bitbucket.insureondev.com/projects/
+ATOM/repos/chubbrater/browse/Ion.ChubbRaterWC.Server/Mappers
 
-"quoteInfo": {
-  "quoteNumber": "U3549310000000",
-  "quoteDescription": "CREATED FROM DIGITAL API",
-  "policyUrl": "https://uat-sciagents.chubb.com/marketplace?action=DIGIQTCONV&quoteid=463780&lob=WorkersComp",
-  "bridgeLinkDesc": "Use the link to carrier button to complete quote and request pricing within Marketplace for the quickest turnaround."
-}`}
+Issue:
+
+After review with Development lead, it appears we have multiple files in the Chubb WC Mapper that can lead to confusion.  After review with Chubb on the functionality available around UW Questions (see User interaction and design below), it appears the Question Codes differ between what is acceptable in the Digital quote request vs. the ADP quote request.  
+
+Reviewed Example PROD Clients to verify which QuestionCds are being used:
+
+ADP PROD ClientID 1874626 - successfully received premium, verified question codes being passed are the MP QuestionCd (Marketplace)
+
+ION PROD ClientID 12499471 - successfully received premium, no MP Questions passed and response confirmed it was quoted in Digital product
+
+Requirements:
+
+    Review Mapper files and archive/eliminate files that are out of use currently
+    Disable UW Question Service for ADP - this service is only valid for the ION Digital WC Request
+    Remove RMS for ADP and use existing mapping`}
           </Text>
 
         </View>

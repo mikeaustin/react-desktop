@@ -5,6 +5,10 @@ var useStyles = createUseStyles({
         fontFamily: "-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',\n    'Ubuntu', 'Cantarell', 'Consolas', 'Droid Sans', 'Helvetica Neue',\n    sans-serif",
         WebkitFontSmoothing: 'antialiased',
         MozOsxFontSmoothing: 'grayscale',
+        cursor: 'default',
+        '&[contenteditable], &:active': {
+            cursor: 'text'
+        }
     },
     textParent: {
         display: 'inline',

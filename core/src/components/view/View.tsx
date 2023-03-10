@@ -107,6 +107,8 @@ interface ViewProps extends React.ComponentProps<'div'> {
   borderColor?: Color,
   disabled?: boolean,
   viewBox?: string,
+  hoverable?: 'a' | 'b',
+  hovered?: 'a' | 'b',
   className?: string,
   children?: React.ReactNode,
 }
@@ -122,6 +124,8 @@ const View = ({
   borderColor,
   disabled,
   viewBox,
+  hoverable,
+  hovered,
   className,
   children,
   ...props
@@ -177,6 +181,8 @@ const View = ({
     alignHorizontal && alignHorizontalStyles[alignHorizontal],
     paddingVertical && paddingVerticalStyles[paddingVertical],
     paddingHorizontal && paddingHorizontalStyles[paddingHorizontal],
+    hoverable && styles[`hoverable-${hoverable}`],
+    hovered && styles[`hovered-${hovered}`],
     className,
   );
 

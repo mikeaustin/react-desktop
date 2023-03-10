@@ -16,9 +16,9 @@ import styles from '../../../App.module.scss';
 
 const estimateOptions = [
   { label: 'No Estimate', value: 0 },
-  { label: 'A few minutes (1)', value: 1 },
-  { label: 'A few hours (2)', value: 2 },
-  { label: 'A few days (3)', value: 3 },
+  { label: '1 – A few minutes', value: 1 },
+  { label: '2 – A few hours', value: 2 },
+  { label: '3 – A few days', value: 3 },
 ];
 
 const statusOptions = [
@@ -125,7 +125,7 @@ function BacklogPage() {
                     <Text caps fontSize="small" textColor="gray-6">{epics[group[0].epicId].title}</Text>
                   </View>
                   <Spacer flex size="small" />
-                  <Stack horizontal spacing="medium" padding="xsmall medium" align="bottom right" className={styles.onHover}>
+                  <Stack horizontal spacing="medium" padding="xsmall medium" align="bottom right" className={styles.hovered}>
                     <Icon size="lg" icon="sliders" color="gray-6" style={{ marginTop: 0, marginBottom: 2, width: 24 }} />
                     <Icon size="xl" icon="square-plus" color="gray-6" style={{ margin: 0, width: 24 }} onClick={() => setIsAddStoryModalOpen(true)} />
                   </Stack>

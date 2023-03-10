@@ -8,7 +8,10 @@ const useStyles = createUseStyles({
     sans-serif`,
     WebkitFontSmoothing: 'antialiased',
     MozOsxFontSmoothing: 'grayscale',
-
+    cursor: 'default',
+    '&[contenteditable], &:active': {
+      cursor: 'text'
+    }
   },
   textParent: {
     display: 'inline',

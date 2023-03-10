@@ -93,7 +93,7 @@ function alignToStyle(align) {
     }
 }
 var View = function (_a, ref) {
-    var _b = _a.as, Component = _b === void 0 ? 'div' : _b, flex = _a.flex, horizontal = _a.horizontal, align = _a.align, fillColor = _a.fillColor, padding = _a.padding, border = _a.border, borderColor = _a.borderColor, disabled = _a.disabled, viewBox = _a.viewBox, className = _a.className, children = _a.children, props = __rest(_a, ["as", "flex", "horizontal", "align", "fillColor", "padding", "border", "borderColor", "disabled", "viewBox", "className", "children"]);
+    var _b = _a.as, Component = _b === void 0 ? 'div' : _b, flex = _a.flex, horizontal = _a.horizontal, align = _a.align, fillColor = _a.fillColor, padding = _a.padding, border = _a.border, borderColor = _a.borderColor, disabled = _a.disabled, viewBox = _a.viewBox, hoverable = _a.hoverable, hovered = _a.hovered, className = _a.className, children = _a.children, props = __rest(_a, ["as", "flex", "horizontal", "align", "fillColor", "padding", "border", "borderColor", "disabled", "viewBox", "hoverable", "hovered", "className", "children"]);
     var handleWindowMessage = useCallback(function (event) {
         if (event.data.type === 'setColorTheme') {
             document.documentElement.style.setProperty('--theme-content-color', event.data.theme.contentColor);
@@ -126,7 +126,7 @@ var View = function (_a, ref) {
     var fillColorStyles = useFillColorStyles();
     var _c = paddingToStyle(padding), paddingVertical = _c[0], paddingHorizontal = _c[1];
     var _d = alignToStyle(align), alignVertical = _d[0], alignHorizontal = _d[1];
-    var viewClassName = clsx(styles.View, flex && styles.flex, horizontal && styles.horizontal, fillColor && fillColorStyles[fillColor], border && borderColorStyles[borderColor !== null && borderColor !== void 0 ? borderColor : 'gray-3'], alignVertical && alignVerticalStyles[alignVertical], alignHorizontal && alignHorizontalStyles[alignHorizontal], paddingVertical && paddingVerticalStyles[paddingVertical], paddingHorizontal && paddingHorizontalStyles[paddingHorizontal], className);
+    var viewClassName = clsx(styles.View, flex && styles.flex, horizontal && styles.horizontal, fillColor && fillColorStyles[fillColor], border && borderColorStyles[borderColor !== null && borderColor !== void 0 ? borderColor : 'gray-3'], alignVertical && alignVerticalStyles[alignVertical], alignHorizontal && alignHorizontalStyles[alignHorizontal], paddingVertical && paddingVerticalStyles[paddingVertical], paddingHorizontal && paddingHorizontalStyles[paddingHorizontal], hoverable && styles["hoverable-".concat(hoverable)], hovered && styles["hovered-".concat(hovered)], className);
     return (_jsx(ViewContext.Provider, __assign({ value: { isHorizontal: horizontal !== null && horizontal !== void 0 ? horizontal : false } }, { children: _jsx(Component, __assign({ ref: ref, disabled: disabled, viewBox: viewBox, className: viewClassName, onDragOver: handleDragOver, onDragEnter: handleDragOver }, props, { children: children })) })));
 };
 export default React.forwardRef(View);

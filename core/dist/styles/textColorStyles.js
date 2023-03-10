@@ -43,6 +43,38 @@ var gray = {
         color: OpenColor.gray[9],
     },
 };
+var red = {
+    'red-0': {
+        color: OpenColor.red[0]
+    },
+    'red-1': {
+        color: OpenColor.red[1],
+    },
+    'red-2': {
+        color: OpenColor.red[2],
+    },
+    'red-3': {
+        color: OpenColor.red[3],
+    },
+    'red-4': {
+        color: OpenColor.red[4],
+    },
+    'red-5': {
+        color: OpenColor.red[5],
+    },
+    'red-6': {
+        color: OpenColor.red[6],
+    },
+    'red-7': {
+        color: OpenColor.red[7],
+    },
+    'red-8': {
+        color: OpenColor.red[8],
+    },
+    'red-9': {
+        color: OpenColor.red[9],
+    },
+};
 var grape = {
     'grape-0': {
         color: OpenColor.grape[0]
@@ -363,7 +395,7 @@ var orange = {
         color: OpenColor.orange[9],
     },
 };
-var useTextColorStyles = createUseStyles(__assign(__assign(__assign(__assign(__assign(__assign(__assign(__assign(__assign(__assign(__assign({ 'theme-text': {
+var useTextColorStyles = createUseStyles(__assign(__assign(__assign(__assign(__assign(__assign(__assign(__assign(__assign(__assign(__assign(__assign({ 'theme-text': {
         color: 'var(--theme-text-color)',
     }, 'transparent': {
         color: 'transparent'
@@ -371,5 +403,5 @@ var useTextColorStyles = createUseStyles(__assign(__assign(__assign(__assign(__a
         color: OpenColor.black
     }, 'white': {
         color: OpenColor.white
-    } }, gray), grape), violet), indigo), blue), cyan), teal), green), lime), yellow), orange));
+    } }, gray), red), grape), violet), indigo), blue), cyan), teal), green), lime), yellow), orange));
 export { useTextColorStyles };

@@ -43,6 +43,38 @@ var gray = {
         boxShadow: "inset 0 0 0 1px ".concat(OpenColor.gray[9]),
     },
 };
+var red = {
+    'red-0': {
+        boxShadow: "inset 0 0 0 1px ".concat(OpenColor.red[0]),
+    },
+    'red-1': {
+        boxShadow: "inset 0 0 0 1px ".concat(OpenColor.red[1]),
+    },
+    'red-2': {
+        boxShadow: "inset 0 0 0 1px ".concat(OpenColor.red[2]),
+    },
+    'red-3': {
+        boxShadow: "inset 0 0 0 1px ".concat(OpenColor.red[3]),
+    },
+    'red-4': {
+        boxShadow: "inset 0 0 0 1px ".concat(OpenColor.red[4]),
+    },
+    'red-5': {
+        boxShadow: "inset 0 0 0 1px ".concat(OpenColor.red[5]),
+    },
+    'red-6': {
+        boxShadow: "inset 0 0 0 1px ".concat(OpenColor.red[6]),
+    },
+    'red-7': {
+        boxShadow: "inset 0 0 0 1px ".concat(OpenColor.red[7]),
+    },
+    'red-8': {
+        boxShadow: "inset 0 0 0 1px ".concat(OpenColor.red[8]),
+    },
+    'red-9': {
+        boxShadow: "inset 0 0 0 1px ".concat(OpenColor.red[9]),
+    },
+};
 var grape = {
     'grape-0': {
         boxShadow: "inset 0 0 0 1px ".concat(OpenColor.grape[0]),
@@ -363,11 +395,11 @@ var orange = {
         boxShadow: "inset 0 0 0 1px ".concat(OpenColor.orange[9]),
     },
 };
-var useBorderColorStyles = createUseStyles(__assign(__assign(__assign(__assign(__assign(__assign(__assign(__assign(__assign(__assign(__assign({ 'transparent': {
+var useBorderColorStyles = createUseStyles(__assign(__assign(__assign(__assign(__assign(__assign(__assign(__assign(__assign(__assign(__assign(__assign({ 'transparent': {
         background: 'transparent'
     }, 'black': {
         boxShadow: "inset 0 0 0 1px ".concat(OpenColor.black),
     }, 'white': {
         boxShadow: "inset 0 0 0 1px ".concat(OpenColor.white),
-    } }, gray), grape), violet), indigo), blue), cyan), teal), green), lime), yellow), orange));
+    } }, gray), red), grape), violet), indigo), blue), cyan), teal), green), lime), yellow), orange));
 export { useBorderColorStyles, };

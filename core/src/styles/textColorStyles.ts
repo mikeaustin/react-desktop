@@ -34,6 +34,39 @@ const gray = {
   },
 };
 
+const red = {
+  'red-0': {
+    color: OpenColor.red[0]
+  },
+  'red-1': {
+    color: OpenColor.red[1],
+  },
+  'red-2': {
+    color: OpenColor.red[2],
+  },
+  'red-3': {
+    color: OpenColor.red[3],
+  },
+  'red-4': {
+    color: OpenColor.red[4],
+  },
+  'red-5': {
+    color: OpenColor.red[5],
+  },
+  'red-6': {
+    color: OpenColor.red[6],
+  },
+  'red-7': {
+    color: OpenColor.red[7],
+  },
+  'red-8': {
+    color: OpenColor.red[8],
+  },
+  'red-9': {
+    color: OpenColor.red[9],
+  },
+};
+
 const grape = {
   'grape-0': {
     color: OpenColor.grape[0]
@@ -378,6 +411,7 @@ const useTextColorStyles = createUseStyles({
     color: OpenColor.white
   },
   ...gray,
+  ...red,
   ...grape,
   ...violet,
   ...indigo,

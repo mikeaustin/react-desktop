@@ -4,12 +4,12 @@
   height: 100vh;
 }
 
-.hoverable .onHover {
+.hoverable .hovered {
   opacity: 0.0;
   transition: opacity 0.1s;
 }
 
-.hoverable:hover .onHover {
+.hoverable:hover .hovered {
   opacity: 1.0;
 }
 

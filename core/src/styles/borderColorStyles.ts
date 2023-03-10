@@ -34,6 +34,39 @@ const gray = {
   },
 };
 
+const red = {
+  'red-0': {
+    boxShadow: `inset 0 0 0 1px ${OpenColor.red[0]}`,
+  },
+  'red-1': {
+    boxShadow: `inset 0 0 0 1px ${OpenColor.red[1]}`,
+  },
+  'red-2': {
+    boxShadow: `inset 0 0 0 1px ${OpenColor.red[2]}`,
+  },
+  'red-3': {
+    boxShadow: `inset 0 0 0 1px ${OpenColor.red[3]}`,
+  },
+  'red-4': {
+    boxShadow: `inset 0 0 0 1px ${OpenColor.red[4]}`,
+  },
+  'red-5': {
+    boxShadow: `inset 0 0 0 1px ${OpenColor.red[5]}`,
+  },
+  'red-6': {
+    boxShadow: `inset 0 0 0 1px ${OpenColor.red[6]}`,
+  },
+  'red-7': {
+    boxShadow: `inset 0 0 0 1px ${OpenColor.red[7]}`,
+  },
+  'red-8': {
+    boxShadow: `inset 0 0 0 1px ${OpenColor.red[8]}`,
+  },
+  'red-9': {
+    boxShadow: `inset 0 0 0 1px ${OpenColor.red[9]}`,
+  },
+};
+
 const grape = {
   'grape-0': {
     boxShadow: `inset 0 0 0 1px ${OpenColor.grape[0]}`,
@@ -375,6 +408,7 @@ const useBorderColorStyles = createUseStyles({
     boxShadow: `inset 0 0 0 1px ${OpenColor.white}`,
   },
   ...gray,
+  ...red,
   ...grape,
   ...violet,
   ...indigo,

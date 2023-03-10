@@ -11,7 +11,25 @@ const useStyles = createUseStyles({
   },
   flex: {
     flex: 1,
-  }
+  },
+  'hovered-a': {
+    opacity: 0.0,
+    transition: 'opacity 0.1s 0.1s',
+  },
+  'hoverable-a': {
+    '&:hover $hovered-a': {
+      opacity: 1.0,
+    }
+  },
+  'hovered-b': {
+    opacity: 0.0,
+    transition: 'opacity 0.1s 0.1s',
+  },
+  'hoverable-b': {
+    '&:hover $hovered-b': {
+      opacity: 1.0,
+    }
+  },
 });
 
 export default useStyles;
