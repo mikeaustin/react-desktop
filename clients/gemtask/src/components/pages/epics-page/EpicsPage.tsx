@@ -2,6 +2,8 @@ import { View, Text, Divider, Spacer, Stack, Icon, Button } from 'core';
 
 import Field from '../../../shared/components/field';
 
+import styles from '../../../App.module.scss';
+
 const Requirement = ({ title, createdDate, updatedDate, storyId, selected }: any) => {
   return (
     <View horizontal padding="small" fillColor={selected && 'blue-0'}>
@@ -32,8 +34,8 @@ const Requirement = ({ title, createdDate, updatedDate, storyId, selected }: any
 
 const EpicsPage = () => {
   return (
-    <Stack flex horizontal divider>
-      <View style={{ width: 320 }}>
+    <Stack flex horizontal divider className={styles.content} style={{ scrollSnapAlign: 'start' }}>
+      <View className={styles.backlog} style={{ width: 320, scrollSnapAlign: 'start' }}>
         <View padding="small medium" fillColor="gray-0">
           <Spacer size="small" />
           <Text fontSize="large">Epic Stories</Text>
@@ -53,7 +55,7 @@ const EpicsPage = () => {
         </View>
       </View>
 
-      <View flex>
+      <View flex className={styles.backlog} style={{ scrollSnapAlign: 'start' }}>
         <View padding="small medium" fillColor="gray-0">
           <Spacer size="small" />
           <Text light caps fontSize="small">Epic Story</Text>
@@ -96,7 +98,7 @@ https://bitbucket.insureondev.com/ projects/ATOM/repos/ chubbrater/browse/Ion.Ch
         </Stack>
       </View>
 
-      <View flex>
+      <View flex className={styles.backlog} style={{ scrollSnapAlign: 'start' }}>
         <View padding="small medium" fillColor="gray-0">
           <Spacer size="small" />
           <Text light caps fontSize="small">Requirement</Text>
