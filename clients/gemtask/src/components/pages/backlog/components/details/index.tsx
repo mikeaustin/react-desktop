@@ -16,7 +16,7 @@ const Details = () => {
   return (
     <Stack id="details" spacing="large" padding="medium" style={{ flexBasis: '100%', flexShrink: 0, scrollSnapAlign: 'start' }}>
       <Field
-        fontSize="medium"
+        // fontSize="medium"
         label="Description"
         initialValue="As the Quote Product Owner, I need UW Question 1970 mapping updated for Chubb WC rater, so that we enhance validation"
         placeholder="A short description of who this is for, what it solves, and what is out of scope..."

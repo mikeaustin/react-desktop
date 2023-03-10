@@ -106,7 +106,7 @@ function BacklogPage() {
     <>
       <View flex horizontal className={styles.content} style={{ scrollSnapAlign: 'start' }}>
         <View flex fillColor="gray-1" className={styles.backlog} style={{ width: 'calc(70vw - 256px - 2px)' }}>
-          <View padding="small medium" fillColor="gray-1">
+          <View padding="small medium" fillColor="gray-0">
             <Spacer size="small" />
             <Text fontSize="large">Product Backlog</Text>
             <Spacer size="medium" />
@@ -116,7 +116,7 @@ function BacklogPage() {
             </Stack>
           </View>
           <Divider />
-          <View>
+          <View style={{ overflow: 'auto' }}>
             {groupedStories.map((group, index) => (
               <View key={index} className={styles.hoverable}>
                 <View horizontal>
@@ -156,7 +156,7 @@ function BacklogPage() {
                 <Spacer size="small" />
                 <Text fontSize="large">{stories.find((story) => story.id === selectedItemId)?.title}</Text>
                 <Spacer size="large" />
-                <Stack horizontal style={{ flexWrap: 'wrap', gap: 16 }}>
+                <Stack horizontal style={{ flexWrap: 'wrap', columnGap: 16, rowGap: 16 }}>
                   <Field label="Estimate" initialValue={stories.find(story => story.id === selectedItemId)?.estimateId} options={estimateOptions} />
                   <Field label="Status" initialValue={stories.find(story => story.id === selectedItemId)?.statusId} options={statusOptions} />
                   <Field label="Due Date" initialValue={'Apr 15, 2023'} />
@@ -184,10 +184,10 @@ function BacklogPage() {
             <>
               <Field autoFocus fontSize="large" placeholder="A short title for this story..." />
               <Spacer size="large" />
-              <Stack horizontal spacing="large">
-                <Field label="Epic" options={epicOptions} />
+              <Stack horizontal style={{ flexWrap: 'wrap', columnGap: 16, rowGap: 16 }}>
                 <Field label="Estimate" options={estimateOptions} />
-                <Field label="Tags" initialValue={0} options={tagsOptions} />
+                <Field label="Due Date" initialValue="" options={tagsOptions} />
+                <Field label="Epic" options={epicOptions} />
               </Stack>
             </>
           }
