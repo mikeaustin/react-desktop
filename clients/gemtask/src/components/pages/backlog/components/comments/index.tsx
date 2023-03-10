@@ -19,7 +19,7 @@ const Comments = () => {
               <Text fontSize="small" fontWeight="semi-bold">BH</Text>
             </View>
             <Spacer size="small" />
-            <View style={{ width: 200 }}>
+            <View>
               <Text fontWeight="medium">Beckett Hawkins</Text>
               <Spacer size="small" />
               <Text light fontSize="small">Mon, Mar 6, 2023</Text>
@@ -34,7 +34,7 @@ const Comments = () => {
             </Text>
             <Spacer size="medium" />
             <View horizontal>
-              <View fillColor="gray-1" align="center" style={{ width: 28, height: 28, borderRadius: 1000, marginLeft: 5 }}>
+              <View fillColor="gray-1" align="center" style={{ minWidth: 28, height: 28, borderRadius: 1000, marginLeft: 5 }}>
                 <Text fontSize="xsmall" fontWeight="semi-bold">AW</Text>
               </View>
               <Spacer size="small" />
@@ -91,7 +91,7 @@ const Comments = () => {
             </Text>
             <Spacer size="medium" />
             <View horizontal>
-              <View fillColor="gray-1" align="center" style={{ width: 26, height: 26, borderRadius: 1000, marginLeft: 7 }}>
+              <View fillColor="gray-1" align="center" style={{ minWidth: 26, height: 26, borderRadius: 1000, marginLeft: 7 }}>
                 <Text fontSize="xsmall" fontWeight="semi-bold">AW</Text>
               </View>
               <Spacer size="small" />
@@ -103,12 +103,12 @@ const Comments = () => {
             </View>
             <Spacer size="small" />
             <View horizontal>
-              <View fillColor="gray-1" align="center" style={{ width: 26, height: 26, borderRadius: 1000, marginLeft: 7 }}>
+              <View fillColor="gray-1" align="center" style={{ minWidth: 26, height: 26, borderRadius: 1000, marginLeft: 7 }}>
                 <Text fontSize="xsmall" fontWeight="semi-bold">AW</Text>
               </View>
               <Spacer size="small" />
               <View padding="small medium" fillColor="gray-1" style={{ borderRadius: 4, position: 'relative' }}>
-                <Icon icon="thumbs-up" color="blue-5" style={{ position: 'absolute', right: -24 }} />
+                <Icon icon="thumbs-up" color="blue-5" style={{ position: 'absolute', right: -12 }} />
                 <Text>Yes, we should update the cache with writeQuery</Text>
                 <Spacer size="small" />
                 <Text light fontSize="small">Annabelle Webber &nbsp;&middot;&nbsp; Mon, Mar 6, 2023</Text>
