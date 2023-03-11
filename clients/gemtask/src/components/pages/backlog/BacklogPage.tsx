@@ -64,6 +64,7 @@ function BacklogPage() {
   const [isAddStoryModalOpen, setIsAddStoryModalOpen] = useState<boolean>(false);
 
   const scrollTimerRef = useRef<ReturnType<typeof setTimeout>>();
+  const detailsRef = useRef<HTMLElement>(null);
 
   useHotkeys('alt+n', () => setIsAddStoryModalOpen(true));
 
@@ -71,6 +72,8 @@ function BacklogPage() {
     console.log('here', storyId);
 
     setSelectedItemId(storyId);
+
+    document.getElementById('story')?.scrollIntoView({ behavior: 'smooth' });
   };
 
   const handleDetailsScroll = () => {
@@ -149,7 +152,7 @@ function BacklogPage() {
         {params.itemId && (
           <>
             <Divider />
-            <View flex className={styles.backlog} style={{ width: 'calc(30vw - 256px - 2px)', scrollSnapAlign: 'start' }}>
+            <View id="story" flex className={styles.backlog} style={{ width: 'calc(30vw - 256px - 2px)', scrollSnapAlign: 'start' }}>
               <View padding="small medium" fillColor="gray-0">
                 <Spacer size="small" />
                 <Text light caps fontSize="small">GEM-1324 — User Story</Text>
