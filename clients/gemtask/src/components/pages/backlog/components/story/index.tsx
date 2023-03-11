@@ -26,26 +26,26 @@ function Story({ id, title, estimateId, statusId, typeId, blockedById, dueDate, 
       {/* <View style={{ width: 5 }} fillColor={types[typeId].color as any} /> */}
       <Stack flex horizontal padding="small medium" style={{ flexWrap: 'wrap', columnGap: 24, rowGap: 8 }}>
         <View flex horizontal>
-          <Icon size="sm" icon={types[typeId].icon as any} style={{ marginTop: -1 }} color={types[typeId].color as any} />
-          {/* <View style={{ width: 12, height: 12, borderRadius: 1000 }} fillColor={statuses[statusId].color as any} /> */}
+          {/* <Icon size="sm" icon={types[typeId].icon as any} style={{ marginTop: -1 }} color={types[typeId].color as any} /> */}
+          <View style={{ width: 12, height: 12, borderRadius: 1000 }} fillColor={statuses[statusId].color as any} />
           <Spacer size="small" />
           <View>
-            <Text fontWeight="semi-bold" style={{ minWidth: 300 }}>{title}</Text>
+            <Text fontWeight="medium" style={{ minWidth: 300 }}>{title}</Text>
             <Spacer size="small" />
             <Stack horizontal spacing="medium">
               <View horizontal>
-                {/* <Icon size="sm" icon={types[typeId].icon as any} style={{ marginTop: -1 }} color={types[typeId].color as any} />
-                <Spacer size="xsmall" /> */}
+                <Icon size="xs" icon={types[typeId].icon as any} style={{ marginTop: -1 }} /* color={types[typeId].color as any} */ color="gray-5" />
+                <Spacer size="xsmall" />
                 <Text light fontSize="small">GEM-42</Text>
               </View>
               {dueDate && (
                 <View padding="xsmall small" fillColor="yellow-1" style={{ padding: '2px 4px', margin: '-2px 0', borderRadius: 2 }}>
-                  <Text fontSize="small">Due: {dueDate}</Text>
+                  <Text fontSize="small">Due {dueDate}</Text>
                 </View>
               )}
               {questionsCount && (
                 <View padding="xsmall small" fillColor="yellow-1" style={{ padding: '2px 4px', margin: '-2px 0', borderRadius: 2 }}>
-                  <Text fontSize="small">Questions: {questionsCount}</Text>
+                  <Text fontSize="small">{questionsCount} Questions</Text>
                 </View>
               )}
               <View padding="xsmall small" fillColor="gray-1" style={{ padding: '2px 4px', margin: '-2px 0', borderRadius: 2 }}>
@@ -54,12 +54,10 @@ function Story({ id, title, estimateId, statusId, typeId, blockedById, dueDate, 
             </Stack>
           </View>
         </View>
-        <View style={{ alignItems: 'flex-end', flexBasis: 64 }}>
-          <View padding="xsmall small" align="center" fillColor={statuses[statusId].color as any} style={{ borderRadius: 10, width: 30 }}>
-            <Text fontSize="xsmall" fontWeight="bold" style={{ fontSize: 11, lineHeight: '18px' }}>{estimateId === 0 ? <>&nbsp;</> : estimateId}</Text>
-          </View>
-          <Spacer size="xsmall" />
-          <Text fontSize="small" fontWeight="normal">{statuses[statusId].title}</Text>
+        <View style={{ justifyContent: 'center', alignItems: 'flex-end' }}>
+          <Text fontSize="small" fontWeight="semi-bold" style={{ width: 50 }}>{estimateId === 0 ? <>&nbsp;</> : estimateId}&nbsp;Points</Text>
+          {/* <Spacer size="xsmall" />
+          <Text fontSize="small" fontWeight="medium" textColor={statuses[statusId].color as any}>{statuses[statusId].title}</Text> */}
         </View>
         <View horizontal align="top left">
           <View fillColor="gray-2" align="center" style={{ width: 30, height: 30, marginLeft: -5, borderRadius: 1000, boxShadow: '0 0 0 1px white' }}>

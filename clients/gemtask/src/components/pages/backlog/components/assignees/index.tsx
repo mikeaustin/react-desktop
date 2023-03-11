@@ -13,7 +13,7 @@ interface PersonProps {
 
 const Person = ({ name, tags }: PersonProps) => {
   return (
-    <View horizontal hoverable="b" fillColor="gray-1" padding="xsmall" align="left" style={{ borderRadius: 1000, position: 'relative' }}>
+    <View horizontal hoverable="b" fillColor="gray-1" padding="xxsmall" align="left" style={{ borderRadius: 1000, position: 'relative' }}>
       <View fillColor="white" align="center" style={{ width: 32, height: 32, borderRadius: 1000 }}>
         <Text fontSize="small" fontWeight="semi-bold">{name.split(' ').map(n => n[0]).join('')}</Text>
       </View>

@@ -160,7 +160,7 @@ function BacklogPage() {
                   <Field label="Estimate" initialValue={stories.find(story => story.id === selectedItemId)?.estimateId} options={estimateOptions} />
                   <Field label="Status" initialValue={stories.find(story => story.id === selectedItemId)?.statusId} options={statusOptions} />
                   <Field label="Due Date" initialValue={'Apr 15, 2023'} />
-                  <Field label="Epic" initialValue={stories.find(story => story.id === selectedItemId)?.epicId} options={epicOptions} />
+                  {/* <Field label="Epic" initialValue={stories.find(story => story.id === selectedItemId)?.epicId} options={epicOptions} /> */}
                 </Stack>
                 <Spacer size="large" />
                 <Stack horizontal spacing="medium">

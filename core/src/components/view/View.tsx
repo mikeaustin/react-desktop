@@ -15,6 +15,8 @@ import Padding, { CombinedPadding } from '../../types/Padding';
 
 function paddingToStyle(padding: CombinedPadding | undefined): [Padding | undefined, Padding | undefined] {
   switch (padding) {
+    case 'xxsmall':
+      return ['xxsmall', 'xxsmall'];
     case 'xsmall':
       return ['xsmall', 'xsmall'];
     case 'small':

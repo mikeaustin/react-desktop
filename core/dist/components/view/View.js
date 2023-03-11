@@ -32,6 +32,8 @@ import useFillColorStyles from '../../styles/fillColorStyles.js';
 import ViewContext from './ViewContext.js';
 function paddingToStyle(padding) {
     switch (padding) {
+        case 'xxsmall':
+            return ['xxsmall', 'xxsmall'];
         case 'xsmall':
             return ['xsmall', 'xsmall'];
         case 'small':
