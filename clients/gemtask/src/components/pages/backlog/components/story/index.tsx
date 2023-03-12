@@ -6,9 +6,9 @@ import { groupWith } from 'rambda';
 import { View, Text, Icon, Button, Spacer, Divider, Stack } from 'core';
 
 const types = [
-  { title: 'Story', icon: 'book', color: 'green-5' },
-  { title: 'Task', icon: 'gear', color: 'blue-5' },
-  { title: 'Bug', icon: 'bug', color: 'red-5' }
+  { title: 'Story', icon: 'book', color: 'green-3' },
+  { title: 'Task', icon: 'gear', color: 'blue-2' },
+  { title: 'Bug', icon: 'bug', color: 'red-3' }
 ];
 
 const statuses = [
@@ -34,7 +34,7 @@ function Story({ id, title, estimateId, statusId, typeId, blockedById, dueDate, 
             <Spacer size="small" />
             <Stack horizontal spacing="medium">
               <View horizontal>
-                <Icon size="xs" icon={types[typeId].icon as any} style={{ marginTop: -1 }} /* color={types[typeId].color as any} */ color="gray-5" />
+                <Icon size="xs" icon={types[typeId].icon as any} style={{ marginTop: -1 }} color={types[typeId].color as any} />
                 <Spacer size="xsmall" />
                 <Text light fontSize="small">GEM-42</Text>
               </View>
@@ -57,10 +57,14 @@ function Story({ id, title, estimateId, statusId, typeId, blockedById, dueDate, 
         <View horizontal style={{ alignItems: 'center' }}>
           <View style={{ width: 12, height: 12, borderRadius: 1000 }} fillColor={statuses[statusId].color as any} />
           <Spacer size="medium" />
-          <View align="center">
-            <Text fontWeight="medium">{estimateId === 0 ? <>&nbsp;</> : estimateId}</Text>
-            <Spacer size="small" />
-            <Text fontSize="small" fontWeight="normal">points</Text>
+          <View align="center" style={{ width: 35 }}>
+            {estimateId !== 0 && (
+              <>
+                <Text fontWeight="medium">{estimateId}</Text>
+                <Spacer size="small" />
+                <Text light fontSize="small" fontWeight="normal">{`point${estimateId > 1 ? 's' : ''}`}</Text>
+              </>
+            )}
           </View>
         </View>
         <View horizontal align="top left">
