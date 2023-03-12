@@ -107,8 +107,8 @@ function BacklogPage() {
 
   return (
     <>
-      <View flex horizontal className={styles.content} style={{ scrollSnapAlign: 'start' }}>
-        <View flex fillColor="gray-1" className={styles.backlog} style={{ width: 'calc(70vw - 256px - 2px)' }}>
+      <View flex horizontal className={styles.backlogPage} style={{ scrollSnapAlign: 'start', }}>
+        <View flex fillColor="gray-1" className={styles.backlogPanel} style={{ scrollSnapAlign: 'start' }}>
           <View padding="small medium" fillColor="gray-0">
             <Spacer size="small" />
             <Text fontSize="large">Product Backlog</Text>
@@ -152,7 +152,7 @@ function BacklogPage() {
         {params.itemId && (
           <>
             <Divider />
-            <View id="story" flex className={styles.backlog} style={{ width: 'calc(30vw - 256px - 2px)', scrollSnapAlign: 'start' }}>
+            <View id="story" flex className={styles.detailsPanel} style={{ scrollSnapAlign: 'start', minWidth: 0 }}>
               <View padding="small medium" fillColor="gray-0">
                 <Spacer size="small" />
                 <Text light caps fontSize="small">GEM-1324 — User Story</Text>
