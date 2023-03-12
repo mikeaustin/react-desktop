@@ -24,11 +24,11 @@ function Story({ id, title, estimateId, statusId, typeId, blockedById, dueDate, 
   return (
     <Stack draggable fillColor={selected ? 'blue-0' : 'white'} onClick={() => onSelect(id)}>
       {/* <View style={{ width: 5 }} fillColor={types[typeId].color as any} /> */}
-      <Stack flex horizontal padding="small medium" style={{ flexWrap: 'wrap', columnGap: 24, rowGap: 8 }}>
+      <Stack flex horizontal padding="small medium" style={{ flexWrap: 'wrap', columnGap: 24, rowGap: 12 }}>
         <View flex horizontal>
           {/* <Icon size="sm" icon={types[typeId].icon as any} style={{ marginTop: -1 }} color={types[typeId].color as any} /> */}
-          <View style={{ width: 12, height: 12, borderRadius: 1000 }} fillColor={statuses[statusId].color as any} />
-          <Spacer size="small" />
+          {/* <View style={{ width: 12, height: 12, borderRadius: 1000 }} fillColor={statuses[statusId].color as any} />
+          <Spacer size="small" /> */}
           <View>
             <Text fontWeight="medium" style={{ minWidth: 300 }}>{title}</Text>
             <Spacer size="small" />
@@ -54,10 +54,14 @@ function Story({ id, title, estimateId, statusId, typeId, blockedById, dueDate, 
             </Stack>
           </View>
         </View>
-        <View style={{ justifyContent: 'center', alignItems: 'flex-end' }}>
-          <Text fontSize="small" fontWeight="semi-bold" style={{ width: 50 }}>{estimateId === 0 ? <>&nbsp;</> : estimateId}&nbsp;Points</Text>
-          {/* <Spacer size="xsmall" />
-          <Text fontSize="small" fontWeight="medium" textColor={statuses[statusId].color as any}>{statuses[statusId].title}</Text> */}
+        <View horizontal style={{ alignItems: 'center' }}>
+          <View style={{ width: 12, height: 12, borderRadius: 1000 }} fillColor={statuses[statusId].color as any} />
+          <Spacer size="medium" />
+          <View align="center">
+            <Text fontWeight="medium">{estimateId === 0 ? <>&nbsp;</> : estimateId}</Text>
+            <Spacer size="small" />
+            <Text fontSize="small" fontWeight="normal">points</Text>
+          </View>
         </View>
         <View horizontal align="top left">
           <View fillColor="gray-2" align="center" style={{ width: 30, height: 30, marginLeft: -5, borderRadius: 1000, boxShadow: '0 0 0 1px white' }}>
@@ -72,8 +76,8 @@ function Story({ id, title, estimateId, statusId, typeId, blockedById, dueDate, 
         </View>
       </Stack>
       {blockedById !== undefined && (
-        <View horizontal>
-          <View padding="xsmall small" fillColor="yellow-1" style={{ margin: '0 16px 6px 42px', borderRadius: 4 }}>
+        <View horizontal padding="none medium">
+          <View padding="xsmall small" fillColor="yellow-1" style={{ borderRadius: 4 }}>
             <Text fontSize="small">Dependent on a story DevOps-1234 in the “DevOps” project</Text>
           </View>
         </View>
