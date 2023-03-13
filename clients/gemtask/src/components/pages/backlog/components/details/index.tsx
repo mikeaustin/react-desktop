@@ -28,22 +28,22 @@ const Details = () => {
   return (
     <Stack id="details" spacing="large" padding="medium" style={{ flexBasis: '100%', flexShrink: 0, overflowY: 'auto', scrollSnapAlign: 'start' }}>
       <Stack horizontal style={{ columnGap: 24, rowGap: 24, flexWrap: 'wrap' }}>
-        <Field label="Epic" options={epicOptions} />
         <View className={styles.hoverable}>
           <Text light caps fontSize="small">Tags</Text>
           <Spacer size="small" />
-          <Stack horizontal style={{ gap: 4 }}>
+          <Stack horizontal style={{ gap: 4, position: 'relative' }}>
             <View fillColor="gray-1" padding="xsmall small" style={{ borderRadius: 4, margin: '-3px 0' }}>
               <Text>enterprise</Text>
             </View>
             <View fillColor="gray-1" padding="xsmall small" style={{ borderRadius: 4, margin: '-3px 0' }}>
               <Text>front-end</Text>
             </View>
-            <View fillColor="gray-1" padding="xsmall" align="center" className={styles.hovered} style={{ borderRadius: 4 }}>
+            <View fillColor="gray-1" padding="xsmall" align="center" className={styles.hovered} style={{ position: 'absolute', right: -28, top: -3, height: 20, borderRadius: 4 }}>
               <Icon size="xs" icon="plus" />
             </View>
           </Stack>
         </View>
+        <Field label="Epic" options={epicOptions} />
       </Stack>
       <Field
         // fontSize="medium"
