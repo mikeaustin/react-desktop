@@ -7,7 +7,7 @@ function Modal({ isOpen, title, header, width, height, children, actions }: any)
   return (
     <View align="center" padding="medium" style={{ position: 'fixed', inset: 0, display: isOpen ? '' : 'none' }}>
       <View style={{ position: 'absolute', inset: 0, background: 'hsla(0, 0%, 0%, 0.5)' }} />
-      <View fillColor="white" style={{ position: 'relative', width: '100%', maxWidth: width ?? 600, height, borderRadius: 4, overflow: 'hidden', boxShadow: '0 0 32px hsla(0, 0%, 0%, 0.5)' }}>
+      <View fillColor="white" style={{ position: 'relative', width: '100%', maxWidth: width ?? 600, height, borderRadius: 4, overflowY: 'auto', overscrollBehavior: 'contain', boxShadow: '0 0 32px hsla(0, 0%, 0%, 0.5)' }}>
         {(title || header) && (
           <>
             <View fillColor="gray-0">

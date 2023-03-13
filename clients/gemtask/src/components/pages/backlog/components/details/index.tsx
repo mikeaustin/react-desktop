@@ -26,7 +26,7 @@ const tagsOptions = [
 
 const Details = () => {
   return (
-    <Stack id="details" spacing="large" padding="medium" style={{ flexBasis: '100%', flexShrink: 0, scrollSnapAlign: 'start' }}>
+    <Stack id="details" spacing="large" padding="medium" style={{ flexBasis: '100%', flexShrink: 0, overflowY: 'auto', scrollSnapAlign: 'start' }}>
       <Stack horizontal style={{ columnGap: 24, rowGap: 24, flexWrap: 'wrap' }}>
         <Field label="Epic" options={epicOptions} />
         <View className={styles.hoverable}>

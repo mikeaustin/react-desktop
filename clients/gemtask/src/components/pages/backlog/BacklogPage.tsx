@@ -107,7 +107,7 @@ function BacklogPage() {
 
   return (
     <>
-      <View flex horizontal className={styles.backlogPage} style={{ scrollSnapAlign: 'start', }}>
+      <View flex horizontal className={styles.backlogPage}>
         <View flex fillColor="gray-1" className={styles.backlogPanel} style={{ scrollSnapAlign: 'start' }}>
           <View padding="small medium" fillColor="gray-0">
             <Spacer size="small" />
@@ -119,7 +119,7 @@ function BacklogPage() {
             </Stack>
           </View>
           <Divider />
-          <View style={{ overflow: 'auto' }}>
+          <View style={{ overflowX: 'auto' }}>
             {groupedStories.map((group, index) => (
               <View key={index} className={styles.hoverable}>
                 <View horizontal>
@@ -173,7 +173,7 @@ function BacklogPage() {
                 </Stack>
               </View>
               <Divider />
-              <View flex horizontal fillColor="white" style={{ overflow: 'auto', width: '100%', scrollSnapType: 'x mandatory' }} onScroll={handleDetailsScroll}>
+              <View flex horizontal fillColor="white" style={{ overflowX: 'auto', width: '100%', scrollSnapType: 'x mandatory' }} onScroll={handleDetailsScroll}>
                 <Details />
                 <Divider style={{ marginLeft: -1 }} />
                 <Comments />

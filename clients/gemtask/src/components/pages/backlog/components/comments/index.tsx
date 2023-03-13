@@ -6,7 +6,7 @@ import Field from '../../../../../shared/components/field';
 
 const Comments = () => {
   return (
-    <View id="comments" fillColor="gray-1" style={{ flexBasis: '100%', flexShrink: 0, scrollSnapAlign: 'start' }}>
+    <View id="comments" fillColor="gray-1" style={{ flexBasis: '100%', flexShrink: 0, overflowY: 'auto', scrollSnapAlign: 'start' }}>
       <View padding="small medium" fillColor="gray-1">
         <Spacer size="small" />
         <Text light caps fontSize="small">Unresolved Questions</Text>
