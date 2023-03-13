@@ -55,8 +55,6 @@ function Story({ id, title, estimateId, statusId, typeId, blockedById, dueDate, 
           </View>
         </View>
         <View horizontal style={{ alignItems: 'center' }}>
-          <View style={{ width: 12, height: 12, borderRadius: 1000 }} fillColor={statuses[statusId].color as any} />
-          <Spacer size="medium" />
           <View align="center" style={{ width: 35 }}>
             {estimateId !== 0 && (
               <>
@@ -66,6 +64,8 @@ function Story({ id, title, estimateId, statusId, typeId, blockedById, dueDate, 
               </>
             )}
           </View>
+          <Spacer size="medium" />
+          <View style={{ width: 12, height: 12, borderRadius: 1000 }} fillColor={statuses[statusId].color as any} />
         </View>
         <View horizontal align="top left">
           <View fillColor="gray-2" align="center" style={{ width: 30, height: 30, marginLeft: -5, borderRadius: 1000, boxShadow: '0 0 0 1px white' }}>
@@ -80,7 +80,7 @@ function Story({ id, title, estimateId, statusId, typeId, blockedById, dueDate, 
         </View>
       </Stack>
       {blockedById !== undefined && (
-        <View horizontal padding="none medium">
+        <View horizontal padding="none medium" style={{ marginBottom: 4 }}>
           <View padding="xsmall small" fillColor="yellow-1" style={{ borderRadius: 4 }}>
             <Text fontSize="small">Dependent on a story DevOps-1234 in the “DevOps” project</Text>
           </View>
