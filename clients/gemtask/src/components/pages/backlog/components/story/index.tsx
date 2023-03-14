@@ -6,8 +6,8 @@ import { groupWith } from 'rambda';
 import { View, Text, Icon, Button, Spacer, Divider, Stack } from 'core';
 
 const types = [
-  { title: 'Story', icon: 'book', color: 'green-3' },
-  { title: 'Task', icon: 'gear', color: 'blue-2' },
+  { title: 'Story', icon: 'square-check', color: 'blue-2' },
+  { title: 'Task', icon: 'gear', color: 'green-3' },
   { title: 'Bug', icon: 'bug', color: 'red-3' }
 ];
 

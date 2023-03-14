@@ -104,8 +104,8 @@ const Comments = () => {
             </View>
             <Spacer size="small" />
             <View horizontal>
-              <View fillColor="gray-1" align="center" style={{ minWidth: 26, height: 26, borderRadius: 1000, marginLeft: 7 }}>
-                <Text fontSize="xsmall" fontWeight="semi-bold">AW</Text>
+              <View fillColor="gray-1" align="center" style={{ minWidth: 32, height: 32, borderRadius: 1000 }}>
+                <Text fontSize="small" fontWeight="semi-bold">AW</Text>
               </View>
               <Spacer size="small" />
               <View padding="small medium" fillColor="gray-1" style={{ borderRadius: 4, position: 'relative' }}>

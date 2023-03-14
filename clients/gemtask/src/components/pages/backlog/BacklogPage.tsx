@@ -154,7 +154,7 @@ function BacklogPage() {
               <View padding="small medium" fillColor="gray-0">
                 <Spacer size="small" />
                 <View horizontal align="left">
-                  <Icon size="xs" icon="book" color="green-3" />
+                  <Icon size="xs" icon="square-check" color="blue-2" />
                   <Spacer size="xsmall" />
                   <Text light caps fontSize="small">GEM-1324 — User Story</Text>
                 </View>

@@ -33,7 +33,7 @@ const Assignees = () => {
         <Divider />
         <Spacer size="large" />
         <View horizontal>
-          <Icon icon="clipboard-check" color="violet-2" />
+          <Icon icon="layer-group" color="violet-2" />
           <Spacer size="xsmall" />
           <Text light caps fontSize="small">GEM-123 — Epic Story</Text>
         </View>
