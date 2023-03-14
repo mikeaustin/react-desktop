@@ -22,7 +22,7 @@ const statuses = [
 
 function Story({ id, title, estimateId, statusId, typeId, blockedById, dueDate, questionsCount, selected, onSelect }: any) {
   return (
-    <Stack draggable fillColor={selected ? 'blue-0' : 'white'} onClick={() => onSelect(id)}>
+    <Stack draggable fillColor={selected ? 'blue-0' : 'white'} style={{ cursor: 'move' }} onClick={() => onSelect(id)}>
       {/* <View style={{ width: 5 }} fillColor={types[typeId].color as any} /> */}
       <Stack flex horizontal padding="small medium" style={{ flexWrap: 'wrap', columnGap: 24, rowGap: 12 }}>
         <View flex horizontal>
