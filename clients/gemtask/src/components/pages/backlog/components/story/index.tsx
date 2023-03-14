@@ -8,7 +8,7 @@ import { View, Text, Icon, Button, Spacer, Divider, Stack } from 'core';
 const types = [
   { title: 'Story', icon: 'square-check', color: 'blue-2' },
   { title: 'Task', icon: 'gear', color: 'green-3' },
-  { title: 'Bug', icon: 'bug', color: 'red-3' }
+  { title: 'Bug', icon: 'bug', color: 'red-3' },
 ];
 
 const statuses = [
@@ -63,7 +63,7 @@ function Story({ id, title, estimateId, statusId, typeId, blockedById, dueDate, 
             {estimateId !== 0 && (
               <>
                 <Text fontWeight="medium">{estimateId}</Text>
-                <Spacer size="small" />
+                <Spacer size="xsmall" />
                 <Text light fontSize="small" fontWeight="normal">{`point${estimateId > 1 ? 's' : ''}`}</Text>
               </>
             )}
