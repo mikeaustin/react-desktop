@@ -27,15 +27,16 @@ const Comments = () => {
             <Spacer flex size="small" />
             <Button solid size="small" title="Mark Resolved" />
           </View>
-          {/* <Divider style={{ marginLeft: 16 }} /> */}
+          <Divider style={{ marginLeft: 16 }} />
+          <Spacer size="small" />
           <View padding="small medium">
             <Text>
               The row displays after clicking Add Story, but it is not optimized. Should we update the cache with writeQuery so we don't need to fetch all epics again?
             </Text>
             <Spacer size="medium" />
             <View horizontal>
-              <View fillColor="gray-1" align="center" style={{ minWidth: 28, height: 28, borderRadius: 1000, marginLeft: 5 }}>
-                <Text fontSize="xsmall" fontWeight="semi-bold">AW</Text>
+              <View fillColor="gray-1" align="center" style={{ minWidth: 32, height: 32, borderRadius: 1000 }}>
+                <Text fontSize="small" fontWeight="semi-bold">AW</Text>
               </View>
               <Spacer size="small" />
               <View padding="small medium" fillColor="gray-1" style={{ borderRadius: 4 }}>
@@ -65,7 +66,7 @@ const Comments = () => {
       <Stack fillColor="gray-1">
         <View fillColor="white">
           <View horizontal padding="small medium" fillColor="white">
-            <View fillColor="gray-2" align="center" style={{ width: 32, height: 32, margin: '-1px 0', borderRadius: 1000, boxShadow: '0 0 0 1px white' }}>
+            <View fillColor="gray-2" align="center" style={{ width: 32, height: 32, margin: '-1px 0', borderRadius: 1000 }}>
               <Text fontSize="small" fontWeight="semi-bold">BH</Text>
             </View>
             <Spacer size="small" />
@@ -84,15 +85,15 @@ const Comments = () => {
             </View>
           </View>
           <Divider style={{ marginLeft: 16 }} />
+          <Spacer size="small" />
           <View padding="small medium">
-            <Spacer size="small" />
             <Text>
               The row displays after clicking Add Story, but it is not optimized. Should we update the cache with writeQuery so we don't need to fetch all epics again?
             </Text>
             <Spacer size="medium" />
             <View horizontal>
-              <View fillColor="gray-1" align="center" style={{ minWidth: 26, height: 26, borderRadius: 1000, marginLeft: 7 }}>
-                <Text fontSize="xsmall" fontWeight="semi-bold">AW</Text>
+              <View fillColor="gray-1" align="center" style={{ minWidth: 32, height: 32, borderRadius: 1000 }}>
+                <Text fontSize="small" fontWeight="semi-bold">AW</Text>
               </View>
               <Spacer size="small" />
               <View padding="small medium" fillColor="gray-1" style={{ borderRadius: 4 }}>

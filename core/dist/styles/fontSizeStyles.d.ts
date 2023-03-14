@@ -1,4 +1,4 @@
 declare const useFontSizeStyles: (data?: {
     theme?: Jss.Theme | undefined;
-} | undefined) => import("jss").Classes<"xsmall" | "large" | "medium" | "small" | "default" | "xlarge">;
+} | undefined) => import("jss").Classes<"small" | "default" | "xsmall" | "medium" | "large" | "xlarge">;
 export { useFontSizeStyles };

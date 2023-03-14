@@ -16,8 +16,10 @@ var useStyles = createUseStyles({
         transition: 'opacity 0.1s 0.1s',
     },
     'hoverable-a': {
-        '&:hover $hovered-a': {
-            opacity: 1.0,
+        '@media (hover: hover)': {
+            '&:hover $hovered-a': {
+                opacity: 1.0,
+            }
         }
     },
     'hovered-b': {
@@ -25,8 +27,10 @@ var useStyles = createUseStyles({
         transition: 'opacity 0.1s 0.1s',
     },
     'hoverable-b': {
-        '&:hover $hovered-b': {
-            opacity: 1.0,
+        '@media (hover: hover)': {
+            '&:hover $hovered-b': {
+                opacity: 1.0,
+            }
         }
     },
 });

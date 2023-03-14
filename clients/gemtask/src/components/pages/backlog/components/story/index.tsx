@@ -45,7 +45,11 @@ function Story({ id, title, estimateId, statusId, typeId, blockedById, dueDate, 
               )}
               {questionsCount && (
                 <View padding="xsmall small" fillColor="yellow-1" style={{ padding: '2px 4px', margin: '-2px 0', borderRadius: 2 }}>
-                  <Text fontSize="small">{questionsCount} Questions</Text>
+                  <Text fontSize="small" onClick={() => {
+                    setTimeout(() => {
+                      document.getElementById('comments')?.scrollIntoView({ behavior: 'smooth' });
+                    });
+                  }}>{questionsCount} Questions</Text>
                 </View>
               )}
               <View padding="xsmall small" fillColor="gray-1" style={{ padding: '2px 4px', margin: '-2px 0', borderRadius: 2 }}>

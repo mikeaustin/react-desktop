@@ -69,11 +69,9 @@ function BacklogPage() {
   useHotkeys('alt+n', () => setIsAddStoryModalOpen(true));
 
   const handleStorySelect = (storyId: number) => {
-    console.log('here', storyId);
-
     setSelectedItemId(storyId);
 
-    document.getElementById('story')?.scrollIntoView({ behavior: 'smooth' });
+    document.getElementById('details')?.scrollIntoView({ behavior: 'smooth' });
   };
 
   const handleDetailsScroll = () => {
@@ -155,9 +153,16 @@ function BacklogPage() {
             <View id="story" flex className={styles.detailsPanel} style={{ scrollSnapAlign: 'start', minWidth: 0 }}>
               <View padding="small medium" fillColor="gray-0">
                 <Spacer size="small" />
-                <Text light caps fontSize="small">GEM-1324 — User Story</Text>
+                <View horizontal align="left">
+                  <Icon size="xs" icon="book" color="green-3" />
+                  <Spacer size="xsmall" />
+                  <Text light caps fontSize="small">GEM-1324 — User Story</Text>
+                </View>
                 <Spacer size="small" />
-                <Text fontSize="large">{stories.find((story) => story.id === selectedItemId)?.title}</Text>
+                <View horizontal align="left">
+                  {/* <Icon icon="chevron-left" color="gray-7" style={{ marginLeft: -2 }} /> */}
+                  <Text fontSize="large">{stories.find((story) => story.id === selectedItemId)?.title}</Text>
+                </View>
                 <Spacer size="large" />
                 <Stack horizontal style={{ flexWrap: 'wrap', columnGap: 16, rowGap: 16 }}>
                   <Field label="Estimate" initialValue={stories.find(story => story.id === selectedItemId)?.estimateId} options={estimateOptions} />

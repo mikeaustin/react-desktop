@@ -90,7 +90,7 @@ function App() {
   return (
     <>
       <Stack flex horizontal divider className={styles.App} style={{ overflowX: 'auto', scrollSnapType: 'x mandatory' }}>
-        <View padding="medium" style={{ flex: '0 0 256px', scrollSnapAlign: 'start' }}>
+        <View padding="medium" style={{ flex: '0 0 192px', scrollSnapAlign: 'start' }}>
           <Text>GEMTASK</Text>
           <Spacer size="medium" />
           <Stack>
