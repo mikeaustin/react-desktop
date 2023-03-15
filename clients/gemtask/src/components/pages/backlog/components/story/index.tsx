@@ -6,7 +6,7 @@ import { groupWith } from 'rambda';
 import { View, Text, Icon, Button, Spacer, Divider, Stack } from 'core';
 
 const types = [
-  { title: 'Story', icon: 'square-check', color: 'blue-2' },
+  { title: 'Story', icon: 'square-check', color: 'blue-3' },
   { title: 'Task', icon: 'gear', color: 'green-3' },
   { title: 'Bug', icon: 'bug', color: 'red-3' },
 ];
@@ -19,6 +19,14 @@ const statuses = [
   { title: 'Done', color: 'lime-3' },
   { title: 'Blocked', color: 'orange-3' },
 ];
+
+const Tag = ({ label, color = 'gray-1', ...props }: any) => {
+  return (
+    <View padding="xsmall small" fillColor={color} style={{ padding: '2px 4px', margin: '-2px 0', borderRadius: 2 }} {...props}>
+      <Text fontSize="small">{label}</Text>
+    </View>
+  );
+};
 
 function Story({ id, title, estimateId, statusId, typeId, blockedById, dueDate, questionsCount, selected, flagged, onSelect }: any) {
   return (
@@ -41,19 +49,19 @@ function Story({ id, title, estimateId, statusId, typeId, blockedById, dueDate, 
                 <Spacer size="xsmall" />
                 <Text light fontSize="small">GEM-42</Text>
               </View>
+              {blockedById && (
+                <Tag color="blue-0" label="Blocked by OPS-4264" />
+              )}
               {dueDate && (
-                <View padding="xsmall small" fillColor="yellow-1" style={{ padding: '2px 4px', margin: '-2px 0', borderRadius: 2 }}>
-                  <Text fontSize="small">Due {dueDate}</Text>
-                </View>
+                <Tag color="orange-1" label={`Due ${dueDate}`} />
               )}
               {questionsCount && (
-                <View padding="xsmall small" fillColor="yellow-1" style={{ padding: '2px 4px', margin: '-2px 0', borderRadius: 2 }}>
-                  <Text fontSize="small" onClick={() => {
-                    setTimeout(() => {
-                      document.getElementById('comments')?.scrollIntoView({ behavior: 'smooth' });
-                    });
-                  }}>{questionsCount} Questions</Text>
-                </View>
+                <Tag color="blue-0" label={`${questionsCount} Questions`} onClick={() => {
+                  setTimeout(() => {
+                    document.getElementById('comments')?.scrollIntoView({ behavior: 'smooth' });
+                  });
+                }}
+                />
               )}
               <View padding="xsmall small" fillColor="gray-1" style={{ padding: '2px 4px', margin: '-2px 0', borderRadius: 2 }}>
                 <Text light fontSize="small">front-end</Text>
@@ -86,13 +94,6 @@ function Story({ id, title, estimateId, statusId, typeId, blockedById, dueDate, 
           </View>
         </View>
       </Stack>
-      {blockedById !== undefined && (
-        <View horizontal padding="none medium" style={{ marginBottom: 4 }}>
-          <View padding="xsmall small" fillColor="yellow-1" style={{ borderRadius: 4 }}>
-            <Text fontSize="small">Dependent on a story DevOps-1234 in the “DevOps” project</Text>
-          </View>
-        </View>
-      )}
     </Stack>
   );
 }
