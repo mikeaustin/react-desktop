@@ -20,10 +20,13 @@ const statuses = [
   { title: 'Blocked', color: 'orange-3' },
 ];
 
-function Story({ id, title, estimateId, statusId, typeId, blockedById, dueDate, questionsCount, selected, onSelect }: any) {
+function Story({ id, title, estimateId, statusId, typeId, blockedById, dueDate, questionsCount, selected, flagged, onSelect }: any) {
   return (
-    <Stack draggable fillColor={selected ? 'blue-0' : 'white'} style={{ cursor: 'move' }} onClick={() => onSelect(id)}>
+    <Stack draggable fillColor={selected ? 'blue-0' : 'white'} style={{ position: 'relative', cursor: 'move', transform: 'translate(0, 0)', borderRadius: 4 }} onClick={() => onSelect(id)}>
       {/* <View style={{ width: 5 }} fillColor={types[typeId].color as any} /> */}
+      {flagged && (
+        <View style={{ position: 'absolute', borderTop: '16px solid #ff8787', borderRight: '16px solid transparent' }} />
+      )}
       <Stack flex horizontal padding="small medium" style={{ flexWrap: 'wrap', columnGap: 24, rowGap: 12 }}>
         <View flex horizontal>
           {/* <Icon size="sm" icon={types[typeId].icon as any} style={{ marginTop: -1 }} color={types[typeId].color as any} /> */}
