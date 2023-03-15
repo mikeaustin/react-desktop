@@ -32,8 +32,8 @@ const Assignees = () => {
         <Spacer size="large" />
         <Divider />
         <Spacer size="large" />
-        <View horizontal>
-          <Icon icon="layer-group" color="violet-2" />
+        <View horizontal align="left">
+          <Icon icon="layer-group" size="xs" color="violet-2" style={{ marginTop: -5 }} />
           <Spacer size="xsmall" />
           <Text light caps fontSize="small">GEM-123 — Epic Story</Text>
         </View>
