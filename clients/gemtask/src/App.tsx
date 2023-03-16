@@ -120,7 +120,12 @@ function App() {
 
   return (
     <>
-      <Joyride steps={stepsRef.current} continuous={true} styles={{ options: { primaryColor: '#339af0' } }} locale={{ last: 'Done', open: 'Open the tour...' }} />
+      {/* <Joyride
+        steps={stepsRef.current}
+        continuous={true}
+        styles={{ options: { primaryColor: '#339af0' } }}
+        locale={{ last: 'Done', open: 'Open the tour...' }}
+      /> */}
       <Stack flex horizontal divider className={styles.App} style={{ overflowX: 'auto', scrollSnapType: 'x mandatory' }}>
         <View padding="medium" style={{ flex: '0 0 192px', scrollSnapAlign: 'start' }}>
           <Text>GEMTASK</Text>
