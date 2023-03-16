@@ -30,7 +30,7 @@ const Details = () => {
     <View id="details" padding="medium" style={{ flexBasis: '100%', flexShrink: 0, overflowY: 'auto', scrollSnapAlign: 'start' }}>
       <Stack spacing="large">
         <Stack horizontal style={{ columnGap: 24, rowGap: 24, flexWrap: 'wrap' }}>
-          <View className={styles.hoverable}>
+          <View className={styles.hoverable} testId="story-panel-tags">
             <Text light caps fontSize="small">Tags</Text>
             <Spacer size="small" />
             <Stack horizontal style={{ gap: 4, position: 'relative' }}>
@@ -45,9 +45,10 @@ const Details = () => {
               </View>
             </Stack>
           </View>
-          <Field label="Epic" options={epicOptions} />
+          <Field label="Parent Epic" options={epicOptions} testId="story-panel-epic" />
         </Stack>
         <Field
+          testId="story-panel-description"
           label="Description"
           initialValue="Allstate/IDMS is no longer sending addresses for Agents in the producer.data file. They are researching on their end if the address is used for anything. We want to do the same.\n\n
           Currently, if an agency owner is sent in the producer.data file without an address, or parity process will skip that agent and not add them to MCE"
@@ -77,12 +78,29 @@ const Details = () => {
         </View>
         {/* <Field label="Testing instructions" placeholder="To test this story..." /> */}
         <Assignees />
+        <Stack horizontal style={{ flexWrap: 'wrap', columnGap: 24, rowGap: 24 }}>
+          <View>
+            <Text light caps fontSize="small">Blocked By</Text>
+            <Spacer size="small" />
+            <Stack horizontal style={{ flexWrap: 'wrap', columnGap: 8, rowGap: 8 }}>
+              <Text>OPS-4264</Text>
+              <Text>OPS-4264</Text>
+            </Stack>
+          </View>
+          <View>
+            <Text light caps fontSize="small">Blocks</Text>
+            <Spacer size="small" />
+            <Stack horizontal>
+              <Text>GEM-1234</Text>
+            </Stack>
+          </View>
+        </Stack>
       </Stack>
       <Divider spacing="large" />
       <View horizontal align="left">
         <Icon icon="layer-group" size="xs" color="violet-3" style={{ marginTop: -5 }} />
         <Spacer size="xsmall" />
-        <Text light caps fontSize="small">GEM-123 — Epic Story</Text>
+        <Text light caps fontSize="small">GEM-123 — Parent Epic</Text>
       </View>
       <Spacer size="small" />
       <Text fontSize="medium">Chubb Rate Quote Response Mapping</Text>

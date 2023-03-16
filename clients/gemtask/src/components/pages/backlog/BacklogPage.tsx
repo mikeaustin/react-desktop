@@ -106,7 +106,7 @@ function BacklogPage() {
   return (
     <>
       <View flex horizontal className={styles.backlogPage}>
-        <View flex fillColor="gray-1" className={styles.backlogPanel} style={{ scrollSnapAlign: 'start' }}>
+        <View flex fillColor="gray-1" className={styles.backlogPanel} style={{ scrollSnapAlign: 'start' }} testId="backlog-panel">
           <View padding="small medium" fillColor="gray-0">
             <Spacer size="small" />
             <Text fontSize="large">Product Backlog</Text>
@@ -150,7 +150,7 @@ function BacklogPage() {
         {params.itemId && (
           <>
             <Divider />
-            <View id="story" flex className={styles.detailsPanel} style={{ scrollSnapAlign: 'start', minWidth: 0 }}>
+            <View id="story" flex className={styles.detailsPanel} style={{ scrollSnapAlign: 'start', minWidth: 0 }} testId="backlog-details">
               <View padding="small medium" fillColor="gray-0">
                 <Spacer size="small" />
                 <View horizontal align="left">
