@@ -17,7 +17,7 @@ var useStyles = createUseStyles({
         flex: 1,
     },
     light: {
-        opacity: 0.5,
+        opacity: 0.6,
     },
     caps: {
         textTransform: 'uppercase',

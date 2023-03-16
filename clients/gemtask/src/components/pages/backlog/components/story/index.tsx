@@ -20,10 +20,12 @@ const statuses = [
   { title: 'Blocked', color: 'orange-3' },
 ];
 
-const Tag = ({ label, color = 'gray-1', ...props }: any) => {
+const Tag = ({ label, light = true, bold = false, color = 'gray-1', ...props }: any) => {
   return (
     <View padding="xsmall small" fillColor={color} style={{ padding: '3px 4px', margin: '-3px 0', borderRadius: 2 }} {...props}>
-      <Text light fontSize="small" style={{ whiteSpace: 'nowrap' }}>{label}</Text>
+      <Text light={light} fontSize="small" fontWeight={bold ? "semi-bold" : undefined} style={{ whiteSpace: 'nowrap' }}>
+        {label}
+      </Text>
     </View>
   );
 };
@@ -47,7 +49,7 @@ function Story({ id, title, estimateId, statusId, typeId, blockedById, dueDate, 
           {/* <Icon size="sm" icon={types[typeId].icon as any} style={{ marginTop: -1 }} color={types[typeId].color as any} /> */}
           {/* <View style={{ width: 12, height: 12, borderRadius: 1000 }} fillColor={statuses[statusId].color as any} />
           <Spacer size="small" /> */}
-          <View>
+          <View flex>
             <Text fontWeight="medium" style={{ minWidth: 300 }}>{title}</Text>
             <Spacer size="small" />
             <Stack horizontal style={{ flexWrap: 'wrap', columnGap: 12, rowGap: 12 }}>
@@ -57,22 +59,32 @@ function Story({ id, title, estimateId, statusId, typeId, blockedById, dueDate, 
                 <Text light fontSize="small" style={{ whiteSpace: 'nowrap' }}>GEM-42</Text>
               </View>
               {blockedById && (
-                <Tag color={statusId === 0 ? 'blue-0' : 'yellow-1'} label="Blocked by OPS-4264" />
+                <Tag
+                  bold={statusId !== 0}
+                  color={statusId === 0 ? 'blue-0' : 'yellow-1'}
+                  label="Blocked by OPS-4264"
+                />
               )}
               {dueDate && (
                 <Tag
+                  bold={dueDateApproaching}
                   color={dueDateApproaching ? 'yellow-1' : 'blue-0'}
                   label={`Due ${dueDateObject.toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' })}`}
                 />
               )}
               {questionsCount && (
-                <Tag color={statusId === 0 ? 'blue-0' : 'yellow-1'} label={`${questionsCount} Questions`} onClick={() => {
-                  setTimeout(() => {
-                    document.getElementById('comments')?.scrollIntoView({ behavior: 'smooth' });
-                  });
-                }}
+                <Tag
+                  bold={statusId !== 0}
+                  color={statusId === 0 ? 'blue-0' : 'yellow-1'}
+                  label={`${questionsCount} Questions`}
+                  onClick={() => {
+                    setTimeout(() => {
+                      document.getElementById('comments')?.scrollIntoView({ behavior: 'smooth' });
+                    });
+                  }}
                 />
               )}
+              <View flex />
               <Stack horizontal style={{ columnGap: 4 }}>
                 {tags && (
                   tags.map((tag: string) => (
