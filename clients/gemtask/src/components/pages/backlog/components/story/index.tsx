@@ -96,7 +96,7 @@ function Story({ id, title, estimateId, statusId, typeId, blockedById, dueDate, 
             )}
           </View>
           <Spacer size="medium" />
-          <View style={{ width: 12, height: 12, borderRadius: 1000 }} fillColor={statuses[statusId].color as any} />
+          <View style={{ width: 12, height: 12, borderRadius: 1000 }} fillColor={statuses[statusId].color as any} title={statuses[statusId].title} />
         </View>
         <View horizontal align="top left">
           <View fillColor="gray-2" align="center" style={{ width: 30, height: 30, marginLeft: -5, borderRadius: 1000, boxShadow: '0 0 0 1px white' }}>
