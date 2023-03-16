@@ -22,13 +22,13 @@ const statuses = [
 
 const Tag = ({ label, color = 'gray-1', ...props }: any) => {
   return (
-    <View padding="xsmall small" fillColor={color} style={{ padding: '2px 4px', margin: '-2px 0', borderRadius: 2 }} {...props}>
-      <Text fontSize="small">{label}</Text>
+    <View padding="xsmall small" fillColor={color} style={{ padding: '3px 4px', margin: '-3px 0', borderRadius: 2 }} {...props}>
+      <Text light fontSize="small" style={{ whiteSpace: 'nowrap' }}>{label}</Text>
     </View>
   );
 };
 
-function Story({ id, title, estimateId, statusId, typeId, blockedById, dueDate, questionsCount, selected, flagged, onSelect }: any) {
+function Story({ id, title, estimateId, statusId, typeId, blockedById, dueDate, questionsCount, selected, flagged, tags, onSelect }: any) {
   return (
     <Stack draggable fillColor={selected ? 'blue-0' : 'white'} style={{ position: 'relative', cursor: 'move', transform: 'translate(0, 0)', borderRadius: 4 }} onClick={() => onSelect(id)}>
       {/* <View style={{ width: 5 }} fillColor={types[typeId].color as any} /> */}
@@ -43,17 +43,17 @@ function Story({ id, title, estimateId, statusId, typeId, blockedById, dueDate, 
           <View>
             <Text fontWeight="medium" style={{ minWidth: 300 }}>{title}</Text>
             <Spacer size="small" />
-            <Stack horizontal spacing="medium">
+            <Stack horizontal style={{ flexWrap: 'wrap', columnGap: 12, rowGap: 12 }}>
               <View horizontal>
                 <Icon size="xs" icon={types[typeId].icon as any} style={{ marginTop: -1 }} color={types[typeId].color as any} />
                 <Spacer size="xsmall" />
-                <Text light fontSize="small">GEM-42</Text>
+                <Text light fontSize="small" style={{ whiteSpace: 'nowrap' }}>GEM-42</Text>
               </View>
               {blockedById && (
                 <Tag color="blue-0" label="Blocked by OPS-4264" />
               )}
               {dueDate && (
-                <Tag color="orange-1" label={`Due ${dueDate}`} />
+                <Tag color="yellow-1" label={`Due ${dueDate}`} />
               )}
               {questionsCount && (
                 <Tag color="blue-0" label={`${questionsCount} Questions`} onClick={() => {
@@ -63,13 +63,19 @@ function Story({ id, title, estimateId, statusId, typeId, blockedById, dueDate, 
                 }}
                 />
               )}
-              <View padding="xsmall small" fillColor="gray-1" style={{ padding: '2px 4px', margin: '-2px 0', borderRadius: 2 }}>
-                <Text light fontSize="small">front-end</Text>
-              </View>
+              <Stack horizontal style={{ columnGap: 4 }}>
+                {tags && (
+                  tags.map((tag: string) => (
+                    <View padding="xsmall small" fillColor="gray-1" style={{ padding: '3px 4px', margin: '-3px 0', borderRadius: 2 }}>
+                      <Text light fontSize="small" style={{ whiteSpace: 'nowrap' }}>{tag}</Text>
+                    </View>
+                  ))
+                )}
+              </Stack>
             </Stack>
           </View>
         </View>
-        <View horizontal style={{ alignItems: 'center' }}>
+        <View horizontal style={{ alignItems: 'center', height: 30 }}>
           <View align="center" style={{ width: 35 }}>
             {estimateId !== 0 && (
               <>
