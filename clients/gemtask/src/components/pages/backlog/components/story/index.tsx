@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { useHotkeys } from 'react-hotkeys-hook';
 import { groupWith } from 'rambda';
@@ -39,7 +39,7 @@ function Story({ id, title, estimateId, statusId, typeId, blockedById, dueDate, 
   const dueDateApproaching = dueDateObject > twoWeeksFromNow;
 
   return (
-    <Stack draggable fillColor={selected ? 'blue-0' : 'white'} style={{ position: 'relative', cursor: 'move', transform: 'translate(0, 0)', borderRadius: 4 }} onClick={() => onSelect(id)}>
+    <Stack draggable fillColor={selected ? 'blue-0' : 'white'} testId="story" style={{ position: 'relative', cursor: 'move', transform: 'translate(0, 0)', borderRadius: 4 }} onClick={() => onSelect(id)}>
       {/* <View style={{ width: 5 }} fillColor={types[typeId].color as any} /> */}
       {flagged && (
         <View style={{ position: 'absolute', borderTop: '16px solid #ff8787', borderRight: '16px solid transparent' }} />
@@ -50,42 +50,44 @@ function Story({ id, title, estimateId, statusId, typeId, blockedById, dueDate, 
           {/* <View style={{ width: 12, height: 12, borderRadius: 1000 }} fillColor={statuses[statusId].color as any} />
           <Spacer size="small" /> */}
           <View flex>
-            <Text fontWeight="medium" style={{ minWidth: 300 }}>{title}</Text>
+            <Text fontWeight="medium" testId="story-title" style={{ minWidth: 300 }}>{title}</Text>
             <Spacer size="small" />
             <Stack horizontal style={{ flexWrap: 'wrap', columnGap: 12, rowGap: 12 }}>
-              <View horizontal>
+              <View horizontal testId="story-id">
                 <Icon size="xs" icon={types[typeId].icon as any} style={{ marginTop: -1 }} color={types[typeId].color as any} />
                 <Spacer size="xsmall" />
                 <Text light fontSize="small" style={{ whiteSpace: 'nowrap' }}>GEM-42</Text>
               </View>
-              {blockedById && (
-                <Tag
-                  bold={statusId !== 0}
-                  color={statusId === 0 ? 'blue-0' : 'yellow-1'}
-                  label="Blocked by OPS-4264"
-                />
-              )}
-              {dueDate && (
-                <Tag
-                  bold={dueDateApproaching}
-                  color={dueDateApproaching ? 'yellow-1' : 'blue-0'}
-                  label={`Due ${dueDateObject.toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' })}`}
-                />
-              )}
-              {questionsCount && (
-                <Tag
-                  bold={statusId !== 0}
-                  color={statusId === 0 ? 'blue-0' : 'yellow-1'}
-                  label={`${questionsCount} Questions`}
-                  onClick={() => {
-                    setTimeout(() => {
-                      document.getElementById('comments')?.scrollIntoView({ behavior: 'smooth' });
-                    });
-                  }}
-                />
-              )}
+              <View horizontal style={{ columnGap: 8 }} testId="story-constraints">
+                {blockedById && (
+                  <Tag
+                    bold={statusId !== 0}
+                    color={statusId === 0 ? 'blue-0' : 'yellow-1'}
+                    label="Blocked by OPS-4264"
+                  />
+                )}
+                {dueDate && (
+                  <Tag
+                    bold={dueDateApproaching}
+                    color={dueDateApproaching ? 'yellow-1' : 'blue-0'}
+                    label={`Due ${dueDateObject.toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' })}`}
+                  />
+                )}
+                {questionsCount && (
+                  <Tag
+                    bold={statusId !== 0}
+                    color={statusId === 0 ? 'blue-0' : 'yellow-1'}
+                    label={`${questionsCount} Questions`}
+                    onClick={() => {
+                      setTimeout(() => {
+                        document.getElementById('comments')?.scrollIntoView({ behavior: 'smooth' });
+                      });
+                    }}
+                  />
+                )}
+              </View>
               <View flex />
-              <Stack horizontal style={{ columnGap: 4 }}>
+              <Stack horizontal style={{ columnGap: 4 }} testId="story-labels">
                 {tags && (
                   tags.map((tag: string) => (
                     <View padding="xsmall small" fillColor="gray-1" style={{ padding: '3px 4px', margin: '-3px 0', borderRadius: 2 }}>
@@ -97,7 +99,7 @@ function Story({ id, title, estimateId, statusId, typeId, blockedById, dueDate, 
             </Stack>
           </View>
         </View>
-        <View horizontal style={{ alignItems: 'center', height: 30 }}>
+        <View horizontal style={{ alignItems: 'center', height: 30 }} testId="story-points">
           <View align="center" style={{ width: 35 }}>
             {estimateId !== 0 && (
               <>
@@ -110,7 +112,7 @@ function Story({ id, title, estimateId, statusId, typeId, blockedById, dueDate, 
           <Spacer size="medium" />
           <View style={{ width: 12, height: 12, borderRadius: 1000 }} fillColor={statuses[statusId].color as any} title={statuses[statusId].title} />
         </View>
-        <View horizontal align="top left">
+        <View horizontal align="top left" testId="story-assignees">
           <View fillColor="gray-2" align="center" style={{ width: 30, height: 30, marginLeft: -5, borderRadius: 1000, boxShadow: '0 0 0 1px white' }}>
             <Text fontSize="small" fontWeight="semi-bold">AJ</Text>
           </View>

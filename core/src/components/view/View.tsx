@@ -112,6 +112,7 @@ interface ViewProps extends React.ComponentProps<'div'> {
   hoverable?: 'a' | 'b',
   hovered?: 'a' | 'b',
   className?: string,
+  testId?: string,
   children?: React.ReactNode,
 }
 
@@ -129,6 +130,7 @@ const View = ({
   hoverable,
   hovered,
   className,
+  testId,
   children,
   ...props
 }: ViewProps,
@@ -195,6 +197,7 @@ const View = ({
         disabled={disabled}
         viewBox={viewBox}
         className={viewClassName}
+        data-test-id={testId}
         onDragOver={handleDragOver}
         onDragEnter={handleDragOver}
         {...props}

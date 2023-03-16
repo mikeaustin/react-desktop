@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
-import { groupWith } from 'rambda';
+import React, { useRef, useState } from 'react';
 import { Outlet, Link } from 'react-router-dom';
+import { groupWith } from 'rambda';
+import Joyride from 'react-joyride';
 
 import { View, Text, Icon, Button, Spacer, Divider, Stack } from 'core';
 
@@ -87,8 +88,39 @@ function App() {
   const [agilePageIndex, setAgilePageIndex] = useState(0);
   const [isAgileModalOpen, setIsAgileModalOpen] = useState(false);
 
+  const stepsRef = useRef([
+    {
+      target: '[data-test-id=story]', title: 'A Backlog Item', content: (
+        <Text>
+          This is a backlog item, which represents work to be done and has a few different fields. Backlog items are sorted by priotiry, with the highest at the top.
+        </Text>
+      )
+    },
+    {
+      target: '[data-test-id=story-title]', title: 'Story Title', content: (
+        <Text>
+          A short, memorable <Text fontWeight="bold">Title</Text> that is used to communicate the intent to the team. You can add more details in the story <Text fontWeight="bold">Description</Text>.
+        </Text>
+      )
+    },
+    { target: '[data-test-id=story-id]', title: 'Story ID and Type', content: 'The backlog item ID and type, such as a Story, a Chore, or a Bug' },
+    {
+      target: '[data-test-id=story-constraints]', title: 'Story Constraints', content: (
+        <Text>
+          Constraints such as a <Text fontWeight="bold">Due Date</Text>,{' '}
+          <Text fontWeight="bold">Blocking Tickets</Text>,{' '}
+          or number of <Text fontWeight="bold">Unanswered Questions</Text>
+        </Text>
+      )
+    },
+    { target: '[data-test-id=story-labels]', title: 'Story Labels', content: 'xxx' },
+    { target: '[data-test-id=story-points]', title: 'Story Points and Status', content: 'xxx' },
+    { target: '[data-test-id=story-assignees]', title: 'Story Assignees', content: 'Assignees, the people involved in this story' },
+  ]);
+
   return (
     <>
+      <Joyride steps={stepsRef.current} continuous={true} styles={{ options: { primaryColor: '#339af0' } }} locale={{ last: 'Done', open: 'Open the tour...' }} />
       <Stack flex horizontal divider className={styles.App} style={{ overflowX: 'auto', scrollSnapType: 'x mandatory' }}>
         <View padding="medium" style={{ flex: '0 0 192px', scrollSnapAlign: 'start' }}>
           <Text>GEMTASK</Text>
