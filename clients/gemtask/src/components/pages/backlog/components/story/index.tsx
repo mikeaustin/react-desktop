@@ -29,6 +29,13 @@ const Tag = ({ label, color = 'gray-1', ...props }: any) => {
 };
 
 function Story({ id, title, estimateId, statusId, typeId, blockedById, dueDate, questionsCount, selected, flagged, tags, onSelect }: any) {
+  const dueDateObject = new Date(dueDate);
+  const twoWeeksFromNow = new Date();
+
+  twoWeeksFromNow.setDate(twoWeeksFromNow.getDate() + 14);
+
+  const dueDateApproaching = dueDateObject > twoWeeksFromNow;
+
   return (
     <Stack draggable fillColor={selected ? 'blue-0' : 'white'} style={{ position: 'relative', cursor: 'move', transform: 'translate(0, 0)', borderRadius: 4 }} onClick={() => onSelect(id)}>
       {/* <View style={{ width: 5 }} fillColor={types[typeId].color as any} /> */}
@@ -50,13 +57,16 @@ function Story({ id, title, estimateId, statusId, typeId, blockedById, dueDate, 
                 <Text light fontSize="small" style={{ whiteSpace: 'nowrap' }}>GEM-42</Text>
               </View>
               {blockedById && (
-                <Tag color="blue-0" label="Blocked by OPS-4264" />
+                <Tag color={statusId === 0 ? 'blue-0' : 'yellow-1'} label="Blocked by OPS-4264" />
               )}
               {dueDate && (
-                <Tag color="yellow-1" label={`Due ${dueDate}`} />
+                <Tag
+                  color={dueDateApproaching ? 'yellow-1' : 'blue-0'}
+                  label={`Due ${dueDateObject.toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' })}`}
+                />
               )}
               {questionsCount && (
-                <Tag color="blue-0" label={`${questionsCount} Questions`} onClick={() => {
+                <Tag color={statusId === 0 ? 'blue-0' : 'yellow-1'} label={`${questionsCount} Questions`} onClick={() => {
                   setTimeout(() => {
                     document.getElementById('comments')?.scrollIntoView({ behavior: 'smooth' });
                   });
