@@ -43,23 +43,62 @@
 @media screen and (max-width: 1439px) {
   .backlogPage {
     flex: 1 0 100vw !important;
+
+    .backlogPanel {
+      flex: 1.25 0 !important;
+    }
+
+    .detailsPanel {
+      flex: 1 0 !important;
+    }
   }
 
-  .backlogPanel {
-    flex: 1.25 0 !important;
+  .epicsPage {
+    flex: 1 0 100vw !important;
   }
+}
 
-  .detailsPanel {
-    flex: 1 0 !important;
+
+@media screen and (max-width: 1023px) {
+  .backlogPage {
+    .backlogPanel {
+      flex: 0 0 100vw !important;
+    }
+
+    .detailsPanel {
+      flex: 0 0 100vw !important;
+    }
+  }
+}
+
+@media screen and (max-width: 1919px) {
+  .epicsPage {
+    // flex: 1 0 100vw !important;
+
+    .epicsPanel {
+      flex: 0.5 0 !important;
+    }
+
+    .epicDetailsPanel {
+      .epicDetails {
+        flex: 0 0 100% !important;
+      }
+
+      .requirementDetails {
+        flex: 0 0 100% !important;
+      }
+    }
   }
 }
 
 @media screen and (max-width: 1023px) {
-  .backlogPanel {
-    flex: 0 0 100vw !important;
-  }
+  .epicsPage {
+    .epicsPanel {
+      flex: 0 0 100vw !important;
+    }
 
-  .detailsPanel {
-    flex: 0 0 100vw !important;
+    .epicDetailsPanel {
+      flex: 0 0 100vw !important;
+    }
   }
 }

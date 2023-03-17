@@ -92,7 +92,7 @@ function App() {
 
   return (
     <>
-      <Joyride
+      {/* <Joyride
         steps={storySteps}
         continuous={true}
         spotlightPadding={8}
@@ -106,7 +106,7 @@ function App() {
         styles={{ options: { primaryColor: '#339af0' } }}
         locale={{ last: 'Done', open: 'Open the tour...' }}
         disableScrolling={true}
-      />
+      /> */}
       <Stack flex horizontal divider className={styles.App} style={{ overflowX: 'auto', scrollSnapType: 'x mandatory' }}>
         <View padding="medium" style={{ flex: '0 0 192px', scrollSnapAlign: 'start' }}>
           <Text>GEMTASK</Text>
