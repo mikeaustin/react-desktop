@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
+import OpenColor from 'open-color';
 import { useHotkeys } from 'react-hotkeys-hook';
 import { groupWith } from 'rambda';
 
@@ -38,8 +39,12 @@ function Story({ id, title, estimateId, statusId, typeId, blockedById, dueDate, 
 
   const dueDateApproaching = dueDateObject > twoWeeksFromNow;
 
+  const fillColor = selected ? 'blue-0' : 'white';
+  const [color, level] = fillColor.split('-');
+  const openFillColor = level ? (OpenColor as any)[color][level] : (OpenColor as any)[color];
+
   return (
-    <Stack draggable fillColor={selected ? 'blue-0' : 'white'} testId="story" style={{ position: 'relative', cursor: 'move', transform: 'translate(0, 0)', borderRadius: 4 }} onClick={() => onSelect(id)}>
+    <Stack draggable fillColor={fillColor} testId="story" style={{ position: 'relative', cursor: 'move', transform: 'translate(0, 0)', borderRadius: 4 }} onClick={() => onSelect(id)}>
       {flagged && (
         <View style={{ position: 'absolute', borderTop: '16px solid #ff8787', borderRight: '16px solid transparent' }} />
       )}
@@ -109,13 +114,13 @@ function Story({ id, title, estimateId, statusId, typeId, blockedById, dueDate, 
           <View style={{ width: 12, height: 12, borderRadius: 1000 }} fillColor={statuses[statusId].color as any} title={statuses[statusId].title} />
         </View>
         <View horizontal align="top left" testId="story-assignees">
-          <View fillColor="gray-2" align="center" style={{ width: 30, height: 30, marginLeft: -5, borderRadius: 1000, boxShadow: '0 0 0 1px white' }}>
+          <View fillColor="gray-2" align="center" style={{ width: 30, height: 30, marginLeft: -5, borderRadius: 1000, boxShadow: `0 0 0 1px ${openFillColor}` }}>
             <Text fontSize="small" fontWeight="semi-bold">AJ</Text>
           </View>
-          <View fillColor="gray-2" align="center" style={{ width: 30, height: 30, marginLeft: -5, borderRadius: 1000, boxShadow: '0 0 0 1px white' }}>
+          <View fillColor="gray-2" align="center" style={{ width: 30, height: 30, marginLeft: -5, borderRadius: 1000, boxShadow: `0 0 0 1px ${openFillColor}` }}>
             <Text fontSize="small" fontWeight="semi-bold">MR</Text>
           </View>
-          <View fillColor="gray-2" align="center" style={{ width: 30, height: 30, marginLeft: -5, borderRadius: '50%', boxShadow: '0 0 0 1px white' }}>
+          <View fillColor="gray-2" align="center" style={{ width: 30, height: 30, marginLeft: -5, borderRadius: 1000, boxShadow: `0 0 0 1px ${openFillColor}` }}>
             <Icon icon="ellipsis" />
           </View>
         </View>
