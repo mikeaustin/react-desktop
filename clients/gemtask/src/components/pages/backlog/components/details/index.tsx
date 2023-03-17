@@ -9,7 +9,7 @@ import Assignees from '../assignees';
 import styles from '../../../../../App.module.scss';
 
 const estimateOptions = [
-  { label: 'No Estimate', value: 0 },
+  { label: '–', value: 0 },
   { label: '1 – A few minutes', value: 1 },
   { label: '2 – A few hours', value: 2 },
   { label: '3 – A few days', value: 3 },

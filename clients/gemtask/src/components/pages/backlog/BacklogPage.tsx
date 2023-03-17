@@ -15,7 +15,7 @@ import Story from './components/story';
 import styles from '../../../App.module.scss';
 
 const estimateOptions = [
-  { label: 'No Estimate', value: 0 },
+  { label: '–', value: 0 },
   { label: '1 – A few minutes', value: 1 },
   { label: '2 – A few hours', value: 2 },
   { label: '3 – A few days', value: 3 },
@@ -103,6 +103,8 @@ function BacklogPage() {
     }
   }, [detailsTabIndex]);
 
+  const selectedStory = stories.find(story => story.id === selectedItemId);
+
   return (
     <>
       <View flex horizontal className={styles.backlogPage}>
@@ -165,9 +167,9 @@ function BacklogPage() {
                 </View>
                 <Spacer size="large" />
                 <Stack horizontal style={{ flexWrap: 'wrap', columnGap: 16, rowGap: 16 }}>
-                  <Field label="Estimate" initialValue={stories.find(story => story.id === selectedItemId)?.estimateId} options={estimateOptions} />
-                  <Field label="Status" initialValue={stories.find(story => story.id === selectedItemId)?.statusId} options={statusOptions} />
-                  <Field label="Due Date" initialValue={'Apr 15, 2023'} />
+                  <Field label="Estimate" initialValue={selectedStory?.estimateId} options={estimateOptions} />
+                  <Field label="Status" initialValue={selectedStory?.statusId} options={statusOptions} />
+                  <Field label="Due Date" initialValue={selectedStory?.dueDate ?? '–'} />
                   {/* <Field label="Epic" initialValue={stories.find(story => story.id === selectedItemId)?.epicId} options={epicOptions} /> */}
                 </Stack>
                 <Spacer size="large" />
