@@ -40,17 +40,13 @@ function Story({ id, title, estimateId, statusId, typeId, blockedById, dueDate, 
 
   return (
     <Stack draggable fillColor={selected ? 'blue-0' : 'white'} testId="story" style={{ position: 'relative', cursor: 'move', transform: 'translate(0, 0)', borderRadius: 4 }} onClick={() => onSelect(id)}>
-      {/* <View style={{ width: 5 }} fillColor={types[typeId].color as any} /> */}
       {flagged && (
         <View style={{ position: 'absolute', borderTop: '16px solid #ff8787', borderRight: '16px solid transparent' }} />
       )}
       <Stack flex horizontal padding="small medium" style={{ flexWrap: 'wrap', columnGap: 24, rowGap: 12 }}>
         <View flex horizontal>
-          {/* <Icon size="sm" icon={types[typeId].icon as any} style={{ marginTop: -1 }} color={types[typeId].color as any} /> */}
-          {/* <View style={{ width: 12, height: 12, borderRadius: 1000 }} fillColor={statuses[statusId].color as any} />
-          <Spacer size="small" /> */}
           <View flex>
-            <Text fontWeight="medium" testId="story-title" style={{ minWidth: 300 }}>{title}</Text>
+            <Text noEvents fontWeight="medium" testId="story-title" style={{ minWidth: 300 }}>{title}</Text>
             <Spacer size="small" />
             <Stack horizontal style={{ flexWrap: 'wrap', columnGap: 12, rowGap: 12 }}>
               <View horizontal testId="story-id">

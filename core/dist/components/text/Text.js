@@ -39,7 +39,7 @@ import { useTextColorStyles } from '../../styles/textColorStyles.js';
 import TextContext from './TextContext.js';
 function Text(_a) {
     var _b, _c, _d;
-    var flex = _a.flex, contain = _a.contain, light = _a.light, caps = _a.caps, fontSize = _a.fontSize, fontWeight = _a.fontWeight, textColor = _a.textColor, textAlign = _a.textAlign, autoFocus = _a.autoFocus, className = _a.className, testId = _a.testId, children = _a.children, props = __rest(_a, ["flex", "contain", "light", "caps", "fontSize", "fontWeight", "textColor", "textAlign", "autoFocus", "className", "testId", "children"]);
+    var flex = _a.flex, contain = _a.contain, light = _a.light, caps = _a.caps, fontSize = _a.fontSize, fontWeight = _a.fontWeight, textColor = _a.textColor, textAlign = _a.textAlign, autoFocus = _a.autoFocus, noEvents = _a.noEvents, className = _a.className, testId = _a.testId, children = _a.children, props = __rest(_a, ["flex", "contain", "light", "caps", "fontSize", "fontWeight", "textColor", "textAlign", "autoFocus", "noEvents", "className", "testId", "children"]);
     var isTextParent = useContext(TextContext);
     var _e = useState(contain), isHidden = _e[0], setIsHidden = _e[1];
     var textElementRef = useRef(null);
@@ -53,7 +53,7 @@ function Text(_a) {
         }
         setIsHidden(false);
     }, [contain]);
-    var textClassName = clsx(styles.Text, isTextParent && styles.textParent, flex && styles.flex, light && styles.light, caps && styles.caps, isHidden && styles.hidden, (_b = (fontSize && fontSizeStyles[fontSize])) !== null && _b !== void 0 ? _b : (!isTextParent && fontSizeStyles.default), (_c = (fontWeight && fontWeightStyles[fontWeight])) !== null && _c !== void 0 ? _c : (!isTextParent && fontWeightStyles.normal), (_d = (textColor && textColorStyles[textColor])) !== null && _d !== void 0 ? _d : (!isTextParent && textColorStyles['theme-text']), textAlign && styles[textAlign], className);
+    var textClassName = clsx(styles.Text, isTextParent && styles.textParent, flex && styles.flex, light && styles.light, caps && styles.caps, isHidden && styles.hidden, noEvents && styles.noEvents, (_b = (fontSize && fontSizeStyles[fontSize])) !== null && _b !== void 0 ? _b : (!isTextParent && fontSizeStyles.default), (_c = (fontWeight && fontWeightStyles[fontWeight])) !== null && _c !== void 0 ? _c : (!isTextParent && fontWeightStyles.normal), (_d = (textColor && textColorStyles[textColor])) !== null && _d !== void 0 ? _d : (!isTextParent && textColorStyles['theme-text']), textAlign && styles[textAlign], className);
     var childrenElement = typeof children === 'string'
         ? children.split('\\n').reduce(function (title, word, index) { return (index > 0 ? __spreadArray(__spreadArray([], title, true), [_jsx("br", {}), word], false) : __spreadArray(__spreadArray([], title, true), [word], false)); }, [])
         : children;

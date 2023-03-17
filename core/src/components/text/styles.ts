@@ -28,6 +28,9 @@ const useStyles = createUseStyles({
   hidden: {
     display: 'none',
   },
+  noEvents: {
+    pointerEvents: 'none',
+  },
   center: {
     textAlign: 'center',
   }

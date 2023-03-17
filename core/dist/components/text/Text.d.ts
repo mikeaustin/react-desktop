@@ -13,9 +13,10 @@ interface TextProps extends React.ComponentProps<'span'> {
     textColor?: Color | 'theme-text';
     textAlign?: 'center';
     autoFocus?: boolean;
+    noEvents?: boolean;
     className?: string;
     testId?: string;
     children?: Child<TextProps> | Child<TextProps>[];
 }
-declare function Text({ flex, contain, light, caps, fontSize, fontWeight, textColor, textAlign, autoFocus, className, testId, children, ...props }: TextProps): JSX.Element;
+declare function Text({ flex, contain, light, caps, fontSize, fontWeight, textColor, textAlign, autoFocus, noEvents, className, testId, children, ...props }: TextProps): JSX.Element;
 export default Text;

@@ -141,7 +141,7 @@ function Button<TData>({
       {icon && title && (
         <Spacer size="small" />
       )}
-      <Text fontWeight={titleFontWeight} textColor={textColor}>{titleElement ?? '​'}</Text>
+      <Text noEvents fontWeight={titleFontWeight} textColor={textColor}>{titleElement ?? '​'}</Text>
     </View>
   );
 };
