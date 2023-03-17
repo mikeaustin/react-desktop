@@ -7,6 +7,8 @@ import { View, Text, Icon, Button, Spacer, Divider, Stack } from 'core';
 
 import Modal from './shared/components/modal';
 
+import { storySteps, detailsSteps } from './tourSteps';
+
 import styles from './App.module.scss';
 
 const types = [
@@ -84,74 +86,6 @@ const agilePages = [
   </View>
 ];
 
-const steps = [
-  {
-    target: '[data-test-id=backlog-panel]', title: 'Backlog Panel', content: (
-      <Text>
-        This is a backlog item, which represents work to be done and has a few different fields. Backlog items are sorted by priotiry, with the highest at the top.
-      </Text>
-    )
-  },
-  {
-    target: '[data-test-id=story]', title: 'Backlog Item', content: (
-      <Text>
-        This is a backlog item, which represents work to be done and has a few different fields. Backlog items are sorted by priotiry, with the highest at the top.
-      </Text>
-    )
-  },
-  {
-    target: '[data-test-id=story-title]', title: 'Story Title', content: (
-      <Text>
-        A short, memorable <Text fontWeight="bold">Title</Text> that is used to communicate the intent to the team. You can add more details in the story <Text fontWeight="bold">Description</Text>.
-      </Text>
-    )
-  },
-  { target: '[data-test-id=story-id]', title: 'Story ID and Type', content: 'The backlog item ID and type, such as a Story, a Chore, or a Bug' },
-  {
-    target: '[data-test-id=story-constraints]', title: 'Story Constraints', content: (
-      <Text>
-        Constraints such as a <Text fontWeight="bold">Due Date</Text>,{' '}
-        <Text fontWeight="bold">Blocking Tickets</Text>,{' '}
-        or number of <Text fontWeight="bold">Unanswered Questions</Text>
-      </Text>
-    )
-  },
-  { target: '[data-test-id=story-labels]', title: 'Story Labels', content: 'xxx' },
-  { target: '[data-test-id=story-points]', title: 'Story Points and Status', content: 'xxx' },
-  { target: '[data-test-id=story-assignees]', title: 'Story Assignees', content: 'Assignees, the people involved in this story' },
-];
-
-const detailsSteps = [
-  {
-    target: '[data-test-id=backlog-details]', title: 'Backlog Item Details', content: (
-      <Text>
-        This is a backlog item, which represents work to be done and has a few different fields. Backlog items are sorted by priotiry, with the highest at the top.
-      </Text>
-    )
-  },
-  {
-    target: '[data-test-id=story-panel-tags]', title: 'Tags', content: (
-      <Text>
-        This is a backlog item, which represents work to be done and has a few different fields. Backlog items are sorted by priotiry, with the highest at the top.
-      </Text>
-    )
-  },
-  {
-    target: '[data-test-id=story-panel-epic]', title: 'Parent Epic', content: (
-      <Text>
-        This is a backlog item, which represents work to be done and has a few different fields. Backlog items are sorted by priotiry, with the highest at the top.
-      </Text>
-    )
-  },
-  {
-    target: '[data-test-id=story-panel-description]', title: 'Description', content: (
-      <Text>
-        This is a backlog item, which represents work to be done and has a few different fields. Backlog items are sorted by priotiry, with the highest at the top.
-      </Text>
-    )
-  },
-];
-
 function App() {
   const [agilePageIndex, setAgilePageIndex] = useState(0);
   const [isAgileModalOpen, setIsAgileModalOpen] = useState(false);
@@ -159,8 +93,9 @@ function App() {
   return (
     <>
       <Joyride
-        steps={steps}
+        steps={storySteps}
         continuous={true}
+        spotlightPadding={8}
         styles={{ options: { primaryColor: '#339af0' } }}
         locale={{ last: 'Done', open: 'Open the tour...' }}
         disableScrolling={true}

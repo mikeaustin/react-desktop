@@ -54,7 +54,7 @@ const Details = () => {
           Currently, if an agency owner is sent in the producer.data file without an address, or parity process will skip that agent and not add them to MCE"
           placeholder="A short description of who this is for, what it solves, and what is out of scope..."
         />
-        <View>
+        <View testId="story-panel-acceptance-criteria">
           <Text light caps fontSize="small">Acceptance Criteria</Text>
           <Spacer size="small" />
           <View className={styles.Field}>
@@ -79,7 +79,7 @@ const Details = () => {
         {/* <Field label="Testing instructions" placeholder="To test this story..." /> */}
         <Assignees />
         <Stack horizontal style={{ flexWrap: 'wrap', columnGap: 24, rowGap: 24 }}>
-          <View>
+          <View testId="story-panel-blocked-by">
             <Text light caps fontSize="small">Blocked By</Text>
             <Spacer size="small" />
             <Stack horizontal style={{ flexWrap: 'wrap', columnGap: 8, rowGap: 8 }}>
@@ -87,7 +87,7 @@ const Details = () => {
               <Text>OPS-4264</Text>
             </Stack>
           </View>
-          <View>
+          <View testId="story-panel-blocks">
             <Text light caps fontSize="small">Blocks</Text>
             <Spacer size="small" />
             <Stack horizontal>

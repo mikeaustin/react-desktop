@@ -17,7 +17,7 @@ const Assignees = () => {
 
   return (
     <>
-      <View>
+      <View testId="story-panel-assignees">
         <View hoverable="a">
           <Text light caps fontSize="small">Assignees</Text>
           <Spacer size="small" />
