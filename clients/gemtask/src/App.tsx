@@ -112,9 +112,9 @@ function App() {
           <Text>GEMTASK</Text>
           <Spacer size="medium" />
           <Stack>
-            <NavLink to="/backlog/GEM-1324" className={styles.Link}><Text noEvents>Product Backlog</Text></NavLink>
-            <NavLink to="/epics" className={styles.Link}><Text noEvents>Epics</Text></NavLink>
             <NavLink to="/epicsxxx" className={styles.Link}><Text noEvents>Current Sprint</Text></NavLink>
+            <NavLink to="/backlog/GEM-1324" className={styles.Link}><Text noEvents>Product Backlog</Text></NavLink>
+            <NavLink to="/epics" className={styles.Link}><Text noEvents>Requirements</Text></NavLink>
           </Stack>
           <Spacer size="medium" />
           <Text onClick={() => setIsAgileModalOpen(true)}>Being Agile</Text>
