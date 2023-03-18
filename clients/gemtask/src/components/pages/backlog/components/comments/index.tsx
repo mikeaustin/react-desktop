@@ -8,9 +8,9 @@ const Comments = () => {
   return (
     <View id="comments" fillColor="gray-1" style={{ flexBasis: '100%', flexShrink: 0, overflowY: 'auto', scrollSnapAlign: 'start' }}>
       <View horizontal padding="small medium" fillColor="white" align="left">
-        <Field flex placeholder="New question..." />
+        <Field flex placeholder="Ask a new question..." />
         <Spacer size="small" />
-        <Button primary size="small" title="Ask New Question" />
+        <Button primary size="small" title="Ask Question" />
       </View>
       <Divider />
 
