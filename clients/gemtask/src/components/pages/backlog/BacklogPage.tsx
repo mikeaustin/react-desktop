@@ -110,8 +110,14 @@ function BacklogPage() {
       <View flex horizontal className={styles.backlogPage}>
         <View flex fillColor="gray-1" className={styles.backlogPanel} style={{ scrollSnapAlign: 'start' }} testId="backlog-panel">
           <View padding="small medium" fillColor="gray-0">
-            <Spacer size="small" />
-            <Text fontSize="large">Product Backlog</Text>
+            <View horizontal align="bottom left">
+              <View>
+                <Spacer size="small" />
+                <Text fontSize="large">Product Backlog</Text>
+              </View>
+              <Spacer flex size="small" />
+              <Button solid icon="add" size="small" style={{ marginBottom: -5 }} onClick={() => setIsAddStoryModalOpen(true)} />
+            </View>
             <Spacer size="medium" />
             <Stack horizontal spacing="medium">
               <Text textColor="blue-7">Assigned to Me</Text>
