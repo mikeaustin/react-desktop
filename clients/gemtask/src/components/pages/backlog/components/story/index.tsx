@@ -9,7 +9,7 @@ import { View, Text, Icon, Button, Spacer, Divider, Stack } from 'core';
 import Tag from '../../../../../shared/components/tag';
 
 const types = [
-  { title: 'Story', icon: 'square-check', color: 'blue-3' },
+  { title: 'Story', icon: 'book', color: 'blue-3' },
   { title: 'Task', icon: 'gear', color: 'green-3' },
   { title: 'Bug', icon: 'bug', color: 'red-3' },
 ];

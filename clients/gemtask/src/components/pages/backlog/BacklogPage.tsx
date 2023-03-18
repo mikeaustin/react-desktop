@@ -162,7 +162,7 @@ function BacklogPage() {
               <View padding="small medium" fillColor="gray-0">
                 <Spacer size="small" />
                 <View horizontal align="left">
-                  <Icon size="xs" icon="square-check" color="blue-3" />
+                  <Icon size="xs" icon="book" color="blue-3" />
                   <Spacer size="xsmall" />
                   <Text light caps fontSize="small">GEM-1324 — Created Mar 15, 2023</Text>
                 </View>
