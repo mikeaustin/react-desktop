@@ -6,6 +6,8 @@ import { groupWith } from 'rambda';
 
 import { View, Text, Icon, Button, Spacer, Divider, Stack } from 'core';
 
+import Tag from '../../../../../shared/components/tag';
+
 const types = [
   { title: 'Story', icon: 'square-check', color: 'blue-3' },
   { title: 'Task', icon: 'gear', color: 'green-3' },
@@ -21,16 +23,6 @@ const statuses = [
   { title: 'Blocked', color: 'orange-3' },
 ];
 
-const Tag = ({ label, light = true, bold = false, color = 'gray-1', ...props }: any) => {
-  return (
-    <View padding="xsmall small" fillColor={color} style={{ padding: '3px 4px', margin: '-3px 0', borderRadius: 2 }} {...props}>
-      <Text light={light} fontSize="small" fontWeight={bold ? "semi-bold" : undefined} style={{ whiteSpace: 'nowrap' }}>
-        {label}
-      </Text>
-    </View>
-  );
-};
-
 function Story({ id, title, estimateId, statusId, typeId, blockedById, dueDate, questionsCount, selected, flagged, tags, onSelect }: any) {
   const dueDateObject = new Date(dueDate);
   const twoWeeksFromNow = new Date();
@@ -39,12 +31,8 @@ function Story({ id, title, estimateId, statusId, typeId, blockedById, dueDate, 
 
   const dueDateApproaching = dueDateObject > twoWeeksFromNow;
 
-  const fillColor = selected ? 'blue-0' : 'white';
-  const [color, level] = fillColor.split('-');
-  const openFillColor = level ? (OpenColor as any)[color][level] : (OpenColor as any)[color];
-
   return (
-    <Stack draggable fillColor={fillColor} testId="story" style={{ position: 'relative', cursor: 'move', transform: 'translate(0, 0)', borderRadius: 4 }} onClick={() => onSelect(id)}>
+    <Stack draggable fillColor={selected ? 'blue-0' : 'white'} testId="story" style={{ position: 'relative', cursor: 'move', transform: 'translate(0, 0)', borderRadius: 4 }} onClick={() => onSelect(id)}>
       {flagged && (
         <View style={{ position: 'absolute', borderTop: '16px solid #ff8787', borderRight: '16px solid transparent' }} />
       )}
@@ -114,13 +102,13 @@ function Story({ id, title, estimateId, statusId, typeId, blockedById, dueDate, 
           <View style={{ width: 12, height: 12, borderRadius: 1000 }} fillColor={statuses[statusId].color as any} title={statuses[statusId].title} />
         </View>
         <View horizontal align="top left" testId="story-assignees">
-          <View fillColor="gray-2" align="center" style={{ width: 30, height: 30, marginLeft: -5, borderRadius: 1000, boxShadow: `0 0 0 1px ${openFillColor}` }}>
+          <View fillColor="gray-2" align="center" style={{ width: 30, height: 30, marginLeft: -5, borderRadius: 1000, boxShadow: '0 0 0 1px white' }}>
             <Text fontSize="small" fontWeight="semi-bold">AJ</Text>
           </View>
-          <View fillColor="gray-2" align="center" style={{ width: 30, height: 30, marginLeft: -5, borderRadius: 1000, boxShadow: `0 0 0 1px ${openFillColor}` }}>
+          <View fillColor="gray-2" align="center" style={{ width: 30, height: 30, marginLeft: -5, borderRadius: 1000, boxShadow: '0 0 0 1px white' }}>
             <Text fontSize="small" fontWeight="semi-bold">MR</Text>
           </View>
-          <View fillColor="gray-2" align="center" style={{ width: 30, height: 30, marginLeft: -5, borderRadius: 1000, boxShadow: `0 0 0 1px ${openFillColor}` }}>
+          <View fillColor="gray-2" align="center" style={{ width: 30, height: 30, marginLeft: -5, borderRadius: 1000, boxShadow: '0 0 0 1px white' }}>
             <Icon icon="ellipsis" />
           </View>
         </View>
