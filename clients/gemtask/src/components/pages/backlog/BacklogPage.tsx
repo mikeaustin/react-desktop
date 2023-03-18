@@ -116,7 +116,7 @@ function BacklogPage() {
                 <Text fontSize="large">Product Backlog</Text>
               </View>
               <Spacer flex size="small" />
-              <Button solid icon="add" size="small" style={{ marginBottom: -5 }} onClick={() => setIsAddStoryModalOpen(true)} />
+              <Button solid primary icon="add" size="small" style={{ marginBottom: -5 }} onClick={() => document.getElementById('new-story-title')?.focus()} />
             </View>
             <Spacer size="medium" />
             <Stack horizontal spacing="medium">
@@ -150,8 +150,12 @@ function BacklogPage() {
                 {/* <Divider /> */}
               </View>
             ))}
-            <View horizontal padding="medium">
-              <Button solid title="Add Story" onClick={() => setIsAddStoryModalOpen(true)} />
+            <View padding="medium">
+              <View horizontal padding="small medium" fillColor="white" align="left" style={{ borderRadius: 4, border: '1px solid #dee2e6' }}>
+                <Field flex id="new-story-title" placeholder="A short title..." />
+                <Spacer size="small" />
+                <Button primary size="small" title="Add Story" />
+              </View>
             </View>
           </View>
         </View>

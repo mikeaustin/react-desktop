@@ -7,7 +7,7 @@ import { View, Text, Icon, Button, Input, Spacer, Divider, Stack } from 'core';
 
 import styles from '../../../App.module.scss';
 
-function Field({ label, initialValue, placeholder, options, fontSize, autoFocus, ...props }: any) {
+function Field({ id, label, initialValue, placeholder, options, fontSize, autoFocus, ...props }: any) {
   const [value, setValue] = useState('');
 
   useEffect(() => {
@@ -22,7 +22,7 @@ function Field({ label, initialValue, placeholder, options, fontSize, autoFocus,
     </select>
   ) : (
     <View className={styles.Field}>
-      <Text contentEditable autoFocus={autoFocus} fontSize={fontSize} style={{ fontStyle: value.length === 0 ? 'italic' : undefined }}>
+      <Text contentEditable id={id} autoFocus={autoFocus} fontSize={fontSize} style={{ fontStyle: value.length === 0 ? 'italic' : undefined }}>
         {value.length === 0 ? placeholder : value}
       </Text>
     </View>
