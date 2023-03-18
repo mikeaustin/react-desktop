@@ -1,4 +1,4 @@
 declare const useStyles: (data?: {
     theme?: Jss.Theme | undefined;
-} | undefined) => import("jss").Classes<"center" | "flex" | "hidden" | "Text" | "textParent" | "light" | "caps" | "noEvents">;
+} | undefined) => import("jss").Classes<"flex" | "Text" | "textParent" | "light" | "caps" | "hidden" | "noEvents" | "center">;
 export { useStyles, };
