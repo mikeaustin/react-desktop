@@ -158,7 +158,7 @@ function BacklogPage() {
                 <View horizontal align="left">
                   <Icon size="xs" icon="square-check" color="blue-3" />
                   <Spacer size="xsmall" />
-                  <Text light caps fontSize="small">GEM-1324 — User Story</Text>
+                  <Text light caps fontSize="small">GEM-1324 — Created Mar 15, 2023</Text>
                 </View>
                 <Spacer size="small" />
                 <View horizontal align="left">
