@@ -1,5 +1,5 @@
 import React, { useRef, useState } from 'react';
-import { Outlet, Link } from 'react-router-dom';
+import { Outlet, Link, NavLink } from 'react-router-dom';
 import { groupWith } from 'rambda';
 import Joyride from 'react-joyride';
 
@@ -108,16 +108,16 @@ function App() {
         disableScrolling={true}
       /> */}
       <Stack flex horizontal divider className={styles.App} style={{ overflowX: 'auto', scrollSnapType: 'x mandatory' }}>
-        <View padding="medium" style={{ flex: '0 0 192px', scrollSnapAlign: 'start' }}>
+        <View padding="small" style={{ flex: '0 0 240px', scrollSnapAlign: 'start' }}>
           <Text>GEMTASK</Text>
           <Spacer size="medium" />
           <Stack>
-            <Link to="/backlog/GEM-1324">Backlog</Link>
-            <Spacer size="small" />
-            <Link to="/epics">Epics</Link>
-            <Spacer size="small" />
-            <Text onClick={() => setIsAgileModalOpen(true)}>Being Agile</Text>
+            <NavLink to="/backlog/GEM-1324" className={styles.Link}><Text noEvents>Product Backlog</Text></NavLink>
+            <NavLink to="/epics" className={styles.Link}><Text noEvents>Epics</Text></NavLink>
+            <NavLink to="/epicsxxx" className={styles.Link}><Text noEvents>Current Sprint</Text></NavLink>
           </Stack>
+          <Spacer size="medium" />
+          <Text onClick={() => setIsAgileModalOpen(true)}>Being Agile</Text>
         </View>
         <Outlet />
       </Stack>

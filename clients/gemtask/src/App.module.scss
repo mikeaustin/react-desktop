@@ -40,6 +40,18 @@
   font-family: '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', 'sans-serif';
 }
 
+.Link {
+  padding: 8px 16px;
+  border-radius: 4px;
+  text-decoration: none;
+  color: black;
+
+  &:global(.active) {
+    background: #e9ecef;
+    font-weight: medium;
+  }
+}
+
 @media screen and (max-width: 1439px) {
   .backlogPage {
     flex: 1 0 100vw !important;

@@ -22,6 +22,10 @@ const router = createBrowserRouter([
         path: 'epics/:epicId?',
         element: <EpicsPage />,
       },
+      {
+        path: 'sprint',
+        element: null,
+      },
     ]
   },
 ], {
