@@ -23,7 +23,12 @@ const statuses = [
   { title: 'Blocked', color: 'orange-3' },
 ];
 
-function Story({ id, title, estimateId, statusId, typeId, blockedById, dueDate, questionsCount, selected, flagged, tags, onSelect }: any) {
+const people = [
+  { name: 'Philip Hirsch', tags: ['eng', 'c#', 'service', 'aws'] },
+  { name: 'Lawrence Hughes', tags: ['eng', 'js', 'ui', 'react'] },
+];
+
+function Story({ id, title, estimateId, statusId, typeId, blockedById, dueDate, questionsCount, selected, flagged, tags, assignees, onSelect }: any) {
   const dueDateObject = new Date(dueDate);
   const twoWeeksFromNow = new Date();
 
@@ -36,7 +41,7 @@ function Story({ id, title, estimateId, statusId, typeId, blockedById, dueDate, 
       {flagged && (
         <View style={{ position: 'absolute', borderTop: '16px solid #ff8787', borderRight: '16px solid transparent' }} />
       )}
-      <Stack flex horizontal padding="small medium" style={{ flexWrap: 'wrap', columnGap: 24, rowGap: 12 }}>
+      <Stack flex horizontal padding="small medium" style={{ flexWrap: 'wrap', columnGap: 16, rowGap: 12 }}>
         <View flex horizontal>
           <View flex>
             <Text noEvents fontWeight="medium" testId="story-title" style={{ minWidth: 300 }}>{title}</Text>
@@ -47,35 +52,37 @@ function Story({ id, title, estimateId, statusId, typeId, blockedById, dueDate, 
                 <Spacer size="xsmall" />
                 <Text light fontSize="small" style={{ whiteSpace: 'nowrap' }}>GEM-42</Text>
               </View>
-              <View horizontal style={{ columnGap: 8 }} testId="story-constraints">
-                {blockedById && (
-                  <Tag
-                    bold={statusId !== 0}
-                    color={statusId === 0 ? 'blue-0' : 'yellow-1'}
-                    label="Blocked by OPS-4264"
-                  />
-                )}
-                {dueDate && (
-                  <Tag
-                    bold={dueDateApproaching}
-                    color={dueDateApproaching ? 'yellow-1' : 'blue-0'}
-                    label={`Due ${dueDateObject.toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' })}`}
-                  />
-                )}
-                {questionsCount && (
-                  <Tag
-                    bold={statusId !== 0}
-                    color={statusId === 0 ? 'blue-0' : 'yellow-1'}
-                    label={`${questionsCount} Questions`}
-                    onClick={() => {
-                      setTimeout(() => {
-                        document.getElementById('comments')?.scrollIntoView({ behavior: 'smooth' });
-                      });
-                    }}
-                  />
-                )}
-              </View>
-              <View flex />
+              {(blockedById || dueDate || questionsCount) && (
+                <View horizontal style={{ columnGap: 8 }} testId="story-constraints">
+                  {blockedById && (
+                    <Tag
+                      bold={statusId !== 0}
+                      color={statusId === 0 ? 'blue-0' : 'yellow-1'}
+                      label="Blocked by OPS-4264"
+                    />
+                  )}
+                  {dueDate && (
+                    <Tag
+                      bold={dueDateApproaching}
+                      color={dueDateApproaching ? 'yellow-1' : 'blue-0'}
+                      label={`Due ${dueDateObject.toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' })}`}
+                    />
+                  )}
+                  {questionsCount && (
+                    <Tag
+                      bold={statusId !== 0}
+                      color={statusId === 0 ? 'blue-0' : 'yellow-1'}
+                      label={`${questionsCount} Questions`}
+                      onClick={() => {
+                        setTimeout(() => {
+                          document.getElementById('comments')?.scrollIntoView({ behavior: 'smooth' });
+                        });
+                      }}
+                    />
+                  )}
+                </View>
+              )}
+              {/* <View flex /> */}
               <Stack horizontal style={{ columnGap: 4 }} testId="story-labels">
                 {tags && (
                   tags.map((tag: string) => (
@@ -87,6 +94,18 @@ function Story({ id, title, estimateId, statusId, typeId, blockedById, dueDate, 
               </Stack>
             </Stack>
           </View>
+        </View>
+        <View horizontal align="top right" testId="story-assignees">
+          {assignees.slice(0, 2).map((assignee: any) => (
+            <View fillColor="gray-2" align="center" style={{ width: 30, height: 30, marginLeft: -5, borderRadius: 1000, boxShadow: '0 0 0 1px white' }}>
+              <Text fontSize="small" fontWeight="semi-bold">{people[assignee].name.split(' ').map(name => name[0]).join('')}</Text>
+            </View>
+          ))}
+          {assignees.length > 2 && (
+            <View fillColor="gray-2" align="center" style={{ width: 30, height: 30, marginLeft: -5, borderRadius: 1000, boxShadow: '0 0 0 1px white' }}>
+              <Icon icon="ellipsis" />
+            </View>
+          )}
         </View>
         <View horizontal style={{ alignItems: 'center', height: 30 }} testId="story-points">
           <View align="center" style={{ width: 35 }}>
@@ -100,17 +119,6 @@ function Story({ id, title, estimateId, statusId, typeId, blockedById, dueDate, 
           </View>
           <Spacer size="medium" />
           <View style={{ width: 12, height: 12, borderRadius: 1000 }} fillColor={statuses[statusId].color as any} title={statuses[statusId].title} />
-        </View>
-        <View horizontal align="top left" testId="story-assignees">
-          <View fillColor="gray-2" align="center" style={{ width: 30, height: 30, marginLeft: -5, borderRadius: 1000, boxShadow: '0 0 0 1px white' }}>
-            <Text fontSize="small" fontWeight="semi-bold">AJ</Text>
-          </View>
-          <View fillColor="gray-2" align="center" style={{ width: 30, height: 30, marginLeft: -5, borderRadius: 1000, boxShadow: '0 0 0 1px white' }}>
-            <Text fontSize="small" fontWeight="semi-bold">MR</Text>
-          </View>
-          <View fillColor="gray-2" align="center" style={{ width: 30, height: 30, marginLeft: -5, borderRadius: 1000, boxShadow: '0 0 0 1px white' }}>
-            <Icon icon="ellipsis" />
-          </View>
         </View>
       </Stack>
     </Stack>
