@@ -10,7 +10,7 @@ import Field from '../../../shared/components/field';
 
 import Comments from './components/comments';
 import Details from './components/details';
-import Story from './components/story';
+import Group from './components/group';
 
 import styles from '../../../App.module.scss';
 
@@ -127,28 +127,7 @@ function BacklogPage() {
           <Divider />
           <View style={{ overflowX: 'auto' }}>
             {groupedStories.map((group, index) => (
-              <View key={index} className={styles.hoverable}>
-                <View horizontal>
-                  <View padding="small medium">
-                    <Spacer size="small" />
-                    <Text caps fontSize="small" textColor="gray-6">{epics[group[0].epicId].title}</Text>
-                  </View>
-                  <Spacer flex size="small" />
-                  <Stack horizontal spacing="medium" padding="xsmall medium" align="bottom right" className={styles.hovered}>
-                    <Icon size="lg" icon="sliders" color="gray-6" style={{ marginTop: 0, marginBottom: 2, width: 24 }} />
-                    <Icon size="xl" icon="square-plus" color="gray-6" style={{ margin: 0, width: 24 }} onClick={() => setIsAddStoryModalOpen(true)} />
-                  </Stack>
-                </View>
-                {/* <Divider /> */}
-                <View padding="none medium">
-                  <Stack divider fillColor="white" style={{ borderRadius: 4, overflow: 'hidden', border: '1px solid #dee2e6' }}>
-                    {group.map(story => (
-                      <Story key={story.id} selected={story.id === selectedItemId} {...story} onSelect={handleStorySelect} />
-                    ))}
-                  </Stack>
-                </View>
-                {/* <Divider /> */}
-              </View>
+              <Group group={group} selectedItemId={selectedItemId} onStorySelect={handleStorySelect} />
             ))}
             <View padding="medium">
               <View horizontal padding="small medium" fillColor="white" align="left" style={{ borderRadius: 4, border: '1px solid #dee2e6' }}>
