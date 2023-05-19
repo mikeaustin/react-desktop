@@ -61,12 +61,14 @@ const applicationsMenu = [
   { title: 'UI Builder', width: 1200, height: 800, src: 'clients/builder' },
   { title: 'Kopi IDE', width: 1200, height: 800, src: 'clients/kopi-ide' },
   {},
+  { title: 'FT-86 Wheels', width: 1024 + 20, height: 800, src: 'https://wheels.ft86partpicker.com' },
   { title: 'Grid Draw', width: 1200, height: 800, src: 'https://mike-austin.com/draw-2' },
   { title: 'Bestest Movies Ever', width: 1200, height: 800, src: 'https://bestestmoviesever.com' },
   { title: 'Kopi Programming Language', width: 1200, height: 800, src: 'https://mike-austin.com/kopi' },
   { title: 'React Desktop 0.5', width: 1200, height: 800, src: 'https://mike-austin.com/build-a-language' },
   { title: 'React Desktop 0.1', width: 1200, height: 800, src: 'https://mike-austin.com/react-wm' },
   { title: 'Old Site with Resume', width: 1200, height: 800, src: 'https://mike-austin.com' },
+  {},
   { title: 'After a While, Crocodile', width: 800, height: 482, src: 'https://www.youtube.com/embed/oWkOkpzyD3Y' },
 ];
 
@@ -75,7 +77,7 @@ const gamesMenu = [
   { title: 'React Asteroids', width: 1600, height: 900, src: 'https://codepen.io/mikeaustin/embed/mdpYMym?default-tab=js%2Cresult' },
   { title: 'Snakey Snake', width: 400, height: 474, src: 'https://editor.p5js.org/mike_ekim1024/full/8c5ovMThX' },
   { title: 'Stetegic Asteroids', width: 800, height: 873, src: 'https://editor.p5js.org/mike_ekim1024/full/q8nWdZV0U' },
-  { title: 'JS Doom', width: 640, height: 480, src: 'clients/jsdoom' },
+  // { title: 'JS Doom', width: 640, height: 480, src: 'clients/jsdoom' },
 ];
 
 const referenceMenu = [
