@@ -2,6 +2,7 @@ import { View, Text, Divider, Spacer, Stack, Icon, Button } from 'core';
 
 import Field from '../../../shared/components/field';
 import Person from '../../../shared/components/person';
+import Tag from '../../../shared/components/tag';
 
 import styles from '../../../App.module.scss';
 
@@ -72,11 +73,32 @@ const EpicsPage = () => {
         <Divider />
         <View padding="medium">
           <Stack divider style={{ border: '1px solid #dee2e6', borderRadius: 4, overflow: 'hidden' }}>
-            <View padding="small medium" fillColor="blue-0">
-              <Text>Chubb Rate Quote Response Mapping</Text>
+            <View horizontal padding="small medium" fillColor="blue-0">
+              <View>
+                <Text fontWeight="medium">Chubb Rate Quote Response Mapping</Text>
+                <Spacer size="small" />
+                <Stack horizontal style={{ columnGap: 16 }}>
+                  <Text light fontSize="small">3 Stories</Text>
+                  <Tag bold label="2 Comments" color="yellow-1" />
+                </Stack>
+              </View>
+              <Spacer flex size="small" />
+              <View fillColor="gray-2" align="center" style={{ width: 30, height: 30, marginLeft: -5, borderRadius: 1000, boxShadow: '0 0 0 1px white' }}>
+                <Text fontSize="small" fontWeight="semi-bold">AJ</Text>
+              </View>
             </View>
-            <View padding="small medium" fillColor="white">
-              <Text>Edit stories and epics</Text>
+            <View horizontal padding="small medium" fillColor="white">
+              <View>
+                <Text fontWeight="medium">Edit stories and epics</Text>
+                <Spacer size="small" />
+                <Stack horizontal>
+                  <Text light fontSize="small">0 Stories</Text>
+                </Stack>
+              </View>
+              <Spacer flex size="small" />
+              <View fillColor="gray-2" align="center" style={{ width: 30, height: 30, marginLeft: -5, borderRadius: 1000, boxShadow: '0 0 0 1px white' }}>
+                <Text fontSize="small" fontWeight="semi-bold">AJ</Text>
+              </View>
             </View>
           </Stack>
         </View>
@@ -102,32 +124,38 @@ const EpicsPage = () => {
             </Stack>
           </View>
           <Divider />
-          <Stack padding="medium" spacing="large">
-            <Field label="Description" initialValue={epicDescription} />
-            <View>
-              <Text light caps fontSize="small">Requirements</Text>
-              <Spacer size="small" />
-              <Divider />
-              <Stack divider>
-                <Requirement selected title="Info Alert response mapping for new field in Chubb WC rater" createdDate="Feb 16, 2023" updatedDate="Feb 20, 2023" storyId={1} />
-                <Requirement title="Quote Proposal PDF stored for Chubb WC rater" createdDate="Feb 16, 2023" updatedDate="Feb 20, 2023" />
-                <Requirement title="Ratability Reasons file consolidated to one for Chubb GL, BOP, WC rater" createdDate="Feb 16, 2023" />
-              </Stack>
-              <Divider />
-            </View>
-            <View>
-              <Text light caps fontSize="small">Assignees</Text>
-              <Spacer size="small" />
-              <View horizontal style={{ gap: 8, flexWrap: 'wrap' }}>
-                <Person name="Patricia Jackson" tags="ux, figma, zeplin" />
-                <Person name="Elizabeth Ohara" tags="product" />
-                <Person name="Mark Seaton" tags="quality, selenium" />
-                <View hovered="a" fillColor="gray-1" align="center" style={{ width: 40, borderRadius: 1000, cursor: 'pointer' }}>
-                  <Icon icon="plus" />
+          <View horizontal style={{ overflowX: 'auto', width: '100%', scrollSnapType: 'x mandatory' }}>
+            <Stack padding="medium" spacing="large" style={{ flex: '0 0 100%', scrollSnapAlign: 'start' }}>
+              <Field label="Description" initialValue={epicDescription} />
+              <View>
+                <Text light caps fontSize="small">Requirements</Text>
+                <Spacer size="small" />
+                <Divider />
+                <Stack divider>
+                  <Requirement selected title="Info Alert response mapping for new field in Chubb WC rater" createdDate="Feb 16, 2023" updatedDate="Feb 20, 2023" storyId={1} />
+                  <Requirement title="Quote Proposal PDF stored for Chubb WC rater" createdDate="Feb 16, 2023" updatedDate="Feb 20, 2023" />
+                  <Requirement title="Ratability Reasons file consolidated to one for Chubb GL, BOP, WC rater" createdDate="Feb 16, 2023" />
+                </Stack>
+                <Divider />
+              </View>
+              <View>
+                <Text light caps fontSize="small">Assignees</Text>
+                <Spacer size="small" />
+                <View horizontal style={{ gap: 8, flexWrap: 'wrap' }}>
+                  <Person name="Patricia Jackson" tags="ux, figma, zeplin" />
+                  <Person name="Elizabeth Ohara" tags="product" />
+                  <Person name="Mark Seaton" tags="quality, selenium" />
+                  <View hovered="a" fillColor="gray-1" align="center" style={{ width: 40, borderRadius: 1000, cursor: 'pointer' }}>
+                    <Icon icon="plus" />
+                  </View>
                 </View>
               </View>
+            </Stack>
+            <Divider />
+            <View padding="small medium" style={{ flex: '0 0 100%', scrollSnapAlign: 'start' }}>
+              <Text>Questions</Text>
             </View>
-          </Stack>
+          </View>
         </View>
 
         <View flex className={styles.requirementDetails} style={{ scrollSnapAlign: 'start' }}>

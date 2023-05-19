@@ -10,7 +10,7 @@ import Field from '../../../shared/components/field';
 
 import Comments from './components/comments';
 import Details from './components/details';
-import Story from './components/story';
+import Group from './components/group';
 
 import styles from '../../../App.module.scss';
 
@@ -46,12 +46,12 @@ const epics = [
 ];
 
 const stories = [
-  { id: 5, title: 'Asdf asdf ccalability is tested', estimateId: 2, epicId: 1, statusId: 5, typeId: 0, blockedById: 2, tags: ['front-end', 'allstate'] },
-  { id: 0, title: 'Basic UI for logging in is created', estimateId: 1, epicId: 0, statusId: 4, typeId: 0, tags: ['hiscox'] },
-  { id: 1, title: 'User can log in and view stories', estimateId: 2, epicId: 0, statusId: 3, typeId: 1, flagged: true, tags: ['design', 'analytics'] },
-  { id: 2, title: 'User can create new account and log in', estimateId: 3, epicId: 0, statusId: 2, typeId: 2 },
-  { id: 3, title: 'Scroll to selected card in Kanban view', estimateId: 1, epicId: 1, statusId: 1, typeId: 0, questionsCount: 1, dueDate: 'Apr 15, 2023' },
-  { id: 4, title: 'Scalability is tested', estimateId: 0, epicId: 1, statusId: 0, typeId: 0, questionsCount: 2 },
+  { id: 5, title: 'Asdf asdf ccalability is tested', estimateId: 2, epicId: 1, statusId: 5, typeId: 0, blockedById: 2, tags: ['front-end', 'allstate'], assignees: [0] },
+  { id: 0, title: 'Basic UI for logging in is created', estimateId: 1, epicId: 0, statusId: 4, typeId: 0, tags: ['hiscox'], assignees: [0, 1] },
+  { id: 1, title: 'User can log in and view stories', estimateId: 2, epicId: 0, statusId: 3, typeId: 1, flagged: true, tags: ['design', 'analytics'], assignees: [0, 1, 0] },
+  { id: 2, title: 'User can create new account and log in', estimateId: 3, epicId: 0, statusId: 2, typeId: 2, assignees: [0] },
+  { id: 3, title: 'Scroll to selected card in Kanban view', estimateId: 1, epicId: 1, statusId: 1, typeId: 0, questionsCount: 1, dueDate: 'Apr 15, 2023', assignees: [0, 1] },
+  { id: 4, title: 'Scalability is tested', estimateId: 0, epicId: 1, statusId: 0, typeId: 0, questionsCount: 2, assignees: [] },
 ];
 
 const groupedStories = groupWith((a, b) => a.epicId === b.epicId, stories);
@@ -110,8 +110,14 @@ function BacklogPage() {
       <View flex horizontal className={styles.backlogPage}>
         <View flex fillColor="gray-1" className={styles.backlogPanel} style={{ scrollSnapAlign: 'start' }} testId="backlog-panel">
           <View padding="small medium" fillColor="gray-0">
-            <Spacer size="small" />
-            <Text fontSize="large">Product Backlog</Text>
+            <View horizontal align="bottom left">
+              <View>
+                <Spacer size="small" />
+                <Text fontSize="large">Product Backlog</Text>
+              </View>
+              <Spacer flex size="small" />
+              <Button solid primary icon="add" size="small" style={{ marginBottom: -5 }} onClick={() => document.getElementById('new-story-title')?.focus()} />
+            </View>
             <Spacer size="medium" />
             <Stack horizontal spacing="medium">
               <Text textColor="blue-7">Assigned to Me</Text>
@@ -121,31 +127,14 @@ function BacklogPage() {
           <Divider />
           <View style={{ overflowX: 'auto' }}>
             {groupedStories.map((group, index) => (
-              <View key={index} className={styles.hoverable}>
-                <View horizontal>
-                  <View padding="small medium">
-                    <Spacer size="small" />
-                    <Text caps fontSize="small" textColor="gray-6">{epics[group[0].epicId].title}</Text>
-                  </View>
-                  <Spacer flex size="small" />
-                  <Stack horizontal spacing="medium" padding="xsmall medium" align="bottom right" className={styles.hovered}>
-                    <Icon size="lg" icon="sliders" color="gray-6" style={{ marginTop: 0, marginBottom: 2, width: 24 }} />
-                    <Icon size="xl" icon="square-plus" color="gray-6" style={{ margin: 0, width: 24 }} onClick={() => setIsAddStoryModalOpen(true)} />
-                  </Stack>
-                </View>
-                {/* <Divider /> */}
-                <View padding="none medium">
-                  <Stack divider fillColor="white" style={{ borderRadius: 4, overflow: 'hidden', border: '1px solid #dee2e6' }}>
-                    {group.map(story => (
-                      <Story key={story.id} selected={story.id === selectedItemId} {...story} onSelect={handleStorySelect} />
-                    ))}
-                  </Stack>
-                </View>
-                {/* <Divider /> */}
-              </View>
+              <Group group={group} selectedItemId={selectedItemId} onStorySelect={handleStorySelect} />
             ))}
-            <View horizontal padding="medium">
-              <Button solid title="Add Story" onClick={() => setIsAddStoryModalOpen(true)} />
+            <View padding="medium">
+              <View horizontal padding="small medium" fillColor="white" align="left" style={{ borderRadius: 4, border: '1px solid #dee2e6' }}>
+                <Field flex id="new-story-title" placeholder="A short title..." />
+                <Spacer size="small" />
+                <Button primary size="small" title="Add Story" />
+              </View>
             </View>
           </View>
         </View>
@@ -156,9 +145,9 @@ function BacklogPage() {
               <View padding="small medium" fillColor="gray-0">
                 <Spacer size="small" />
                 <View horizontal align="left">
-                  <Icon size="xs" icon="square-check" color="blue-3" />
+                  <Icon size="xs" icon="book" color="blue-3" />
                   <Spacer size="xsmall" />
-                  <Text light caps fontSize="small">GEM-1324 — User Story</Text>
+                  <Text light caps fontSize="small">GEM-1324 — Created Mar 15, 2023</Text>
                 </View>
                 <Spacer size="small" />
                 <View horizontal align="left">

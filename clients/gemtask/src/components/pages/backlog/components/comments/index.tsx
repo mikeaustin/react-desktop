@@ -7,6 +7,13 @@ import Field from '../../../../../shared/components/field';
 const Comments = () => {
   return (
     <View id="comments" fillColor="gray-1" style={{ flexBasis: '100%', flexShrink: 0, overflowY: 'auto', scrollSnapAlign: 'start' }}>
+      <View horizontal padding="small medium" fillColor="white" align="left">
+        <Field flex placeholder="Ask a new question..." />
+        <Spacer size="small" />
+        <Button primary size="small" title="Ask Question" />
+      </View>
+      <Divider />
+
       <View padding="small medium" fillColor="gray-1">
         <Spacer size="small" />
         <Text light caps fontSize="small">Unresolved Questions</Text>
@@ -25,7 +32,11 @@ const Comments = () => {
               <Text light fontSize="small">Mon, Mar 6, 2023</Text>
             </View>
             <Spacer flex size="small" />
-            <Button solid size="small" title="Mark Resolved" />
+            <View horizontal align="left">
+              <Icon icon="question-circle" color="gray-5" />
+              <Spacer size="xsmall" />
+              <Text light >Unresolved</Text>
+            </View>
           </View>
           <Divider style={{ marginLeft: 16 }} />
           <Spacer size="small" />
@@ -39,7 +50,8 @@ const Comments = () => {
                 <Text fontSize="small" fontWeight="semi-bold">AW</Text>
               </View>
               <Spacer size="small" />
-              <View padding="small medium" fillColor="gray-1" style={{ borderRadius: 4 }}>
+              <View padding="small medium" fillColor="gray-1" hoverable="a" style={{ borderRadius: 4, position: 'relative' }}>
+                <Button solid primary size="small" icon="circle-check" hovered="a" style={{ position: 'absolute', right: 16, bottom: -10 }} />
                 <Text>In reply to your question, yes, we should update the cache with writeQuery</Text>
                 <Spacer size="small" />
                 <Text light fontSize="small">Annabelle Webber &nbsp;&middot;&nbsp; Mon, Mar 6, 2023</Text>
@@ -109,7 +121,7 @@ const Comments = () => {
               </View>
               <Spacer size="small" />
               <View padding="small medium" fillColor="gray-1" style={{ borderRadius: 4, position: 'relative' }}>
-                <Icon icon="thumbs-up" color="blue-5" style={{ position: 'absolute', right: -12 }} />
+                <Icon icon="circle-check" color="green-5" style={{ position: 'absolute', right: -10, top: 10 }} />
                 <Text>Yes, we should update the cache with writeQuery</Text>
                 <Spacer size="small" />
                 <Text light fontSize="small">Annabelle Webber &nbsp;&middot;&nbsp; Mon, Mar 6, 2023</Text>
