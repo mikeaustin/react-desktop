@@ -209,24 +209,24 @@ class Machine {
   }
 
   decode() {
-    return this.memory[this.pc] >> 4;
+    return this.memory[this.pc] >> 4 as Opcode;
   }
 
-  execute(opCode: number) {
+  execute(opCode: Opcode) {
     switch (opCode) {
       case Opcode.jmp: {
         const op = this.memory[this.pc] & 0b11;
         const srcAddr = this.memory[this.pc + 1];
 
         if (op === JmpOp.eq && this.flags & 0b10) {
-          return this.pc = srcAddr;
+          return srcAddr;
         } else if (op === JmpOp.lt && this.flags & 0b01) {
-          return this.pc = srcAddr;
+          return srcAddr;
         } else if (op === JmpOp.always) {
-          return this.pc = srcAddr;
+          return srcAddr;
         }
 
-        return this.pc += 2;
+        return this.pc + 2;
       }
       case Opcode.mov: {
         const dstReg = this.memory[this.pc] & 0b11;
@@ -236,7 +236,7 @@ class Machine {
 
         this.debug({ dstReg: (Register.Names as any)[dstReg], srcValue });
 
-        return this.pc += 2;
+        return this.pc + 2;
       }
       case Opcode.lod: {
         const dstReg = this.memory[this.pc] & 0b11;
@@ -246,7 +246,7 @@ class Machine {
 
         this.debug({ dstReg, srcAddr });
 
-        return this.pc += 2;
+        return this.pc + 2;
       }
       case Opcode.sto: {
         const srcReg = this.memory[this.pc] & 0b11;
@@ -260,7 +260,7 @@ class Machine {
           this.onMemoryChange(dstAddr, this.registers[srcReg]);
         }
 
-        return this.pc += 2;
+        return this.pc + 2;
       }
       case Opcode.add: {
         const dstReg = (this.memory[this.pc] >> 2) & 0b11;
@@ -275,7 +275,7 @@ class Machine {
 
         this.debug({ dstReg: (Register.Names as any)[dstReg], srcReg: (Register.Names as any)[srcReg] });
 
-        return this.pc += 1;
+        return this.pc + 1;
       }
       case Opcode.sub: {
         const dstReg = (this.memory[this.pc] >> 2) & 0b11;
@@ -290,7 +290,7 @@ class Machine {
 
         this.debug({ dstReg: (Register.Names as any)[dstReg], srcReg: (Register.Names as any)[srcReg] });
 
-        return this.pc += 1;
+        return this.pc + 1;
       }
       case Opcode.cmp: {
         const dstReg = (this.memory[this.pc] >> 2) & 0b11;
@@ -303,7 +303,7 @@ class Machine {
 
         this.debug({ dstReg: (Register.Names as any)[dstReg], srcReg: (Register.Names as any)[srcReg] });
 
-        return this.pc += 1;
+        return this.pc + 1;
       }
       case Opcode.sys: {
         const op = this.memory[this.pc] & 0b1111;
@@ -336,19 +336,19 @@ class Machine {
           case SysCall.exit: {
             this.debug({ op: SysCall[op] });
 
-            return this.pc = 255;
+            return 255;
           }
           default: {
             console.log('Invalid syscall');
           }
         }
 
-        return this.pc += 1;
+        return this.pc + 1;
       }
       default: {
         console.log('Illegal operation');
 
-        return this.pc = 255;
+        return 255;
       }
     }
   }
@@ -360,7 +360,7 @@ class Machine {
       const loop = () => {
         const opCode = this.decode();
 
-        this.execute(opCode);
+        this.pc = this.execute(opCode);
 
         if (this.onCounterChange) {
           this.onCounterChange(this.pc);
