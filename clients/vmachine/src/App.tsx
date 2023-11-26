@@ -71,6 +71,7 @@ const instructions: Program = [
 
   'animate',
   mov(Register.A, 0),
+  mov(Register.B, 1),
   'loop2',
   add(Register.A, Register.B),
   sto(new Address(230), Register.A),

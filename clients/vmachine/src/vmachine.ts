@@ -378,8 +378,8 @@ class Machine {
   }
 
   async start(pc: number) {
-    console.log('OP      OPERANDS                                        PC        A    B    C    D      C  Z');
-    console.log('======= =============== =============== =============== ======= ======================= ====');
+    // console.log('OP      OPERANDS                                        PC        A    B    C    D      C  Z');
+    // console.log('======= =============== =============== =============== ======= ======================= ====');
 
     this.pc = pc;
 
