@@ -1,18 +1,19 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef } from 'react';
 
-import logo from './logo.svg';
 import './App.css';
 
-import Machine, { type Program, Register, Address, SysCall, add, sub, cmp, sys, mov, lod, sto, jmp, jeq, jlt, ascii } from './vmachine';
+import Machine, { type Program, Register, Address, SysCall } from './vmachine';
+import { add, sub, cmp, sys, mov, lod, sto, jmp, jeq, jlt, asc } from './vmachine';
 
-import { View, Text, Button, Spacer, Divider } from 'core';
+import { View, Text, Button, Spacer } from 'core';
 
 const instructions: Program = [
   'hello',
-  ascii('Hello, world.'),
+  asc('Hello, world.'),
+
 
   'goodbye',
-  ascii('Goodbye.'),
+  asc('Goodbye.'),
 
   'start',
   mov(Register.A, 'hello'),
@@ -120,7 +121,7 @@ const machine = new Machine(opcodes, {
 
 const animate = (context: CanvasRenderingContext2D, memory: Uint8Array) => {
   const tick = () => {
-    if (!(machine.flags[0] & 0b00000100)) {
+    if (!(machine.flags & 0b00000100)) {
       // return;
     }
 
@@ -165,7 +166,6 @@ function App() {
       await machine.start(labels.compare);
       await machine.start(labels.start2);
       await machine.start(labels.display);
-
       await machine.start(labels.animate);
     })();
 
@@ -182,7 +182,7 @@ function App() {
           <React.Fragment key={index}>{byte.toString().padStart(3, '0')} </React.Fragment>
         ))}
         {' '}
-        {Array.from(machine.flags).map((byte, index) => (
+        {Array.from([machine.flags]).map((byte, index) => (
           <React.Fragment key={index}>{byte.toString().padStart(3, '0')} </React.Fragment>
         ))}
         {'   '}

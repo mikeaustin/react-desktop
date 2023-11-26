@@ -125,7 +125,7 @@ function sys(op: number) {
   return [(Opcode.sys << 4) | op];
 }
 
-function ascii(string: string): number[] {
+function asc(string: string): number[] {
   return string.split('').map(char => char.charCodeAt(0));
 }
 
@@ -134,7 +134,7 @@ type Program = ((number | string)[] | string)[];
 class Machine {
   public registers: Uint8Array;
   public memory: Uint8Array;
-  public flags: Uint8Array;
+  public flags: number;
   public pc: number;
 
   timeout: number = 0;
@@ -179,7 +179,7 @@ class Machine {
   ) {
     this.registers = new Uint8Array(new ArrayBuffer(4));
     this.memory = new Uint8Array(new ArrayBuffer(256));
-    this.flags = new Uint8Array(new ArrayBuffer(1));
+    this.flags = 0;
     this.pc = 0;
 
     instructions.flat().forEach((byte, index) => {
@@ -202,8 +202,8 @@ class Machine {
       Opcode[opCode] + '\t' + ops +
       '\r\t\t\t\t\t\t\t' + this.pc +
       '\t' + Array.from(this.registers).map(register => register.toString().padStart(3, '0')).join('  ') +
-      '\t' + ((this.flags[0] >> 0) & 0x01) +
-      '  ' + ((this.flags[0] >> 1) & 0x01)
+      '\t' + ((this.flags >> 0) & 0x01) +
+      '  ' + ((this.flags >> 1) & 0x01)
     );
   }
 
@@ -225,7 +225,7 @@ class Machine {
 
         this.debug({ op: JmpOp[JmpOp.eq] });
 
-        if (this.flags[0] & 0b010) {
+        if (this.flags & 0b10) {
           return this.pc = srcAddr;
         } else {
           return this.pc += 2;
@@ -236,7 +236,7 @@ class Machine {
 
         this.debug({ op: JmpOp[JmpOp.lt] });
 
-        if (this.flags[0] & 0b01) {
+        if (this.flags & 0b01) {
           return this.pc = srcAddr;
         } else {
           return this.pc += 2;
@@ -246,7 +246,7 @@ class Machine {
 
     switch (opCode) {
       case Opcode.mov: {
-        const dstReg = this.memory[this.pc] & 0xF;
+        const dstReg = this.memory[this.pc] & 0b11;
         const srcValue = this.memory[this.pc + 1];
 
         this.registers[dstReg] = srcValue;
@@ -256,7 +256,7 @@ class Machine {
         return this.pc += 2;
       }
       case Opcode.lod: {
-        const dstReg = this.memory[this.pc] & 0x03;
+        const dstReg = this.memory[this.pc] & 0b11;
         const srcAddr = this.memory[this.pc + 1];
 
         this.registers[dstReg] = this.memory[srcAddr];
@@ -266,7 +266,7 @@ class Machine {
         return this.pc += 2;
       }
       case Opcode.sto: {
-        const srcReg = this.memory[this.pc] & 0x3;
+        const srcReg = this.memory[this.pc] & 0b11;
         const dstAddr = this.memory[this.pc + 1];
 
         this.memory[dstAddr] = this.registers[srcReg];
@@ -280,50 +280,50 @@ class Machine {
         return this.pc += 2;
       }
       case Opcode.add: {
-        const dstReg = (this.memory[this.pc] >> 2) & 0x3;
-        const srcReg = this.memory[this.pc] & 0x3;
+        const dstReg = (this.memory[this.pc] >> 2) & 0b11;
+        const srcReg = this.memory[this.pc] & 0b11;
 
         const value = this.registers[dstReg] + this.registers[srcReg];
 
         this.registers[dstReg] = value;
 
-        this.flags[0] = (this.flags[0] & ~0b10) | (+(value === 0) << 1);
-        this.flags[0] = (this.flags[0] & ~0b01) | +(value > 0);
+        this.flags = (this.flags & ~0b10) | (+(value === 0) << 1);
+        this.flags = (this.flags & ~0b01) | +(value > 0);
 
         this.debug({ dstReg: (Register.Names as any)[dstReg], srcReg: (Register.Names as any)[srcReg] });
 
         return this.pc += 1;
       }
       case Opcode.sub: {
-        const dstReg = (this.memory[this.pc] >> 2) & 0x3;
-        const srcReg = this.memory[this.pc] & 0x3;
+        const dstReg = (this.memory[this.pc] >> 2) & 0b11;
+        const srcReg = this.memory[this.pc] & 0b11;
 
         const value = this.registers[dstReg] - this.registers[srcReg];
 
         this.registers[dstReg] = value;
 
-        this.flags[0] = (this.flags[0] & ~0b10) | (+(value === 0) << 1);
-        this.flags[0] = (this.flags[0] & ~0b01) | +(value > 0);
+        this.flags = (this.flags & ~0b10) | (+(value === 0) << 1);
+        this.flags = (this.flags & ~0b01) | +(value > 0);
 
         this.debug({ dstReg: (Register.Names as any)[dstReg], srcReg: (Register.Names as any)[srcReg] });
 
         return this.pc += 1;
       }
       case Opcode.cmp: {
-        const dstReg = (this.memory[this.pc] >> 2) & 0x3;
-        const srcReg = (this.memory[this.pc] >> 0) & 0x3;
+        const dstReg = (this.memory[this.pc] >> 2) & 0b11;
+        const srcReg = (this.memory[this.pc] >> 0) & 0b11;
 
         const value = this.registers[dstReg] - this.registers[srcReg];
 
-        this.flags[0] = (this.flags[0] & ~0b10) | (+(value === 0) << 1);
-        this.flags[0] = (this.flags[0] & ~0b01) | +(value > 0);
+        this.flags = (this.flags & ~0b10) | (+(value === 0) << 1);
+        this.flags = (this.flags & ~0b01) | +(value > 0);
 
         this.debug({ dstReg: (Register.Names as any)[dstReg], srcReg: (Register.Names as any)[srcReg] });
 
         return this.pc += 1;
       }
       case Opcode.sys: {
-        const op = this.memory[this.pc] & 0xF;
+        const op = this.memory[this.pc] & 0b1111;
 
         switch (op) {
           case SysCall.write: {
@@ -406,31 +406,6 @@ class Machine {
   }
 }
 
-// console.log(labels);
-
-// const [instructions2, labels2] = instructions.reduce<[
-//   (number | string)[],
-//   { [label: string]: number; },
-//   number,
-// ]>(([inst, labels, index], data) => {
-//   if (typeof data === 'string') {
-//     return [inst, { ...labels, [data]: index }, index];
-//   } else {
-//     return [[...inst, ...data], labels, index + data.length];
-//   }
-// }, [[], {}, 0]);
-
-// const [instructions3, labels3] = instructions.reduce(([inst, labels, index], data) => {
-//   if (typeof data === 'string') {
-//     labels[data] = index;
-//   } else {
-//     inst = [...inst, ...data];
-//     index = index + data.length;
-//   }
-
-//   return [inst, labels, index];
-// }, [[] as (number | string)[], {} as { [label: string]: number; }, 0]);
-
 export default Machine;
 
 export {
@@ -448,5 +423,5 @@ export {
   jmp,
   jeq,
   jlt,
-  ascii,
+  asc,
 };
