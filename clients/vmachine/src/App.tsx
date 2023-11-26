@@ -176,44 +176,51 @@ function App() {
   }, []);
 
   return (
-    <View padding="medium" className="App" style={{ margin: 0, fontFamily: 'monospace', fontSize: 12 }}>
-      <View style={{ margin: 0, fontFamily: 'monospace', whiteSpace: 'pre' }}>
-        REGISTERS        FLAGS  PC{'\n'}
-        {Array.from(machine.registers).map((byte, index) => (
-          <React.Fragment key={index}>{byte.toString().padStart(3, '0')} </React.Fragment>
-        ))}
-        {' '}
-        {Array.from([machine.flags]).map((byte, index) => (
-          <React.Fragment key={index}>{byte.toString().padStart(3, '0')} </React.Fragment>
-        ))}
-        {'   '}
-        {Array.from([machine.pc]).map((byte, index) => (
-          <React.Fragment key={index}>{byte.toString().padStart(3, '0')} </React.Fragment>
-        ))}
-      </View>
-      <Spacer size="medium" />
-      <View>
-        <Text>MEMORY</Text>
-        <Spacer size="small" />
-        <View as="ul" id="memory" style={{ display: 'grid', gridTemplateColumns: 'repeat(16, 1fr)', gap: 5, width: 'min-content', margin: 0, padding: 0, listStyle: 'none' }}>
-          {Array.from(machine.memory).map((byte, index) => (
-            <li key={index} style={{ margin: 0, padding: 0 }}>
-              {byte.toString().padStart(3, '0')}
-            </li>
-          ))}
+    <View horizontal className="App" style={{ margin: 0, fontFamily: 'monospace', fontSize: 10.5 }}>
+      <View padding="medium">
+        <View horizontal style={{ gap: 16 }}>
+          <View>
+            <Text>REGISTERS</Text>
+            <Spacer size="xsmall" />
+            {Array.from(machine.registers).map((byte, index) => (
+              <React.Fragment key={index}>{byte.toString().padStart(3, '0')} </React.Fragment>
+            ))}
+          </View>
+          <View>
+            <Text>FLAGS</Text>
+            <Spacer size="xsmall" />
+            {Array.from([machine.flags]).map((byte, index) => (
+              <React.Fragment key={index}>{byte.toString().padStart(3, '0')} </React.Fragment>
+            ))}
+          </View>
+          <View>
+            <Text>PC</Text>
+            <Spacer size="xsmall" />
+            {machine.pc.toString().padStart(3, '0')}
+          </View>
+          <Spacer flex size="large" />
+          <Button solid size="small" title="Stop" onClick={handleStopClick} />
         </View>
-      </View>
-      <Spacer size="medium" />
-      <View horizontal>
-        <View fillColor="gray-5" style={{ padding: '30px 30px 30px 30px', borderRadius: 20, boxShadow: '0 0 0 2px #adb5bd, inset 0 0 25px #FFFFFFC0' }}>
-          <View className="lcd">
-            <canvas ref={canvasRef} width={319} height={319} style={{ width: 319, height: 319, background: '#98A200' }} />
+        <Spacer size="medium" />
+        <View>
+          <Text>MEMORY</Text>
+          <Spacer size="xsmall" />
+          <View as="ul" id="memory" style={{ display: 'grid', gridTemplateColumns: 'repeat(16, 1fr)', gap: 5, width: 'min-content', margin: 0, padding: 0, listStyle: 'none' }}>
+            {Array.from(machine.memory).map((byte, index) => (
+              <li key={index} style={{ margin: 0, padding: 0 }}>
+                {byte.toString().padStart(3, '0')}
+              </li>
+            ))}
           </View>
         </View>
-      </View>
-      <Spacer size="medium" />
-      <View horizontal>
-        <Button solid title="Stop" onClick={handleStopClick} />
+        <Spacer size="medium" />
+        <View horizontal>
+          <View fillColor="gray-5" style={{ padding: '30px 30px 30px 30px', borderRadius: 20, boxShadow: '0 0 0 2px #adb5bd, inset 0 0 25px #FFFFFFC0' }}>
+            <View className="lcd">
+              <canvas ref={canvasRef} width={319} height={319} style={{ width: 319, height: 319, background: '#98A200' }} />
+            </View>
+          </View>
+        </View>
       </View>
     </View>
   );
