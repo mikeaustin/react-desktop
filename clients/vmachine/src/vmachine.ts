@@ -153,6 +153,7 @@ class Machine {
         labels[data] = index;
       } else {
         opcodes.push(...data);
+
         index += data.length;
       }
     };
@@ -212,39 +213,21 @@ class Machine {
   }
 
   execute(opCode: number) {
-    switch (this.memory[this.pc]) {
-      case (Opcode.jmp << 4) | JmpOp.always: {
-        const srcAddr = this.memory[this.pc + 1];
-
-        this.debug({ op: JmpOp[JmpOp.always] });
-
-        return this.pc = srcAddr;
-      }
-      case (Opcode.jmp << 4) | JmpOp.eq: {
-        const srcAddr = this.memory[this.pc + 1];
-
-        this.debug({ op: JmpOp[JmpOp.eq] });
-
-        if (this.flags & 0b10) {
-          return this.pc = srcAddr;
-        } else {
-          return this.pc += 2;
-        }
-      }
-      case (Opcode.jmp << 4) | JmpOp.lt: {
-        const srcAddr = this.memory[this.pc + 1];
-
-        this.debug({ op: JmpOp[JmpOp.lt] });
-
-        if (this.flags & 0b01) {
-          return this.pc = srcAddr;
-        } else {
-          return this.pc += 2;
-        }
-      }
-    }
-
     switch (opCode) {
+      case Opcode.jmp: {
+        const op = this.memory[this.pc] & 0b11;
+        const srcAddr = this.memory[this.pc + 1];
+
+        if (op === JmpOp.eq && this.flags & 0b10) {
+          return this.pc = srcAddr;
+        } else if (op === JmpOp.lt && this.flags & 0b01) {
+          return this.pc = srcAddr;
+        } else if (op === JmpOp.always) {
+          return this.pc = srcAddr;
+        }
+
+        return this.pc += 2;
+      }
       case Opcode.mov: {
         const dstReg = this.memory[this.pc] & 0b11;
         const srcValue = this.memory[this.pc + 1];
