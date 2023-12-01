@@ -1,11 +1,11 @@
 import React, { useEffect, useRef } from 'react';
 
-import './App.css';
-
 import Machine, { type Program, Register, Address, SysCall } from './vmachine';
 import { add, sub, cmp, sys, mov, lod, sto, jmp, jeq, jlt, asc } from './vmachine';
 
 import { View, Text, Button, Spacer } from 'core';
+
+import styles from './App.module.css';
 
 const instructions: Program = [
   'hello',
@@ -151,21 +151,21 @@ const animate = (context: CanvasRenderingContext2D, memory: Uint8Array) => {
 
 function App() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const timerRef = useRef<NodeJS.Timer>();
+  const displayIntervalRef = useRef<NodeJS.Timer>();
 
   const handleStopClick = () => {
-    clearInterval(machine.timeout);
-    clearInterval(timerRef.current);
+    clearInterval(machine.clockInterval);
+    clearInterval(displayIntervalRef.current);
   };
 
   useEffect(() => {
     const context = canvasRef.current?.getContext('2d');
 
     if (context) {
-      clearInterval(machine.timeout);
-      clearInterval(timerRef.current);
+      clearInterval(machine.clockInterval);
+      clearInterval(displayIntervalRef.current);
 
-      timerRef.current = animate(context, machine.memory);
+      displayIntervalRef.current = animate(context, machine.memory);
     }
 
     (async () => {
@@ -178,13 +178,13 @@ function App() {
     })();
 
     return () => {
-      clearInterval(machine.timeout);
-      clearInterval(timerRef.current);
+      clearInterval(machine.clockInterval);
+      clearInterval(displayIntervalRef.current);
     };
   }, []);
 
   return (
-    <View horizontal className="App" style={{ margin: 0, fontFamily: 'monospace', fontSize: 10.5 }}>
+    <View horizontal className={styles.App}>
       <View padding="medium">
         <View horizontal style={{ gap: 16 }}>
           <View>
@@ -211,7 +211,7 @@ function App() {
         <View>
           <Text>MEMORY</Text>
           <Spacer size="xsmall" />
-          <View as="ul" id="memory" style={{ display: 'grid', gridTemplateColumns: 'repeat(16, 1fr)', gap: 5, width: 'min-content', margin: 0, padding: 0, listStyle: 'none' }}>
+          <View as="ul" id="memory" className={styles.memory}>
             {Array.from(machine.memory).map((byte, index) => (
               <li key={index} style={{ margin: 0, padding: 0 }}>
                 {byte.toString().padStart(3, '0')}
@@ -221,9 +221,9 @@ function App() {
         </View>
         <Spacer size="medium" />
         <View horizontal>
-          <View fillColor="gray-5" style={{ padding: '30px 30px 30px 30px', borderRadius: 20, boxShadow: '0 0 0 2px #adb5bd, inset 0 0 25px #FFFFFFC0' }}>
-            <View className="lcd">
-              <canvas ref={canvasRef} width={319} height={319} style={{ width: 319, height: 319, background: 'hsl(64, 100%, 50%)' }} />
+          <View fillColor="gray-4" className={styles.package}>
+            <View className={styles.lcd}>
+              <canvas ref={canvasRef} className={styles.canvas} width={319} height={319} />
             </View>
           </View>
         </View>

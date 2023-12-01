@@ -137,7 +137,7 @@ class Machine {
   public flags: number;
   public pc: number;
 
-  timeout: number = 0;
+  clockInterval: number = 0;
 
   onRegisterChange?: (address: number, value: number) => void;
   onMemoryChange?: (address: number, value: number) => void;
@@ -354,7 +354,7 @@ class Machine {
   }
 
   async run(): Promise<void> {
-    clearInterval(this.timeout);
+    clearInterval(this.clockInterval);
 
     return new Promise(resolve => {
       const loop = () => {
@@ -367,13 +367,13 @@ class Machine {
         }
 
         if (this.pc === 255) {
-          clearTimeout(this.timeout);
+          clearTimeout(this.clockInterval);
 
           resolve();
         }
       };
 
-      this.timeout = window.setInterval(loop, 1000 / 10);
+      this.clockInterval = window.setInterval(loop, 1000 / 10);
     });
   }
 
