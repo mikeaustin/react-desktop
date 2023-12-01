@@ -126,6 +126,10 @@ const animate = (context: CanvasRenderingContext2D, memory: Uint8Array) => {
       // return;
     }
 
+    const pcElement = document.querySelector('#pc') as HTMLElement;
+
+    pcElement.textContent = machine.pc.toString().padStart(3, '0');
+
     context.clearRect(0, 0, 309, 309);
 
     machine.memory.slice(224, 254).forEach((data, index) => {
@@ -158,6 +162,9 @@ function App() {
     const context = canvasRef.current?.getContext('2d');
 
     if (context) {
+      clearInterval(machine.timeout);
+      clearInterval(timerRef.current);
+
       timerRef.current = animate(context, machine.memory);
     }
 
@@ -171,6 +178,7 @@ function App() {
     })();
 
     return () => {
+      clearInterval(machine.timeout);
       clearInterval(timerRef.current);
     };
   }, []);
@@ -183,20 +191,18 @@ function App() {
             <Text>REGISTERS</Text>
             <Spacer size="xsmall" />
             {Array.from(machine.registers).map((byte, index) => (
-              <React.Fragment key={index}>{byte.toString().padStart(3, '0')} </React.Fragment>
+              <React.Fragment key={index}>{byte.toString().padStart(3, '0')}</React.Fragment>
             ))}
           </View>
           <View>
             <Text>FLAGS</Text>
             <Spacer size="xsmall" />
-            {Array.from([machine.flags]).map((byte, index) => (
-              <React.Fragment key={index}>{byte.toString().padStart(3, '0')} </React.Fragment>
-            ))}
+            {machine.flags.toString().padStart(3, '0')}
           </View>
           <View>
             <Text>PC</Text>
             <Spacer size="xsmall" />
-            {machine.pc.toString().padStart(3, '0')}
+            <span id="pc">{machine.pc.toString().padStart(3, '0')}</span>
           </View>
           <Spacer flex size="large" />
           <Button solid size="small" title="Stop" onClick={handleStopClick} />
@@ -217,7 +223,7 @@ function App() {
         <View horizontal>
           <View fillColor="gray-5" style={{ padding: '30px 30px 30px 30px', borderRadius: 20, boxShadow: '0 0 0 2px #adb5bd, inset 0 0 25px #FFFFFFC0' }}>
             <View className="lcd">
-              <canvas ref={canvasRef} width={319} height={319} style={{ width: 319, height: 319, background: '#98A200' }} />
+              <canvas ref={canvasRef} width={319} height={319} style={{ width: 319, height: 319, background: 'hsl(64, 100%, 50%)' }} />
             </View>
           </View>
         </View>
