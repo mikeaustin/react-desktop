@@ -72,10 +72,18 @@ const instructions: Program = [
   'animate',
   mov(Register.A, 0),
   mov(Register.B, 1),
+  mov(Register.C, 0),
+  mov(Register.D, 27),
   'loop2',
   add(Register.A, Register.B),
   sto(new Address(230), Register.A),
+  //
+  lod(Register.C, new Address(254)),
+  cmp(Register.C, Register.D),
+  jeq('stop'),
+  //
   jmp('loop2'),
+  'stop',
   sys(SysCall.exit),
 ];
 
@@ -109,7 +117,7 @@ function handleMemoryChange(address: number, value: number) {
 
     void child.offsetWidth;
 
-    child.style.animation = '0.5s flash';
+    child.style.animation = `0.5s ${styles.flash}`;
   }
 }
 
@@ -156,6 +164,20 @@ function App() {
   const handleStopClick = () => {
     clearInterval(machine.clockInterval);
     clearInterval(displayIntervalRef.current);
+  };
+
+  const handleKeyDown = (event: React.KeyboardEvent) => {
+    if (machine.memory[254] === 0) {
+      machine.memory[254] = event.keyCode;
+
+      handleMemoryChange(254, event.keyCode);
+    }
+  };
+
+  const handleKeyUp = (event: React.KeyboardEvent) => {
+    machine.memory[254] = 0;
+
+    handleMemoryChange(254, 0);
   };
 
   useEffect(() => {
@@ -220,11 +242,15 @@ function App() {
           </View>
         </View>
         <Spacer size="medium" />
-        <View horizontal>
-          <View fillColor="gray-4" className={styles.package}>
-            <View className={styles.lcd}>
-              <canvas ref={canvasRef} className={styles.canvas} width={319} height={319} />
-            </View>
+        <View
+          tabIndex={0}
+          fillColor="gray-4"
+          className={styles.package}
+          onKeyDown={handleKeyDown}
+          onKeyUp={handleKeyUp}
+        >
+          <View className={styles.lcd}>
+            <canvas ref={canvasRef} className={styles.canvas} width={319} height={319} />
           </View>
         </View>
       </View>
