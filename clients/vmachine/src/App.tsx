@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from 'react';
 
 import Machine, { type Program, Register, Address, SysCall } from './vmachine';
-import { add, sub, cmp, sys, mov, lod, sto, jmp, jeq, jlt, asc } from './vmachine';
+import { add, sub, cmp, sys, mov, lod, sto, jmp, jeq, jlt, str } from './vmachine';
 
 import { View, Text, Button, Spacer } from 'core';
 
@@ -9,11 +9,10 @@ import styles from './App.module.css';
 
 const instructions: Program = [
   'hello',
-  asc('Hello, world.'),
-
+  str('Hello, world.'),
 
   'goodbye',
-  asc('Goodbye.'),
+  str('Goodbye.'),
 
   'start',
   mov(Register.A, 'hello'),
@@ -167,7 +166,7 @@ function App() {
   };
 
   const handleKeyDown = (event: React.KeyboardEvent) => {
-    if (machine.memory[254] === 0) {
+    if (event.keyCode !== machine.memory[254]) {
       machine.memory[254] = event.keyCode;
 
       handleMemoryChange(254, event.keyCode);

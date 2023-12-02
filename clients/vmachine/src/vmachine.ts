@@ -125,7 +125,7 @@ function sys(op: number) {
   return [(Opcode.sys << 4) | op];
 }
 
-function asc(string: string): number[] {
+function str(string: string): number[] {
   return string.split('').map(char => char.charCodeAt(0));
 }
 
@@ -406,5 +406,5 @@ export {
   jmp,
   jeq,
   jlt,
-  asc,
+  str,
 };
